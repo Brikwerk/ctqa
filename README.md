@@ -7,7 +7,11 @@ Currently compatible with Orthanc PACS server instances.
 
 # Getting Started
 
-1. Please download a compatible release distribution from [>--here--<](https://gitlab.com/brikwerk/ctqa/tags)
+## Running CTQA
+
+Note for windows users: An illustrated guide exists under the docs folder
+
+1. Please download a compatible release distribution from [here](https:/github.com/Brikwerk/ctqa/releases)
 
 2. Extract the executable to a sensible location. Please keep in mind that the windows distribution of CTQA will create extra files and folders.
 
@@ -19,5 +23,11 @@ Currently compatible with Orthanc PACS server instances.
 
 6. You will be prompted for administrative access as CTQA installs itself. Please agree to this prompt to continue.
 
-## Notes:
+## Setting up the Development Environment
+
+1. Run either env-setup.bat or env-setup.sh (The scripts setup a virtual environment under .env, install all required modules to it, and activate the environment)
+
+2. For quicker access to the environment on windows, type "activate" at the root
+
+# Notes:
 CTs used with this utility must output DICOM tags StationName, Manufacturer, ManufacturerModelName, and InstitutionName. These attributes are used to recognize a CT from given images.
