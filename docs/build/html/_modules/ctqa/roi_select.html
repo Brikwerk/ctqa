@@ -1,0 +1,413 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ctqa.roi_select &mdash; CTQA 0.9 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> CTQA
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">CTQA</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>ctqa.roi_select</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ctqa.roi_select</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Title:.........CTQA Region of Interest Selection</span>
+<span class="sd">Description: Module for region of interest selection and associated calculations.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1">#!/usr/bin/env python3</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pydicom</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">ctqa</span> <span class="k">import</span> <span class="n">logutil</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">logutil</span><span class="o">.</span><span class="n">MAIN_LOG_NAME</span><span class="p">)</span>
+
+    
+<div class="viewcode-block" id="getImageROIs"><a class="viewcode-back" href="../../ctqa.html#ctqa.roi_select.getImageROIs">[docs]</a><span class="k">def</span> <span class="nf">getImageROIs</span><span class="p">(</span><span class="n">imgPaths</span><span class="p">,</span> <span class="n">__DEBUG</span><span class="p">,</span> <span class="n">__SAVEROIS</span><span class="p">):</span>
+  <span class="n">rois</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">imgPaths</span><span class="p">:</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">pydicom</span><span class="o">.</span><span class="n">dcmread</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">roi</span> <span class="o">=</span> <span class="n">getROI</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">__DEBUG</span><span class="p">,</span> <span class="n">__SAVEROIS</span><span class="p">)</span>
+    <span class="n">rois</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">roi</span><span class="p">)</span>
+  
+  <span class="k">return</span> <span class="n">rois</span></div>
+
+  
+<span class="c1"># Loops through flat ROI array and turns into 2d ROI array  </span>
+<div class="viewcode-block" id="reformROIArray"><a class="viewcode-back" href="../../ctqa.html#ctqa.roi_select.reformROIArray">[docs]</a><span class="k">def</span> <span class="nf">reformROIArray</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">):</span>
+  <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="n">arr</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="n">tempArr</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="n">length</span> <span class="o">=</span> <span class="n">x2</span><span class="o">-</span><span class="n">x1</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="n">counter</span> <span class="o">==</span> <span class="n">length</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+      <span class="n">tempArr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+      <span class="n">arr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tempArr</span><span class="p">)</span>
+      <span class="n">tempArr</span> <span class="o">=</span> <span class="p">[]</span>
+      <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">tempArr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+      <span class="n">counter</span> <span class="o">=</span> <span class="n">counter</span> <span class="o">+</span> <span class="mi">1</span>
+  
+  <span class="k">return</span> <span class="n">arr</span></div>
+
+
+<span class="c1"># Scales pixel image values linearly by rescale values</span>
+<div class="viewcode-block" id="scalePixelData"><a class="viewcode-back" href="../../ctqa.html#ctqa.roi_select.scalePixelData">[docs]</a><span class="k">def</span> <span class="nf">scalePixelData</span><span class="p">(</span><span class="n">pixelData</span><span class="p">,</span> <span class="n">rInt</span><span class="p">,</span> <span class="n">rSlope</span><span class="p">):</span>
+  <span class="n">scaledPixelData</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">pixelRow</span> <span class="ow">in</span> <span class="n">pixelData</span><span class="p">:</span>
+    <span class="n">scaledPixelRow</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">pixelValue</span> <span class="ow">in</span> <span class="n">pixelRow</span><span class="p">:</span>
+      <span class="n">pixelScale</span> <span class="o">=</span> <span class="p">(</span><span class="n">rSlope</span> <span class="o">*</span> <span class="n">pixelValue</span><span class="p">)</span> <span class="o">+</span> <span class="n">rInt</span>
+      <span class="n">scaledPixelRow</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pixelScale</span><span class="p">)</span>
+      
+    <span class="n">scaledPixelData</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scaledPixelRow</span><span class="p">)</span>
+  
+  <span class="k">return</span> <span class="n">scaledPixelData</span></div>
+
+<span class="c1"># Selects a specified area from a 2D array and fills a 1D arr with the values</span>
+<div class="viewcode-block" id="selectArea"><a class="viewcode-back" href="../../ctqa.html#ctqa.roi_select.selectArea">[docs]</a><span class="k">def</span> <span class="nf">selectArea</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">):</span>
+  <span class="n">areaArr</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">):</span>
+      <span class="n">areaArr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">])</span>
+  
+  <span class="k">return</span> <span class="n">areaArr</span></div>
+  
+
+<span class="c1"># Draws QC ROI on QC DICOM images. Extracts mean and std dev for each image</span>
+<div class="viewcode-block" id="getROI"><a class="viewcode-back" href="../../ctqa.html#ctqa.roi_select.getROI">[docs]</a><span class="k">def</span> <span class="nf">getROI</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">__DEBUG</span><span class="p">,</span> <span class="n">__SAVEROIS</span><span class="p">):</span>
+  <span class="k">if</span> <span class="n">__DEBUG</span><span class="p">:</span> <span class="c1"># Prints out img attrbs if true</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Storage type.....: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">SOPClassUID</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">pat_name</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">PatientName</span>
+    <span class="n">display_name</span> <span class="o">=</span> <span class="n">pat_name</span><span class="o">.</span><span class="n">family_name</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span> <span class="o">+</span> <span class="n">pat_name</span><span class="o">.</span><span class="n">given_name</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Patient Name.....: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">display_name</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Modality.........: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">Modality</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Study Date.......: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">StudyDate</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;PixelData&#39;</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
+      <span class="n">rows</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">Rows</span><span class="p">)</span>
+      <span class="n">cols</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">Columns</span><span class="p">)</span>
+      <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Image size.......: </span><span class="si">{rows:d}</span><span class="s2"> x </span><span class="si">{cols:d}</span><span class="s2">, </span><span class="si">{size:d}</span><span class="s2"> bytes&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">rows</span><span class="o">=</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="n">cols</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">PixelData</span><span class="p">)))</span>
+      <span class="k">if</span> <span class="s1">&#39;PixelSpacing&#39;</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Pixel spacing....: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">PixelSpacing</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">errMsg</span> <span class="o">=</span> <span class="s2">&quot;PixelData was not found in the dicom file&quot;</span>
+      <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errMsg</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Slice location...: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SliceLocation&#39;</span><span class="p">,</span> <span class="s2">&quot;(missing)&quot;</span><span class="p">))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Rescale Intercept: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">RescaleIntercept</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Rescale Slope:...: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">RescaleSlope</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Pixel Array......:&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">pixel_array</span><span class="p">)</span>
+
+  <span class="n">scaledData</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">RescaleIntercept</span> <span class="ow">and</span> <span class="n">dataset</span><span class="o">.</span><span class="n">RescaleSlope</span><span class="p">:</span>
+    <span class="n">scaledData</span> <span class="o">=</span> <span class="n">scalePixelData</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">pixel_array</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">RescaleIntercept</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">RescaleSlope</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">errMsg</span> <span class="o">=</span> <span class="s2">&quot;ERROR: No RescaleIntercept and RescaleSlope values were found&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">errMsg</span><span class="p">)</span>
+    <span class="n">scaledData</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">pixel_array</span>
+
+  <span class="c1"># Getting initial config values from image</span>
+  <span class="n">centerX</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">Rows</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># Center of image X/Y</span>
+  <span class="n">centerY</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">Columns</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+  <span class="n">spacingXROI</span> <span class="o">=</span> <span class="mi">75</span><span class="o">/</span><span class="n">dataset</span><span class="o">.</span><span class="n">PixelSpacing</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># For getting different ROIs</span>
+  <span class="n">spacingYROI</span> <span class="o">=</span> <span class="mi">75</span><span class="o">/</span><span class="n">dataset</span><span class="o">.</span><span class="n">PixelSpacing</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+  <span class="n">halfLengthXROI</span> <span class="o">=</span> <span class="mi">10</span><span class="o">/</span><span class="n">dataset</span><span class="o">.</span><span class="n">PixelSpacing</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># For getting  area of ROI</span>
+  <span class="n">halfLengthYROI</span> <span class="o">=</span> <span class="mi">10</span><span class="o">/</span><span class="n">dataset</span><span class="o">.</span><span class="n">PixelSpacing</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+  <span class="c1"># Center X/Y points</span>
+  <span class="n">cyl</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">centerX</span> <span class="o">-</span> <span class="n">halfLengthXROI</span><span class="p">)</span>
+  <span class="n">cxl</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">centerY</span> <span class="o">-</span> <span class="n">halfLengthYROI</span><span class="p">)</span>
+  <span class="n">cyr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">centerX</span> <span class="o">+</span> <span class="n">halfLengthXROI</span><span class="p">)</span>
+  <span class="n">cxr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">centerY</span> <span class="o">+</span> <span class="n">halfLengthYROI</span><span class="p">)</span>
+
+  <span class="c1"># Top X/Y Points</span>
+  <span class="n">tyl</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">centerX</span> <span class="o">-</span> <span class="n">spacingXROI</span><span class="p">)</span> <span class="o">-</span> <span class="n">halfLengthXROI</span><span class="p">)</span>
+  <span class="n">txl</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">centerY</span> <span class="o">-</span> <span class="n">halfLengthYROI</span><span class="p">)</span>
+  <span class="n">tyr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">centerX</span> <span class="o">-</span> <span class="n">spacingXROI</span><span class="p">)</span> <span class="o">+</span> <span class="n">halfLengthXROI</span><span class="p">)</span>
+  <span class="n">txr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">centerY</span> <span class="o">+</span> <span class="n">halfLengthYROI</span><span class="p">)</span>
+
+  <span class="c1"># Bottom X/Y Points</span>
+  <span class="n">byl</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">centerX</span> <span class="o">+</span> <span class="n">spacingXROI</span><span class="p">)</span> <span class="o">-</span> <span class="n">halfLengthXROI</span><span class="p">)</span>
+  <span class="n">bxl</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">centerY</span> <span class="o">-</span> <span class="n">halfLengthYROI</span><span class="p">)</span>
+  <span class="n">byr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">centerX</span> <span class="o">+</span> <span class="n">spacingXROI</span><span class="p">)</span> <span class="o">+</span> <span class="n">halfLengthXROI</span><span class="p">)</span>
+  <span class="n">bxr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">centerY</span> <span class="o">+</span> <span class="n">halfLengthYROI</span><span class="p">)</span>
+
+  <span class="c1"># Left X/Y Points</span>
+  <span class="n">lyl</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">centerX</span> <span class="o">-</span> <span class="n">halfLengthXROI</span><span class="p">)</span>
+  <span class="n">lxl</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">centerY</span> <span class="o">-</span> <span class="n">spacingYROI</span><span class="p">)</span> <span class="o">-</span> <span class="n">halfLengthYROI</span><span class="p">)</span>
+  <span class="n">lyr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">centerX</span> <span class="o">+</span> <span class="n">halfLengthXROI</span><span class="p">)</span>
+  <span class="n">lxr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">centerY</span> <span class="o">-</span> <span class="n">spacingYROI</span><span class="p">)</span> <span class="o">+</span> <span class="n">halfLengthYROI</span><span class="p">)</span>
+
+  <span class="c1"># Right X/Y Points</span>
+  <span class="n">ryl</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">centerX</span> <span class="o">-</span> <span class="n">halfLengthXROI</span><span class="p">)</span>
+  <span class="n">rxl</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">centerY</span> <span class="o">+</span> <span class="n">spacingYROI</span><span class="p">)</span> <span class="o">-</span> <span class="n">halfLengthYROI</span><span class="p">)</span>
+  <span class="n">ryr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">centerX</span> <span class="o">+</span> <span class="n">halfLengthXROI</span><span class="p">)</span>
+  <span class="n">rxr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">centerY</span> <span class="o">+</span> <span class="n">spacingYROI</span><span class="p">)</span> <span class="o">+</span> <span class="n">halfLengthYROI</span><span class="p">)</span>
+
+  <span class="k">if</span> <span class="n">__DEBUG</span><span class="p">:</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Center of Image..: </span><span class="si">{x:d}</span><span class="s2"> x </span><span class="si">{y:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+      <span class="n">x</span><span class="o">=</span><span class="n">centerX</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">centerY</span><span class="p">))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Half Length ROI..: </span><span class="si">{x:f}</span><span class="s2"> x </span><span class="si">{y:f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+      <span class="n">x</span><span class="o">=</span><span class="n">halfLengthXROI</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">halfLengthYROI</span><span class="p">))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Spacing ROI......: </span><span class="si">{x:f}</span><span class="s2"> x </span><span class="si">{y:f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+      <span class="n">x</span><span class="o">=</span><span class="n">spacingXROI</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">spacingYROI</span><span class="p">))</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Center X/Ys......: Top Left: </span><span class="si">{x1:d}</span><span class="s2"> x </span><span class="si">{y1:d}</span><span class="s2">, Bottom Right: </span><span class="si">{x2:d}</span><span class="s2"> x </span><span class="si">{y2:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+      <span class="n">x1</span><span class="o">=</span><span class="n">cxl</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="n">cyl</span><span class="p">,</span> <span class="n">x2</span><span class="o">=</span><span class="n">cxr</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="n">cyr</span><span class="p">))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Top X/Ys.........: Top Left: </span><span class="si">{x1:d}</span><span class="s2"> x </span><span class="si">{y1:d}</span><span class="s2">, Bottom Right: </span><span class="si">{x2:d}</span><span class="s2"> x </span><span class="si">{y2:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+      <span class="n">x1</span><span class="o">=</span><span class="n">txl</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="n">tyl</span><span class="p">,</span> <span class="n">x2</span><span class="o">=</span><span class="n">txr</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="n">tyr</span><span class="p">))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Bottom X/Ys......: Top Left: </span><span class="si">{x1:d}</span><span class="s2"> x </span><span class="si">{y1:d}</span><span class="s2">, Bottom Right: </span><span class="si">{x2:d}</span><span class="s2"> x </span><span class="si">{y2:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+      <span class="n">x1</span><span class="o">=</span><span class="n">bxl</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="n">byl</span><span class="p">,</span> <span class="n">x2</span><span class="o">=</span><span class="n">bxr</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="n">byr</span><span class="p">))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Left X/Ys........: Top Left: </span><span class="si">{x1:d}</span><span class="s2"> x </span><span class="si">{y1:d}</span><span class="s2">, Bottom Right: </span><span class="si">{x2:d}</span><span class="s2"> x </span><span class="si">{y2:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+      <span class="n">x1</span><span class="o">=</span><span class="n">lxl</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="n">lyl</span><span class="p">,</span> <span class="n">x2</span><span class="o">=</span><span class="n">lxr</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="n">lyr</span><span class="p">))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Right X/Ys.......: Top Left: </span><span class="si">{x1:d}</span><span class="s2"> x </span><span class="si">{y1:d}</span><span class="s2">, Bottom Right: </span><span class="si">{x2:d}</span><span class="s2"> x </span><span class="si">{y2:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+      <span class="n">x1</span><span class="o">=</span><span class="n">rxl</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="n">ryl</span><span class="p">,</span> <span class="n">x2</span><span class="o">=</span><span class="n">rxr</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="n">ryr</span><span class="p">))</span>
+
+
+  <span class="n">cROI</span> <span class="o">=</span> <span class="n">selectArea</span><span class="p">(</span><span class="n">scaledData</span><span class="p">,</span> <span class="n">cxl</span><span class="p">,</span> <span class="n">cyl</span><span class="p">,</span> <span class="n">cxr</span><span class="p">,</span> <span class="n">cyr</span><span class="p">)</span>
+  <span class="n">tROI</span> <span class="o">=</span> <span class="n">selectArea</span><span class="p">(</span><span class="n">scaledData</span><span class="p">,</span> <span class="n">txl</span><span class="p">,</span> <span class="n">tyl</span><span class="p">,</span> <span class="n">txr</span><span class="p">,</span> <span class="n">tyr</span><span class="p">)</span>
+  <span class="n">bROI</span> <span class="o">=</span> <span class="n">selectArea</span><span class="p">(</span><span class="n">scaledData</span><span class="p">,</span> <span class="n">bxl</span><span class="p">,</span> <span class="n">byl</span><span class="p">,</span> <span class="n">bxr</span><span class="p">,</span> <span class="n">byr</span><span class="p">)</span>
+  <span class="n">lROI</span> <span class="o">=</span> <span class="n">selectArea</span><span class="p">(</span><span class="n">scaledData</span><span class="p">,</span> <span class="n">lxl</span><span class="p">,</span> <span class="n">lyl</span><span class="p">,</span> <span class="n">lxr</span><span class="p">,</span> <span class="n">lyr</span><span class="p">)</span>
+  <span class="n">rROI</span> <span class="o">=</span> <span class="n">selectArea</span><span class="p">(</span><span class="n">scaledData</span><span class="p">,</span> <span class="n">rxl</span><span class="p">,</span> <span class="n">ryl</span><span class="p">,</span> <span class="n">rxr</span><span class="p">,</span> <span class="n">ryr</span><span class="p">)</span>
+
+  <span class="k">if</span> <span class="n">__DEBUG</span><span class="p">:</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Center ROI.......: Mean=</span><span class="si">{m:0.4f}</span><span class="s2">, Stdev=</span><span class="si">{s:0.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+      <span class="n">m</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cROI</span><span class="p">),</span> <span class="n">s</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">cROI</span><span class="p">)))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Top ROI..........: Mean=</span><span class="si">{m:0.4f}</span><span class="s2">, Stdev=</span><span class="si">{s:0.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+      <span class="n">m</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">tROI</span><span class="p">),</span> <span class="n">s</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">bROI</span><span class="p">)))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Bottom ROI.......: Mean=</span><span class="si">{m:0.4f}</span><span class="s2">, Stdev=</span><span class="si">{s:0.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+      <span class="n">m</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">bROI</span><span class="p">),</span> <span class="n">s</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">tROI</span><span class="p">)))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Left ROI.........: Mean=</span><span class="si">{m:0.4f}</span><span class="s2">, Stdev=</span><span class="si">{s:0.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+      <span class="n">m</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">lROI</span><span class="p">),</span> <span class="n">s</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">lROI</span><span class="p">)))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Right ROI........: Mean=</span><span class="si">{m:0.4f}</span><span class="s2">, Stdev=</span><span class="si">{s:0.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+      <span class="n">m</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rROI</span><span class="p">),</span> <span class="n">s</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">rROI</span><span class="p">)))</span>
+
+  <span class="k">if</span> <span class="n">__SAVEROIS</span><span class="p">:</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Saving ROIs...&quot;</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s2">&quot;AllData.csv&quot;</span><span class="p">,</span> <span class="n">scaledData</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s2">&quot;ROICenter.csv&quot;</span><span class="p">,</span> <span class="n">reformROIArray</span><span class="p">(</span><span class="n">cROI</span><span class="p">,</span> <span class="n">cxl</span><span class="p">,</span> <span class="n">cxr</span><span class="p">),</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s2">&quot;ROITop.csv&quot;</span><span class="p">,</span> <span class="n">reformROIArray</span><span class="p">(</span><span class="n">tROI</span><span class="p">,</span> <span class="n">txl</span><span class="p">,</span> <span class="n">txr</span><span class="p">),</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s2">&quot;ROIBottom.csv&quot;</span><span class="p">,</span> <span class="n">reformROIArray</span><span class="p">(</span><span class="n">bROI</span><span class="p">,</span> <span class="n">bxl</span><span class="p">,</span> <span class="n">bxr</span><span class="p">),</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s2">&quot;ROILeft.csv&quot;</span><span class="p">,</span> <span class="n">reformROIArray</span><span class="p">(</span><span class="n">lROI</span><span class="p">,</span> <span class="n">lxl</span><span class="p">,</span> <span class="n">lxr</span><span class="p">),</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s2">&quot;ROIRight.csv&quot;</span><span class="p">,</span> <span class="n">reformROIArray</span><span class="p">(</span><span class="n">rROI</span><span class="p">,</span> <span class="n">rxl</span><span class="p">,</span> <span class="n">rxr</span><span class="p">),</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Saved&quot;</span><span class="p">)</span>
+    
+  <span class="n">rois</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;croi-mean&quot;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cROI</span><span class="p">),</span>
+    <span class="s2">&quot;croi-std&quot;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">cROI</span><span class="p">),</span>
+    <span class="s2">&quot;troi-mean&quot;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">tROI</span><span class="p">),</span>
+    <span class="s2">&quot;troi-std&quot;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">tROI</span><span class="p">),</span>
+    <span class="s2">&quot;broi-mean&quot;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">bROI</span><span class="p">),</span>
+    <span class="s2">&quot;broi-std&quot;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">bROI</span><span class="p">),</span>
+    <span class="s2">&quot;lroi-mean&quot;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">lROI</span><span class="p">),</span>
+    <span class="s2">&quot;lroi-std&quot;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">lROI</span><span class="p">),</span>
+    <span class="s2">&quot;rroi-mean&quot;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rROI</span><span class="p">),</span>
+    <span class="s2">&quot;rroi-std&quot;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">rROI</span><span class="p">)</span>
+  <span class="p">}</span>
+  <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Region of Interest: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">rois</span><span class="p">)</span>
+  
+  <span class="k">return</span> <span class="n">rois</span></div>
+
+      
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Reece Walsh.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.9',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

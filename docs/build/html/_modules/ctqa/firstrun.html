@@ -1,0 +1,271 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ctqa.firstrun &mdash; CTQA 0.9 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> CTQA
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">CTQA</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>ctqa.firstrun</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ctqa.firstrun</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">First Run Module</span>
+
+<span class="sd">Contains logic for aiding in a user&#39;s first run of the CTQA application.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="k">import</span> <span class="n">ttk</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="k">import</span> <span class="n">Toplevel</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="k">import</span> <span class="n">messagebox</span>
+<span class="kn">from</span> <span class="nn">ctqa.gui</span> <span class="k">import</span> <span class="n">profileclient</span>
+<span class="kn">from</span> <span class="nn">ctqa.gui</span> <span class="k">import</span> <span class="n">configclient</span>
+<span class="kn">from</span> <span class="nn">ctqa.gui</span> <span class="k">import</span> <span class="n">client</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">confutil</span>
+
+<span class="c1">#Contants</span>
+<span class="n">LOCATION</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+<span class="n">confPath</span> <span class="o">=</span> <span class="n">LOCATION</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">confutil</span><span class="o">.</span><span class="n">DEFAULT_CONFIG_LOCATION</span>
+
+
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../ctqa.html#ctqa.firstrun.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  The function run on the CTQA applications first run.</span>
+
+<span class="sd">  The user is asked if they want to run through a guided setup. If they agree,</span>
+<span class="sd">  they are taken through filling out the configuration and profile values. At</span>
+<span class="sd">  the end, the regular CTQA application GUI is started and shown.</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+
+  <span class="c1"># Creating initial root tkinter application</span>
+  <span class="n">root</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Tk</span><span class="p">()</span>
+  <span class="n">root</span><span class="o">.</span><span class="n">withdraw</span><span class="p">()</span>
+
+  <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;This appears to be the first run of the application. Would you like to perform a first time setup?&#39;</span>
+  <span class="n">root</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+  <span class="n">resp</span> <span class="o">=</span> <span class="n">messagebox</span><span class="o">.</span><span class="n">askyesno</span><span class="p">(</span><span class="s1">&#39;CTQA Initial Run&#39;</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span> <span class="c1"># Asking if user wants to setup</span>
+  <span class="k">if</span> <span class="n">resp</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span> <span class="c1"># If not, we update the config and start the regular client</span>
+    <span class="n">confutil</span><span class="o">.</span><span class="n">updateConfig</span><span class="p">(</span><span class="n">confPath</span><span class="p">,</span> <span class="s2">&quot;FirstRun&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">ctqa_client</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">deiconify</span><span class="p">()</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">mainloop</span><span class="p">()</span>
+  <span class="k">else</span><span class="p">:</span> <span class="c1"># If they do, we start the setup</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">update</span><span class="p">()</span> <span class="c1"># Must update before displaying a messagebox</span>
+    <span class="n">messagebox</span><span class="o">.</span><span class="n">showinfo</span><span class="p">(</span><span class="s1">&#39;Config Setup&#39;</span><span class="p">,</span> <span class="s1">&#39;Please select the appropriate configuration values.&#39;</span><span class="p">)</span>
+
+    <span class="n">setup</span> <span class="o">=</span> <span class="n">Toplevel</span><span class="p">()</span> <span class="c1"># Setting up the config client on a top level</span>
+    <span class="n">configclient</span><span class="o">.</span><span class="n">config_client</span><span class="p">(</span><span class="n">setup</span><span class="p">,</span> <span class="n">firstrun</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span> <span class="c1"># Update config client until the user either saves (which closes) or closes</span>
+      <span class="n">root</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+      <span class="k">if</span> <span class="ow">not</span> <span class="n">setup</span><span class="o">.</span><span class="n">winfo_exists</span><span class="p">():</span> <span class="c1"># When the setup toplevel is destroyed, break</span>
+        <span class="k">break</span>
+
+    <span class="c1"># Telling user about profile configuration</span>
+    <span class="n">messagebox</span><span class="o">.</span><span class="n">showinfo</span><span class="p">(</span><span class="s1">&#39;Audit Profile Setup&#39;</span><span class="p">,</span> <span class="s1">&#39;Please configure the audit profiles to your liking.&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># Profile client is hosted on the root</span>
+    <span class="n">profileclient</span><span class="o">.</span><span class="n">profile_client</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">firstrun</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">deiconify</span><span class="p">()</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="s1">&#39;-topmost&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="s1">&#39;-topmost&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">mainloop</span><span class="p">()</span> <span class="c1"># Profile client&#39;s mainloop quits on exit</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+    
+    <span class="c1">#Writing to config that we finished the first run setup</span>
+    <span class="n">confutil</span><span class="o">.</span><span class="n">updateConfig</span><span class="p">(</span><span class="n">confPath</span><span class="p">,</span> <span class="s2">&quot;FirstRun&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># After the user finishes their setup, we start the regular client</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Tk</span><span class="p">()</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">ctqa_client</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">mainloop</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Reece Walsh.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.9',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

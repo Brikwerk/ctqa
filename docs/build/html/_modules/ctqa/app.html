@@ -1,0 +1,289 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ctqa.app &mdash; CTQA 0.9 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> CTQA
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">CTQA</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>ctqa.app</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ctqa.app</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">| CTQA App Module</span>
+<span class="sd">| Description: Main CTQA application file. Contains logic for preparing/starting execution.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Imports</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">ctqa</span> <span class="k">import</span> <span class="n">confutil</span> <span class="k">as</span> <span class="n">conf</span>
+<span class="kn">from</span> <span class="nn">ctqa</span> <span class="k">import</span> <span class="n">imgfetch</span>
+<span class="kn">from</span> <span class="nn">ctqa</span> <span class="k">import</span> <span class="n">audit</span>
+<span class="kn">from</span> <span class="nn">ctqa</span> <span class="k">import</span> <span class="n">datautil</span>
+<span class="kn">from</span> <span class="nn">ctqa</span> <span class="k">import</span> <span class="n">reportutil</span>
+<span class="kn">from</span> <span class="nn">ctqa</span> <span class="k">import</span> <span class="n">notifications</span>
+
+<span class="c1"># Logging</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">ctqa</span> <span class="k">import</span> <span class="n">logutil</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">logutil</span><span class="o">.</span><span class="n">MAIN_LOG_NAME</span><span class="p">)</span>
+
+<span class="c1"># Constants</span>
+<span class="n">LOCATION</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+<span class="c1"># Main function</span>
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../ctqa.html#ctqa.app.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">profiles</span><span class="p">,</span> <span class="n">__DEBUG</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;Main function for preparing and running the CTQA audit.&quot;&quot;&quot;</span>
+
+  <span class="c1"># Checking passed config</span>
+  <span class="n">CONFIG</span> <span class="o">=</span> <span class="n">config</span>
+  <span class="k">if</span> <span class="n">CONFIG</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unable to load config. Please consult the log for more details. Exiting...&quot;</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+  <span class="k">elif</span> <span class="n">CONFIG</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;config.json was not found. A new copy was created. Please fill this out with the appropriate values.&quot;</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
+  <span class="c1"># Checking passed profiles</span>
+  <span class="n">PROFILES</span> <span class="o">=</span> <span class="n">profiles</span>
+  <span class="k">if</span> <span class="n">PROFILES</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unable to load profiles. Please consult the log for more details. Exiting...&quot;</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+  <span class="k">elif</span> <span class="n">PROFILES</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unable to find profiles. Please consult the log for more details. Exiting...&quot;</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+  
+  <span class="c1">#Getting paths to CT dicom files</span>
+  <span class="n">imgPaths</span> <span class="o">=</span> <span class="n">imgfetch</span><span class="o">.</span><span class="n">getImages</span><span class="p">(</span><span class="n">CONFIG</span><span class="p">)</span>
+  <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Returned images: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">imgPaths</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">imgPaths</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error in image retrieval. Please check the log for details.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+  <span class="k">elif</span> <span class="n">imgPaths</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;None returned from image fetch. Please consult the log for more details.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+
+  <span class="c1"># Performing audit</span>
+  <span class="n">results</span> <span class="o">=</span> <span class="n">audit</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">PROFILES</span><span class="p">,</span> <span class="n">imgPaths</span><span class="p">)</span>
+  <span class="c1"># Reading out data</span>
+  <span class="n">dataFolderLocation</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">LOCATION</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
+  <span class="n">datautil</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">dataFolderLocation</span><span class="p">)</span>
+
+  <span class="c1"># Creating reports</span>
+  <span class="c1"># Iterating through each changed dataset</span>
+  <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;Homogeneity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="c1"># Get path to site folder in data folder</span>
+    <span class="n">sitePath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">LOCATION</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">site</span><span class="p">)</span>
+    <span class="c1"># Get title from site name</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">site</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">site</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">site</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># If the Reports folder location isn&#39;t DEFAULT, store reports there</span>
+    <span class="n">replocation</span> <span class="o">=</span> <span class="s1">&#39;reports&#39;</span>
+    <span class="c1"># Create report</span>
+    <span class="n">reportutil</span><span class="o">.</span><span class="n">generateReport</span><span class="p">(</span><span class="n">sitePath</span><span class="p">,</span> <span class="n">replocation</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;DaysToGraph&quot;</span><span class="p">),</span> <span class="n">CONFIG</span><span class="p">[</span><span class="s1">&#39;DaysToForecast&#39;</span><span class="p">])</span>
+
+  <span class="c1"># Getting changed report names and emailing</span>
+  <span class="n">siteNames</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;Homogeneity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+  <span class="n">notifications</span><span class="o">.</span><span class="n">mail_reports</span><span class="p">(</span><span class="n">siteNames</span><span class="p">)</span>
+
+  
+  <span class="c1"># Ensuring test images are deleted</span>
+  <span class="k">if</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Source&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;TEST&quot;</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="n">imgPaths</span><span class="p">:</span>
+      <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Removing downloaded temp images</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+      <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Could not delete temp image: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">img</span><span class="p">)</span>
+  
+  <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Finished&quot;</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Reece Walsh.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.9',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

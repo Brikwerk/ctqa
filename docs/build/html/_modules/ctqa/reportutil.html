@@ -1,0 +1,320 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ctqa.reportutil &mdash; CTQA 0.9 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> CTQA
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">CTQA</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>ctqa.reportutil</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ctqa.reportutil</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Report Utility</span>
+
+<span class="sd">Generates and saves a CT machine&#39;s report based off of audit data.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="c1"># Using simplified mpl backend due to exclusive png creation</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;Agg&#39;</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.dates</span> <span class="k">as</span> <span class="nn">mdates</span>
+<span class="kn">from</span> <span class="nn">matplotlib.pyplot</span> <span class="k">import</span> <span class="n">figure</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">ctqa</span> <span class="k">import</span> <span class="n">datautil</span>
+
+
+<div class="viewcode-block" id="generateReport"><a class="viewcode-back" href="../../ctqa.html#ctqa.reportutil.generateReport">[docs]</a><span class="k">def</span> <span class="nf">generateReport</span><span class="p">(</span><span class="n">dataPath</span><span class="p">,</span> <span class="n">savelocation</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">graphdays</span><span class="p">,</span> <span class="n">forecastdays</span><span class="p">):</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Retrieves audit data from the data path, organizes a site&#39;s data into a displayable format,</span>
+<span class="sd">  and creates a PNG graph at the passed save location.</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+
+  <span class="c1"># Getting data</span>
+  <span class="n">jsonData</span> <span class="o">=</span> <span class="n">datautil</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">dataPath</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">jsonData</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unable to load json data&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+
+  <span class="c1"># Selecting center roi data and organizing</span>
+  <span class="n">centerrois</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="n">centerdates</span> <span class="o">=</span> <span class="p">[]</span>
+
+  <span class="k">for</span> <span class="n">date</span> <span class="ow">in</span> <span class="n">jsonData</span><span class="p">[</span><span class="s1">&#39;Homogeneity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="n">centerrois</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">jsonData</span><span class="p">[</span><span class="s1">&#39;Homogeneity&#39;</span><span class="p">][</span><span class="n">date</span><span class="p">][</span><span class="s1">&#39;CENTER&#39;</span><span class="p">][</span><span class="s1">&#39;MEAN&#39;</span><span class="p">])</span>
+    <span class="n">centerdates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mdates</span><span class="o">.</span><span class="n">datestr2num</span><span class="p">(</span><span class="n">date</span><span class="p">))</span>
+
+  <span class="c1"># Loop through collected dates and omit any submitted before now - graphdays ago</span>
+  <span class="n">temprois</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="n">tempdates</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="n">datenow</span> <span class="o">=</span> <span class="n">mdates</span><span class="o">.</span><span class="n">date2num</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">centerdates</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="n">centerdates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">datenow</span> <span class="o">-</span> <span class="n">graphdays</span><span class="p">):</span>
+      <span class="n">temprois</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">centerrois</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+      <span class="n">tempdates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">centerdates</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+  <span class="n">centerrois</span> <span class="o">=</span> <span class="n">temprois</span>
+  <span class="n">centerdates</span> <span class="o">=</span> <span class="n">tempdates</span>
+
+  <span class="n">months</span> <span class="o">=</span> <span class="n">mdates</span><span class="o">.</span><span class="n">MonthLocator</span><span class="p">()</span>  <span class="c1"># every month</span>
+  <span class="n">days</span> <span class="o">=</span> <span class="n">mdates</span><span class="o">.</span><span class="n">WeekdayLocator</span><span class="p">()</span>
+  <span class="n">monthsFmt</span> <span class="o">=</span> <span class="n">mdates</span><span class="o">.</span><span class="n">DateFormatter</span><span class="p">(</span><span class="s1">&#39;%Y-%m&#39;</span><span class="p">)</span>
+
+  <span class="n">plt</span><span class="o">.</span><span class="n">plot_date</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">centerdates</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">centerrois</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Center ROI Means&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">months</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">monthsFmt</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">days</span><span class="p">)</span>
+
+  <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+  <span class="c1"># Calibration levels</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Control Limits&#39;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+  <span class="c1"># Warning levels</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+  <span class="c1"># Center line</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+  <span class="c1"># Adding axes labels</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Date&quot;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;ROI Mean Values&quot;</span><span class="p">)</span>
+
+  <span class="c1"># Rotating x-axis 45 degrees</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+
+  <span class="c1"># Setting image size</span>
+  <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+  <span class="c1"># Dimensions for image defined in inches</span>
+  <span class="n">fig</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="n">forward</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># foward=True =&gt; Propagates changes to gui window</span>
+
+  <span class="c1"># Gathering points taken in the last month</span>
+  <span class="n">lastdates</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="n">lastrois</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">centerdates</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="n">centerdates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">datenow</span> <span class="o">-</span> <span class="mi">30</span><span class="p">):</span>
+      <span class="n">lastdates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">centerdates</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+      <span class="n">lastrois</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">centerrois</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+  <span class="c1"># Fitting regression for decalibration prediction if we have enough data</span>
+  <span class="c1"># Aiming for at least 3 points of data in the last month. </span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lastdates</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="c1"># Fitting linear polynomial</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">lastdates</span><span class="p">,</span> <span class="n">lastrois</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># Fitting to dates/rois to a single degree polynomial</span>
+    <span class="c1"># Plotting best fit line with a two week forecast</span>
+    <span class="n">forecasttime</span> <span class="o">=</span> <span class="n">lastdates</span><span class="p">[(</span><span class="nb">len</span><span class="p">(</span><span class="n">lastdates</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span> <span class="o">+</span> <span class="n">forecastdays</span>
+    <span class="n">forecaststart</span> <span class="o">=</span> <span class="p">(</span><span class="n">lastdates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">fit</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">fit</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">forecastend</span> <span class="o">=</span> <span class="p">(</span><span class="n">forecasttime</span><span class="o">*</span><span class="n">fit</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">fit</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># y = mx + b</span>
+    <span class="c1"># Starting plot at the first value in lastdates</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot_date</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">lastdates</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">forecasttime</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">forecaststart</span><span class="p">,</span> <span class="n">forecastend</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Forecast Trend&#39;</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;--o&quot;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+  <span class="c1"># Creating legend</span>
+  <span class="n">handles</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span><span class="o">.</span><span class="n">get_legend_handles_labels</span><span class="p">()</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+
+  <span class="c1"># Title</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+  <span class="c1"># Packing layout</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+  <span class="c1"># Setting location for export to reports folder, local to executable</span>
+  <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+  <span class="n">file</span> <span class="o">=</span> <span class="n">title</span> <span class="o">+</span> <span class="s1">&#39;.png&#39;</span>
+  <span class="n">loc</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+  <span class="n">file_loc</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="s1">&#39;reports&#39;</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+
+  <span class="c1"># Saving png image to savelocation</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">file_loc</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+  <span class="c1"># Clearing plot. MUST DO THIS UNLESS YOU WANT THE OLD PLOT TO REMAIN FOR ANOTHER RUN</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Reece Walsh.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.9',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

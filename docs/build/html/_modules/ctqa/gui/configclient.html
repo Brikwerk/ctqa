@@ -1,0 +1,432 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ctqa.gui.configclient &mdash; CTQA 0.9 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> CTQA
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">CTQA</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>ctqa.gui.configclient</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ctqa.gui.configclient</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="k">import</span> <span class="n">messagebox</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="k">import</span> <span class="n">filedialog</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="k">import</span> <span class="n">ttk</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">confutil</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">logutil</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">logutil</span><span class="o">.</span><span class="n">MAIN_LOG_NAME</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="resource_path"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.configclient.resource_path">[docs]</a><span class="k">def</span> <span class="nf">resource_path</span><span class="p">(</span><span class="n">relative_path</span><span class="p">):</span>
+  <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s1">&#39;_MEIPASS&#39;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">_MEIPASS</span><span class="p">,</span> <span class="n">relative_path</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">),</span> <span class="n">relative_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="config_client"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.configclient.config_client">[docs]</a><span class="k">class</span> <span class="nc">config_client</span><span class="p">:</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">firstrun</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">background</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">firstrun</span> <span class="o">=</span> <span class="n">firstrun</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">resizable</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Darwin&#39;</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="s1">&#39;440x400&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="s1">&#39;350x400&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;CTQA Service Configuration&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+      <span class="n">img</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">PhotoImage</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">resource_path</span><span class="p">(</span><span class="s1">&#39;res/ctqa-icon.gif&#39;</span><span class="p">))</span>
+      <span class="n">parent</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;wm&#39;</span><span class="p">,</span> <span class="s1">&#39;iconphoto&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">.</span><span class="n">_w</span><span class="p">,</span> <span class="n">img</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">tk</span><span class="o">.</span><span class="n">TclError</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: Could not load ctqa-icon.gif from resources folder&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Setting up absolute locations</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">logpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">+</span> <span class="s1">&#39;/ctqa.log&#39;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">confpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">+</span> <span class="s1">&#39;/config.json&#39;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">reportspath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span> <span class="s1">&#39;reports&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Loading config</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">confutil</span><span class="o">.</span><span class="n">openConfig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">confpath</span><span class="p">)</span>
+
+    <span class="c1"># Placing components</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">load_components</span><span class="p">()</span>
+
+    <span class="c1"># Binding keyboard shortcuts</span>
+    <span class="c1"># Ctrl-Shift-S =&gt; Save and Quit</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Control-Shift-Key-S&gt;&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_and_quit</span><span class="p">())</span>
+  
+
+<div class="viewcode-block" id="config_client.load_components"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.configclient.config_client.load_components">[docs]</a>  <span class="k">def</span> <span class="nf">load_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c1">#Attempt to reload config if we got a bad result</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">confutil</span><span class="o">.</span><span class="n">openConfig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">confpath</span><span class="p">)</span>
+
+    <span class="c1"># Save and close buttons</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">buttonframe</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">savebutton</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buttonframe</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Save Configuration&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">DISABLED</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">save_config</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># Detecting if opened from client or first run</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">firstrun</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">closebutton</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buttonframe</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Next&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">exit_config</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">closebutton</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buttonframe</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Close&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">exit_config</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">savebutton</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">closebutton</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">buttonframe</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+
+    <span class="c1"># Frame for config elements</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">LabelFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Options&#39;</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+    <span class="c1"># Options components</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span> <span class="c1">#If the config is a dictionary (json)</span>
+      <span class="c1"># Setting up source selection</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">slabel</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Source:&#39;</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">scombo</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Combobox</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">23</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">scombo</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">confutil</span><span class="o">.</span><span class="n">SOURCE_LIST</span> <span class="c1"># Load list of a valid source options from confutil</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">scombo</span><span class="p">[</span><span class="s1">&#39;state&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;readonly&#39;</span>
+      <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Source&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Source&#39;</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">str</span><span class="p">:</span> <span class="c1"># If the config has a bad value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scombo</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;Select a data source...&#39;</span><span class="p">)</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scombo</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Source&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_source_components</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Source&#39;</span><span class="p">))</span> <span class="c1"># Load comps for that source value</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">slabel</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">scombo</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">scombo</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;ComboboxSelected&gt;&gt;&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_change</span><span class="p">(</span><span class="s1">&#39;Source&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scombo</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span> <span class="c1"># Save and update components on change</span>
+
+      <span class="c1"># Setting up number of days to forecast</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">fclabel</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Days to Forecast:&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">fcentry</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">fclabel</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">fcentry</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">fcentry</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;DaysToForecast&quot;</span><span class="p">])</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">fcentry</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;KeyRelease&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_days</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fcentry</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="s2">&quot;DaysToForecast&quot;</span><span class="p">))</span>
+
+      <span class="c1"># Setting up number of days for graphs</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">gdlabel</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Days to Graph:&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">gdentry</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">gdlabel</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">gdentry</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">gdentry</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;DaysToGraph&quot;</span><span class="p">])</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">gdentry</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;KeyRelease&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_days</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gdentry</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="s2">&quot;DaysToGraph&quot;</span><span class="p">))</span>
+
+      <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">errMsg</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Error: Could not load config file.</span><span class="se">\n\n</span><span class="s1"> Would you like to generate a new one?&#39;</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">genConf</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Generate Config&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">generate_new_config</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">errMsg</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">genConf</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+
+      <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+  
+
+<div class="viewcode-block" id="config_client.save_config"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.configclient.config_client.save_config">[docs]</a>  <span class="k">def</span> <span class="nf">save_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">valid</span> <span class="o">=</span> <span class="n">confutil</span><span class="o">.</span><span class="n">validateConfig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">valid</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+      <span class="n">confutil</span><span class="o">.</span><span class="n">saveConfig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">confpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">savebutton</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">DISABLED</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+      <span class="n">messagebox</span><span class="o">.</span><span class="n">showerror</span><span class="p">(</span><span class="s2">&quot;Configuration Error&quot;</span><span class="p">,</span> <span class="s2">&quot;There was a problem with the entered &quot;</span><span class="o">+</span>\
+      <span class="s2">&quot;configuration values. </span><span class="se">\n\n</span><span class="s2">Please ensure they are correct and try to save again.&quot;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="config_client.exit_config"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.configclient.config_client.exit_config">[docs]</a>  <span class="k">def</span> <span class="nf">exit_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="config_client.save_and_quit"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.configclient.config_client.save_and_quit">[docs]</a>  <span class="k">def</span> <span class="nf">save_and_quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">save_config</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">exit_config</span><span class="p">()</span></div>
+
+
+  <span class="c1"># NOTE: Any new sources must define an elif/function and place comps in self.scomps</span>
+<div class="viewcode-block" id="config_client.load_source_components"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.configclient.config_client.load_source_components">[docs]</a>  <span class="k">def</span> <span class="nf">load_source_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src</span><span class="p">):</span>
+    <span class="k">if</span> <span class="s1">&#39;self.scomps&#39;</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">():</span> <span class="c1"># If scomps exists from before, we destroy it</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">scomps</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">scomps</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">scomps</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">rowspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;nsew&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">src</span> <span class="o">==</span> <span class="s1">&#39;TEST&#39;</span><span class="p">:</span>
+      <span class="k">return</span>
+    <span class="k">elif</span> <span class="n">src</span> <span class="o">==</span> <span class="s1">&#39;ORTHANC&#39;</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">load_orthanc_components</span><span class="p">()</span>
+      <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="config_client.load_orthanc_components"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.configclient.config_client.load_orthanc_components">[docs]</a>  <span class="k">def</span> <span class="nf">load_orthanc_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c1"># Orthanc address label</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">orthiplabel</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scomps</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Orthanc REST Address:&#39;</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">orthiplabel</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+
+    <span class="c1"># Create address entry and on validate, detect comp change</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">orthip</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scomps</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;OrthancRESTAddress&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;OrthancRESTAddress&#39;</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">str</span><span class="p">:</span> <span class="c1"># If the config has a bad value</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">orthip</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;Enter an address&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">orthip</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;OrthancRESTAddress&#39;</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">orthip</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">orthip</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;KeyRelease&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_change</span><span class="p">(</span><span class="s2">&quot;OrthancRESTAddress&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">orthip</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">scomps</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">scomps</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">scomps</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">scomps</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1">#Image number label</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">inumlabel</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scomps</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Last Image Number:&#39;</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">inumlabel</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+
+    <span class="c1"># Create num entry and on validate, detect comp change</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">inumentry</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scomps</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;LastImageNumber&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Source&#39;</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">str</span><span class="p">:</span> <span class="c1"># If the config has a bad value</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">inumentry</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;Enter a starting number&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">inumentry</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;LastImageNumber&#39;</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">inumentry</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">inumentry</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;KeyRelease&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_image_number</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inumentry</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span></div>
+
+
+<div class="viewcode-block" id="config_client.valid_image_number"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.configclient.config_client.valid_image_number">[docs]</a>  <span class="k">def</span> <span class="nf">valid_image_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">num</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">component_change</span><span class="p">(</span><span class="s2">&quot;LastImageNumber&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">try</span><span class="p">:</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">component_change</span><span class="p">(</span><span class="s2">&quot;LastImageNumber&quot;</span><span class="p">,</span> <span class="n">num</span><span class="p">)</span>
+      <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inumentry</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;end&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Last Image Number&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Source&#39;</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">str</span><span class="p">:</span> <span class="c1"># If the config has a bad value</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">inumentry</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;Enter a starting number&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">inumentry</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;LastImageNumber&#39;</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="config_client.valid_days"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.configclient.config_client.valid_days">[docs]</a>  <span class="k">def</span> <span class="nf">valid_days</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">comp</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">num</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">component_change</span><span class="p">(</span><span class="n">comp</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">try</span><span class="p">:</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">component_change</span><span class="p">(</span><span class="n">comp</span><span class="p">,</span> <span class="n">num</span><span class="p">)</span>
+      <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">comp</span> <span class="o">==</span> <span class="s2">&quot;DaysToForecast&quot;</span><span class="p">:</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">fcentry</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tk</span><span class="o">.</span><span class="n">END</span><span class="p">)</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">fcentry</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">comp</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">comp</span> <span class="o">==</span> <span class="s2">&quot;DaysToGraph&quot;</span><span class="p">:</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">gdentry</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tk</span><span class="o">.</span><span class="n">END</span><span class="p">)</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">gdentry</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">comp</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="config_client.component_change"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.configclient.config_client.component_change">[docs]</a>  <span class="k">def</span> <span class="nf">component_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;Source&#39;</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">load_source_components</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">savebutton</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">NORMAL</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="config_client.generate_new_config"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.configclient.config_client.generate_new_config">[docs]</a>  <span class="k">def</span> <span class="nf">generate_new_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">confutil</span><span class="o">.</span><span class="n">createConfig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">confpath</span><span class="p">)</span>
+    <span class="n">confutil</span><span class="o">.</span><span class="n">updateConfig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">confpath</span><span class="p">,</span> <span class="s1">&#39;FirstRun&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">buttonframe</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">load_components</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Reece Walsh.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.9',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

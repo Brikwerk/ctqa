@@ -1,0 +1,549 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ctqa.gui.logwatcher &mdash; CTQA 0.9 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> CTQA
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">CTQA</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>ctqa.gui.logwatcher</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ctqa.gui.logwatcher</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Real-time log files watcher supporting log rotation.</span>
+<span class="sd">Works with Python &gt;= 2.6 and &gt;= 3.2, on both POSIX and Windows.</span>
+
+<span class="sd">Author: Giampaolo Rodola&#39; &lt;g.rodola [AT] gmail [DOT] com&gt;</span>
+<span class="sd">License: MIT</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">errno</span>
+<span class="kn">import</span> <span class="nn">stat</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+
+<div class="viewcode-block" id="LogWatcher"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.logwatcher.LogWatcher">[docs]</a><span class="k">class</span> <span class="nc">LogWatcher</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Looks for changes in all files of a directory.</span>
+<span class="sd">    This is useful for watching log file changes in real-time.</span>
+<span class="sd">    It also supports files rotation.</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">    &gt;&gt;&gt; def callback(filename, lines):</span>
+<span class="sd">    ...     print(filename, lines)</span>
+<span class="sd">    ...</span>
+<span class="sd">    &gt;&gt;&gt; lw = LogWatcher(&quot;/var/log/&quot;, callback)</span>
+<span class="sd">    &gt;&gt;&gt; lw.loop()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">extensions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;log&quot;</span><span class="p">],</span> <span class="n">tail_lines</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                       <span class="n">sizehint</span><span class="o">=</span><span class="mi">1048576</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Arguments:</span>
+
+<span class="sd">        (str) @folder:</span>
+<span class="sd">            the folder to watch</span>
+
+<span class="sd">        (callable) @callback:</span>
+<span class="sd">            a function which is called every time one of the file being</span>
+<span class="sd">            watched is updated;</span>
+<span class="sd">            this is called with &quot;filename&quot; and &quot;lines&quot; arguments.</span>
+
+<span class="sd">        (list) @extensions:</span>
+<span class="sd">            only watch files with these extensions</span>
+
+<span class="sd">        (int) @tail_lines:</span>
+<span class="sd">            read last N lines from files being watched before starting</span>
+
+<span class="sd">        (int) @sizehint: passed to file.readlines(), represents an</span>
+<span class="sd">            approximation of the maximum number of bytes to read from</span>
+<span class="sd">            a file on every ieration (as opposed to load the entire</span>
+<span class="sd">            file in memory until EOF is reached). Defaults to 1MB.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extensions</span> <span class="o">=</span> <span class="n">extensions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_files_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span> <span class="o">=</span> <span class="n">callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sizehint</span> <span class="o">=</span> <span class="n">sizehint</span>
+        <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">folder</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder</span>
+        <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">callback</span><span class="p">),</span> <span class="nb">repr</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_files</span><span class="p">()</span>
+        <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>  <span class="c1"># EOF</span>
+            <span class="k">if</span> <span class="n">tail_lines</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">tail_lines</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span> <span class="o">!=</span> <span class="n">errno</span><span class="o">.</span><span class="n">ENOENT</span><span class="p">:</span>
+                        <span class="k">raise</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">lines</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">lines</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<div class="viewcode-block" id="LogWatcher.loop"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.logwatcher.LogWatcher.loop">[docs]</a>    <span class="k">def</span> <span class="nf">loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">blocking</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Start a busy loop checking for file changes every *interval*</span>
+<span class="sd">        seconds. If *blocking* is False make one loop then return.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># May be overridden in order to use pyinotify lib and block</span>
+        <span class="c1"># until the directory being watched is updated.</span>
+        <span class="c1"># Note that directly calling readlines() as we do is faster</span>
+        <span class="c1"># than first checking file&#39;s last modification times.</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_files</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">fid</span><span class="p">,</span> <span class="n">file</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_files_map</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">readlines</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">blocking</span><span class="p">:</span>
+                <span class="k">return</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LogWatcher.log"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.logwatcher.LogWatcher.log">[docs]</a>    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Log when a file is un/watched&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LogWatcher.listdir"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.logwatcher.LogWatcher.listdir">[docs]</a>    <span class="k">def</span> <span class="nf">listdir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;List directory and filter files by extension.</span>
+<span class="sd">        You may want to override this to add extra logic or globbing</span>
+<span class="sd">        support.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ls</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">folder</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">extensions</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ls</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span> \
+                                           <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">extensions</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ls</span></div>
+
+<div class="viewcode-block" id="LogWatcher.open"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.logwatcher.LogWatcher.open">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wrapper around open().</span>
+<span class="sd">        By default files are opened in binary mode and readlines()</span>
+<span class="sd">        will return bytes on both Python 2 and 3.</span>
+<span class="sd">        This means callback() will deal with a list of bytes.</span>
+<span class="sd">        Can be overridden in order to deal with unicode strings</span>
+<span class="sd">        instead, like this:</span>
+
+<span class="sd">          import codecs, locale</span>
+<span class="sd">          return codecs.open(file, &#39;r&#39;, encoding=locale.getpreferredencoding(),</span>
+<span class="sd">                             errors=&#39;ignore&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LogWatcher.tail"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.logwatcher.LogWatcher.tail">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">tail</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">window</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read last N lines from file fname.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">window</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;invalid window value </span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">window</span><span class="p">)</span>
+        <span class="k">with</span> <span class="bp">cls</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">BUFSIZ</span> <span class="o">=</span> <span class="mi">1024</span>
+            <span class="c1"># True if open() was overridden and file was opened in text</span>
+            <span class="c1"># mode. In that case readlines() will return unicode strings</span>
+            <span class="c1"># instead of bytes.</span>
+            <span class="n">encoded</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s1">&#39;encoding&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="n">CR</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">encoded</span> <span class="k">else</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="n">encoded</span> <span class="k">else</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">SEEK_END</span><span class="p">)</span>
+            <span class="n">fsize</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+            <span class="n">block</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="n">exit</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">while</span> <span class="ow">not</span> <span class="n">exit</span><span class="p">:</span>
+                <span class="n">step</span> <span class="o">=</span> <span class="p">(</span><span class="n">block</span> <span class="o">*</span> <span class="n">BUFSIZ</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">step</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">fsize</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">newdata</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">BUFSIZ</span> <span class="o">-</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">step</span><span class="p">)</span> <span class="o">-</span> <span class="n">fsize</span><span class="p">))</span>
+                    <span class="n">exit</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">SEEK_END</span><span class="p">)</span>
+                    <span class="n">newdata</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">BUFSIZ</span><span class="p">)</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">newdata</span> <span class="o">+</span> <span class="n">data</span>
+                <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">CR</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">window</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">block</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="o">-</span><span class="n">window</span><span class="p">:]</span></div>
+
+<div class="viewcode-block" id="LogWatcher.update_files"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.logwatcher.LogWatcher.update_files">[docs]</a>    <span class="k">def</span> <span class="nf">update_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ls</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">listdir</span><span class="p">():</span>
+            <span class="n">absname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">folder</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">st</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">absname</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">EnvironmentError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span> <span class="o">!=</span> <span class="n">errno</span><span class="o">.</span><span class="n">ENOENT</span><span class="p">:</span>
+                    <span class="k">raise</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_ISREG</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">st_mode</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="n">fid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_file_id</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
+                <span class="n">ls</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">fid</span><span class="p">,</span> <span class="n">absname</span><span class="p">))</span>
+
+        <span class="c1"># check existent files</span>
+        <span class="k">for</span> <span class="n">fid</span><span class="p">,</span> <span class="n">file</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_files_map</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">st</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">EnvironmentError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span> <span class="o">==</span> <span class="n">errno</span><span class="o">.</span><span class="n">ENOENT</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">unwatch</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">fid</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">fid</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_file_id</span><span class="p">(</span><span class="n">st</span><span class="p">):</span>
+                    <span class="c1"># same name but different file (rotation); reload it.</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">unwatch</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">fid</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">watch</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="c1"># add new ones</span>
+        <span class="k">for</span> <span class="n">fid</span><span class="p">,</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">ls</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">fid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files_map</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">watch</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LogWatcher.readlines"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.logwatcher.LogWatcher.readlines">[docs]</a>    <span class="k">def</span> <span class="nf">readlines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read file lines since last access until EOF is reached and</span>
+<span class="sd">        invoke callback.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readlines</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sizehint</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">lines</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">lines</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LogWatcher.watch"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.logwatcher.LogWatcher.watch">[docs]</a>    <span class="k">def</span> <span class="nf">watch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+            <span class="n">fid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_file_id</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">fname</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">EnvironmentError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span> <span class="o">!=</span> <span class="n">errno</span><span class="o">.</span><span class="n">ENOENT</span><span class="p">:</span>
+                <span class="k">raise</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;watching logfile </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">fname</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_files_map</span><span class="p">[</span><span class="n">fid</span><span class="p">]</span> <span class="o">=</span> <span class="n">file</span></div>
+
+<div class="viewcode-block" id="LogWatcher.unwatch"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.logwatcher.LogWatcher.unwatch">[docs]</a>    <span class="k">def</span> <span class="nf">unwatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">fid</span><span class="p">):</span>
+        <span class="c1"># File no longer exists. If it has been renamed try to read it</span>
+        <span class="c1"># for the last time in case we&#39;re dealing with a rotating log</span>
+        <span class="c1"># file.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;un-watching logfile </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files_map</span><span class="p">[</span><span class="n">fid</span><span class="p">]</span>
+        <span class="k">with</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readlines</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">lines</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">lines</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LogWatcher.get_file_id"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.logwatcher.LogWatcher.get_file_id">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_file_id</span><span class="p">(</span><span class="n">st</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;posix&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%x</span><span class="s2">g</span><span class="si">%x</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">st_dev</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">st_ino</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">st</span><span class="o">.</span><span class="n">st_ctime</span></div>
+
+<div class="viewcode-block" id="LogWatcher.close"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.logwatcher.LogWatcher.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_files_map</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div></div>
+
+
+<span class="c1"># ===================================================================</span>
+<span class="c1"># --- tests</span>
+<span class="c1"># ===================================================================</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">unittest</span>
+    <span class="kn">import</span> <span class="nn">atexit</span>
+
+    <span class="n">TESTFN</span> <span class="o">=</span> <span class="s1">&#39;$testfile.log&#39;</span>
+    <span class="n">TESTFN2</span> <span class="o">=</span> <span class="s1">&#39;$testfile2.log&#39;</span>
+    <span class="n">PY3</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span>
+
+    <span class="k">if</span> <span class="n">PY3</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">b</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;latin-1&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">b</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">s</span>
+
+    <span class="k">class</span> <span class="nc">TestLogWatcher</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+        <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">lines</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">TESTFN</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">watcher</span> <span class="o">=</span> <span class="n">LogWatcher</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">callback</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">watcher</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_test_files</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">write_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+        <span class="nd">@staticmethod</span>
+        <span class="nd">@atexit</span><span class="o">.</span><span class="n">register</span>
+        <span class="k">def</span> <span class="nf">remove_test_files</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="n">TESTFN</span><span class="p">,</span> <span class="n">TESTFN2</span><span class="p">]:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">EnvironmentError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+        <span class="k">def</span> <span class="nf">test_no_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">watcher</span><span class="o">.</span><span class="n">loop</span><span class="p">(</span><span class="n">blocking</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">test_one_line</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">watcher</span><span class="o">.</span><span class="n">loop</span><span class="p">(</span><span class="n">blocking</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">,</span> <span class="p">[</span><span class="sa">b</span><span class="s2">&quot;foo&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">TESTFN</span><span class="p">)])</span>
+
+        <span class="k">def</span> <span class="nf">test_two_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="s1">&#39;foo</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="s1">&#39;bar</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">watcher</span><span class="o">.</span><span class="n">loop</span><span class="p">(</span><span class="n">blocking</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">,</span> <span class="p">[</span><span class="sa">b</span><span class="s2">&quot;foo</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;bar</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">TESTFN</span><span class="p">)])</span>
+
+        <span class="k">def</span> <span class="nf">test_new_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">TESTFN2</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">watcher</span><span class="o">.</span><span class="n">loop</span><span class="p">(</span><span class="n">blocking</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">,</span> <span class="p">[</span><span class="sa">b</span><span class="s2">&quot;foo&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">TESTFN2</span><span class="p">)])</span>
+
+        <span class="k">def</span> <span class="nf">test_file_removed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">TESTFN</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">EnvironmentError</span><span class="p">:</span>  <span class="c1"># necessary on Windows</span>
+                <span class="k">pass</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">watcher</span><span class="o">.</span><span class="n">loop</span><span class="p">(</span><span class="n">blocking</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">,</span> <span class="p">[</span><span class="sa">b</span><span class="s2">&quot;foo&quot;</span><span class="p">])</span>
+
+        <span class="k">def</span> <span class="nf">test_tail</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">MAX</span> <span class="o">=</span> <span class="mi">10000</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">MAX</span><span class="p">)])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+            <span class="c1"># input &lt; BUFSIZ (1 iteration)</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">watcher</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">),</span> <span class="mi">100</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="p">[</span><span class="n">b</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">MAX</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="n">MAX</span><span class="p">)])</span>
+            <span class="c1"># input &gt; BUFSIZ (multiple iterations)</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">watcher</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="mi">5000</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">),</span> <span class="mi">5000</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="p">[</span><span class="n">b</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">MAX</span><span class="o">-</span><span class="mi">5000</span><span class="p">,</span> <span class="n">MAX</span><span class="p">)])</span>
+            <span class="c1"># input &gt; file&#39;s total lines</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">watcher</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">MAX</span> <span class="o">+</span> <span class="mi">9999</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">),</span> <span class="n">MAX</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="p">[</span><span class="n">b</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">MAX</span><span class="p">)])</span>
+            <span class="c1">#</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">watcher</span><span class="o">.</span><span class="n">tail</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">LogWatcher</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">test_ctx_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">watcher</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+
+    <span class="n">test_suite</span> <span class="o">=</span> <span class="n">unittest</span><span class="o">.</span><span class="n">TestSuite</span><span class="p">()</span>
+    <span class="n">test_suite</span><span class="o">.</span><span class="n">addTest</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">makeSuite</span><span class="p">(</span><span class="n">TestLogWatcher</span><span class="p">))</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">TextTestRunner</span><span class="p">(</span><span class="n">verbosity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">test_suite</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Reece Walsh.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.9',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

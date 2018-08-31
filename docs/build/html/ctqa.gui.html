@@ -1,0 +1,715 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ctqa.gui package &mdash; CTQA 0.9 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> CTQA
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">ctqa.gui package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-ctqa.gui.app">ctqa.gui.app module</a></li>
+<li><a class="reference internal" href="#module-ctqa.gui.client">ctqa.gui.client module</a></li>
+<li><a class="reference internal" href="#module-ctqa.gui.configclient">ctqa.gui.configclient module</a></li>
+<li><a class="reference internal" href="#module-ctqa.gui.logwatcher">ctqa.gui.logwatcher module</a></li>
+<li><a class="reference internal" href="#module-ctqa.gui.profileclient">ctqa.gui.profileclient module</a></li>
+<li><a class="reference internal" href="#module-ctqa.gui.selectlist">ctqa.gui.selectlist module</a></li>
+<li><a class="reference internal" href="#module-ctqa.gui">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CTQA</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>ctqa.gui package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/ctqa.gui.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ctqa-gui-package">
+<h1>ctqa.gui package<a class="headerlink" href="#ctqa-gui-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ctqa.gui.app">
+<span id="ctqa-gui-app-module"></span><h2>ctqa.gui.app module<a class="headerlink" href="#module-ctqa.gui.app" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ctqa.gui.app.run">
+<code class="descclassname">ctqa.gui.app.</code><code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/app.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.app.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs main CTQA Tkinter GUI</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ctqa.gui.client">
+<span id="ctqa-gui-client-module"></span><h2>ctqa.gui.client module<a class="headerlink" href="#module-ctqa.gui.client" title="Permalink to this headline">¶</a></h2>
+<p>CTQA Client Module</p>
+<p>Contains logic for implementing the CTQA Client with the ctqa_client class.</p>
+<dl class="class">
+<dt id="ctqa.gui.client.ctqa_client">
+<em class="property">class </em><code class="descclassname">ctqa.gui.client.</code><code class="descname">ctqa_client</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>CTQA client class. Contains logic to instantiate inside a passed Tkinter parent element.</p>
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.checkForFolder">
+<code class="descname">checkForFolder</code><span class="sig-paren">(</span><em>path</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.checkForFolder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.checkForFolder" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.createLogElements">
+<code class="descname">createLogElements</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.createLogElements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.createLogElements" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.createReportElements">
+<code class="descname">createReportElements</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.createReportElements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.createReportElements" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.createReportList">
+<code class="descname">createReportList</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.createReportList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.createReportList" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.createServiceDisplay">
+<code class="descname">createServiceDisplay</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.createServiceDisplay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.createServiceDisplay" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.load_log_contents">
+<code class="descname">load_log_contents</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.load_log_contents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.load_log_contents" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.log_watcher_callback">
+<code class="descname">log_watcher_callback</code><span class="sig-paren">(</span><em>file</em>, <em>lines</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.log_watcher_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.log_watcher_callback" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.manual_audit">
+<code class="descname">manual_audit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.manual_audit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.manual_audit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.open_config_client">
+<code class="descname">open_config_client</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.open_config_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.open_config_client" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.open_credentials_client">
+<code class="descname">open_credentials_client</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.open_credentials_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.open_credentials_client" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.open_log">
+<code class="descname">open_log</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.open_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.open_log" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.open_log_folder">
+<code class="descname">open_log_folder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.open_log_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.open_log_folder" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.open_profile_client">
+<code class="descname">open_profile_client</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.open_profile_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.open_profile_client" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.open_report">
+<code class="descname">open_report</code><span class="sig-paren">(</span><em>event=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.open_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.open_report" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.open_reports_folder">
+<code class="descname">open_reports_folder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.open_reports_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.open_reports_folder" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.popenAndCall">
+<code class="descname">popenAndCall</code><span class="sig-paren">(</span><em>onExit</em>, <em>command</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.popenAndCall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.popenAndCall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the given args in a subprocess.Popen, and then calls the function
+onExit when the subprocess completes.
+onExit is a callable object, and popenArgs is a list/tuple of args that 
+would give to subprocess.Popen.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.populate_report_list">
+<code class="descname">populate_report_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.populate_report_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.populate_report_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.refresh_log">
+<code class="descname">refresh_log</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.refresh_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.refresh_log" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.refresh_report">
+<code class="descname">refresh_report</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.refresh_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.refresh_report" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.refresh_service_status">
+<code class="descname">refresh_service_status</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.refresh_service_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.refresh_service_status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.resetButton">
+<code class="descname">resetButton</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.resetButton"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.resetButton" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.service_install">
+<code class="descname">service_install</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.service_install"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.service_install" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.service_off">
+<code class="descname">service_off</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.service_off"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.service_off" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates service status pane to reflect that the CTQA audit service is off</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.service_on">
+<code class="descname">service_on</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.service_on"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.service_on" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update service status pane to reflect that the CTQA audit service is on</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.service_uninstall">
+<code class="descname">service_uninstall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.service_uninstall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.service_uninstall" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.start_log_watcher">
+<code class="descname">start_log_watcher</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.start_log_watcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.start_log_watcher" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.treeview_sort_column">
+<code class="descname">treeview_sort_column</code><span class="sig-paren">(</span><em>tv</em>, <em>col</em>, <em>reverse</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.treeview_sort_column"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.treeview_sort_column" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.client.ctqa_client.watch_reports_folder">
+<code class="descname">watch_reports_folder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#ctqa_client.watch_reports_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.ctqa_client.watch_reports_folder" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.gui.client.resource_path">
+<code class="descclassname">ctqa.gui.client.</code><code class="descname">resource_path</code><span class="sig-paren">(</span><em>relative_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/client.html#resource_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.client.resource_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ctqa.gui.configclient">
+<span id="ctqa-gui-configclient-module"></span><h2>ctqa.gui.configclient module<a class="headerlink" href="#module-ctqa.gui.configclient" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ctqa.gui.configclient.config_client">
+<em class="property">class </em><code class="descclassname">ctqa.gui.configclient.</code><code class="descname">config_client</code><span class="sig-paren">(</span><em>parent</em>, <em>firstrun=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/configclient.html#config_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.configclient.config_client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="ctqa.gui.configclient.config_client.component_change">
+<code class="descname">component_change</code><span class="sig-paren">(</span><em>name</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/configclient.html#config_client.component_change"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.configclient.config_client.component_change" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.configclient.config_client.exit_config">
+<code class="descname">exit_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/configclient.html#config_client.exit_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.configclient.config_client.exit_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.configclient.config_client.generate_new_config">
+<code class="descname">generate_new_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/configclient.html#config_client.generate_new_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.configclient.config_client.generate_new_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.configclient.config_client.load_components">
+<code class="descname">load_components</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/configclient.html#config_client.load_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.configclient.config_client.load_components" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.configclient.config_client.load_orthanc_components">
+<code class="descname">load_orthanc_components</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/configclient.html#config_client.load_orthanc_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.configclient.config_client.load_orthanc_components" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.configclient.config_client.load_source_components">
+<code class="descname">load_source_components</code><span class="sig-paren">(</span><em>src</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/configclient.html#config_client.load_source_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.configclient.config_client.load_source_components" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.configclient.config_client.save_and_quit">
+<code class="descname">save_and_quit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/configclient.html#config_client.save_and_quit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.configclient.config_client.save_and_quit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.configclient.config_client.save_config">
+<code class="descname">save_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/configclient.html#config_client.save_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.configclient.config_client.save_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.configclient.config_client.valid_days">
+<code class="descname">valid_days</code><span class="sig-paren">(</span><em>num</em>, <em>comp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/configclient.html#config_client.valid_days"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.configclient.config_client.valid_days" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.configclient.config_client.valid_image_number">
+<code class="descname">valid_image_number</code><span class="sig-paren">(</span><em>num</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/configclient.html#config_client.valid_image_number"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.configclient.config_client.valid_image_number" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.gui.configclient.resource_path">
+<code class="descclassname">ctqa.gui.configclient.</code><code class="descname">resource_path</code><span class="sig-paren">(</span><em>relative_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/configclient.html#resource_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.configclient.resource_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ctqa.gui.logwatcher">
+<span id="ctqa-gui-logwatcher-module"></span><h2>ctqa.gui.logwatcher module<a class="headerlink" href="#module-ctqa.gui.logwatcher" title="Permalink to this headline">¶</a></h2>
+<p>Real-time log files watcher supporting log rotation.
+Works with Python &gt;= 2.6 and &gt;= 3.2, on both POSIX and Windows.</p>
+<p>Author: Giampaolo Rodola’ &lt;g.rodola [AT] gmail [DOT] com&gt;
+License: MIT</p>
+<dl class="class">
+<dt id="ctqa.gui.logwatcher.LogWatcher">
+<em class="property">class </em><code class="descclassname">ctqa.gui.logwatcher.</code><code class="descname">LogWatcher</code><span class="sig-paren">(</span><em>folder, callback, extensions=['log'], tail_lines=0, sizehint=1048576</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/logwatcher.html#LogWatcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.logwatcher.LogWatcher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Looks for changes in all files of a directory.
+This is useful for watching log file changes in real-time.
+It also supports files rotation.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">lines</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">lines</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lw</span> <span class="o">=</span> <span class="n">LogWatcher</span><span class="p">(</span><span class="s2">&quot;/var/log/&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lw</span><span class="o">.</span><span class="n">loop</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="ctqa.gui.logwatcher.LogWatcher.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/logwatcher.html#LogWatcher.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.logwatcher.LogWatcher.close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="ctqa.gui.logwatcher.LogWatcher.get_file_id">
+<em class="property">static </em><code class="descname">get_file_id</code><span class="sig-paren">(</span><em>st</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/logwatcher.html#LogWatcher.get_file_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.logwatcher.LogWatcher.get_file_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.logwatcher.LogWatcher.listdir">
+<code class="descname">listdir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/logwatcher.html#LogWatcher.listdir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.logwatcher.LogWatcher.listdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>List directory and filter files by extension.
+You may want to override this to add extra logic or globbing
+support.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.logwatcher.LogWatcher.log">
+<code class="descname">log</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/logwatcher.html#LogWatcher.log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.logwatcher.LogWatcher.log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log when a file is un/watched</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.logwatcher.LogWatcher.loop">
+<code class="descname">loop</code><span class="sig-paren">(</span><em>interval=0.1</em>, <em>blocking=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/logwatcher.html#LogWatcher.loop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.logwatcher.LogWatcher.loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start a busy loop checking for file changes every <em>interval</em>
+seconds. If <em>blocking</em> is False make one loop then return.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="ctqa.gui.logwatcher.LogWatcher.open">
+<em class="property">classmethod </em><code class="descname">open</code><span class="sig-paren">(</span><em>file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/logwatcher.html#LogWatcher.open"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.logwatcher.LogWatcher.open" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper around open().
+By default files are opened in binary mode and readlines()
+will return bytes on both Python 2 and 3.
+This means callback() will deal with a list of bytes.
+Can be overridden in order to deal with unicode strings
+instead, like this:</p>
+<blockquote>
+<div><p>import codecs, locale
+return codecs.open(file, ‘r’, encoding=locale.getpreferredencoding(),</p>
+<blockquote>
+<div>errors=’ignore’)</div></blockquote>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.logwatcher.LogWatcher.readlines">
+<code class="descname">readlines</code><span class="sig-paren">(</span><em>file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/logwatcher.html#LogWatcher.readlines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.logwatcher.LogWatcher.readlines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read file lines since last access until EOF is reached and
+invoke callback.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="ctqa.gui.logwatcher.LogWatcher.tail">
+<em class="property">classmethod </em><code class="descname">tail</code><span class="sig-paren">(</span><em>fname</em>, <em>window</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/logwatcher.html#LogWatcher.tail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.logwatcher.LogWatcher.tail" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read last N lines from file fname.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.logwatcher.LogWatcher.unwatch">
+<code class="descname">unwatch</code><span class="sig-paren">(</span><em>file</em>, <em>fid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/logwatcher.html#LogWatcher.unwatch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.logwatcher.LogWatcher.unwatch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.logwatcher.LogWatcher.update_files">
+<code class="descname">update_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/logwatcher.html#LogWatcher.update_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.logwatcher.LogWatcher.update_files" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.logwatcher.LogWatcher.watch">
+<code class="descname">watch</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/logwatcher.html#LogWatcher.watch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.logwatcher.LogWatcher.watch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ctqa.gui.profileclient">
+<span id="ctqa-gui-profileclient-module"></span><h2>ctqa.gui.profileclient module<a class="headerlink" href="#module-ctqa.gui.profileclient" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ctqa.gui.profileclient.Placeholder_State">
+<em class="property">class </em><code class="descclassname">ctqa.gui.profileclient.</code><code class="descname">Placeholder_State</code><a class="reference internal" href="_modules/ctqa/gui/profileclient.html#Placeholder_State"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.profileclient.Placeholder_State" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="attribute">
+<dt id="ctqa.gui.profileclient.Placeholder_State.normal_color">
+<code class="descname">normal_color</code><a class="headerlink" href="#ctqa.gui.profileclient.Placeholder_State.normal_color" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ctqa.gui.profileclient.Placeholder_State.normal_font">
+<code class="descname">normal_font</code><a class="headerlink" href="#ctqa.gui.profileclient.Placeholder_State.normal_font" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ctqa.gui.profileclient.Placeholder_State.placeholder_color">
+<code class="descname">placeholder_color</code><a class="headerlink" href="#ctqa.gui.profileclient.Placeholder_State.placeholder_color" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ctqa.gui.profileclient.Placeholder_State.placeholder_font">
+<code class="descname">placeholder_font</code><a class="headerlink" href="#ctqa.gui.profileclient.Placeholder_State.placeholder_font" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ctqa.gui.profileclient.Placeholder_State.placeholder_text">
+<code class="descname">placeholder_text</code><a class="headerlink" href="#ctqa.gui.profileclient.Placeholder_State.placeholder_text" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ctqa.gui.profileclient.Placeholder_State.with_placeholder">
+<code class="descname">with_placeholder</code><a class="headerlink" href="#ctqa.gui.profileclient.Placeholder_State.with_placeholder" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ctqa.gui.profileclient.profile_client">
+<em class="property">class </em><code class="descclassname">ctqa.gui.profileclient.</code><code class="descname">profile_client</code><span class="sig-paren">(</span><em>parent</em>, <em>firstrun=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/profileclient.html#profile_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.profileclient.profile_client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="ctqa.gui.profileclient.profile_client.add_placeholder_to">
+<code class="descname">add_placeholder_to</code><span class="sig-paren">(</span><em>entry</em>, <em>placeholder</em>, <em>color='grey'</em>, <em>font=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/profileclient.html#profile_client.add_placeholder_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.profileclient.profile_client.add_placeholder_to" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.profileclient.profile_client.add_profile">
+<code class="descname">add_profile</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/profileclient.html#profile_client.add_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.profileclient.profile_client.add_profile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.profileclient.profile_client.auto_profiles">
+<code class="descname">auto_profiles</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/profileclient.html#profile_client.auto_profiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.profileclient.profile_client.auto_profiles" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.profileclient.profile_client.changes_made">
+<code class="descname">changes_made</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/profileclient.html#profile_client.changes_made"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.profileclient.profile_client.changes_made" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.profileclient.profile_client.component_change">
+<code class="descname">component_change</code><span class="sig-paren">(</span><em>comp</em>, <em>val</em>, <em>profid</em>, <em>baseline=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/profileclient.html#profile_client.component_change"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.profileclient.profile_client.component_change" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.profileclient.profile_client.display_info">
+<code class="descname">display_info</code><span class="sig-paren">(</span><em>id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/profileclient.html#profile_client.display_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.profileclient.profile_client.display_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.profileclient.profile_client.exit_client">
+<code class="descname">exit_client</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/profileclient.html#profile_client.exit_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.profileclient.profile_client.exit_client" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.profileclient.profile_client.load_components">
+<code class="descname">load_components</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/profileclient.html#profile_client.load_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.profileclient.profile_client.load_components" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.profileclient.profile_client.manual_profiles">
+<code class="descname">manual_profiles</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/profileclient.html#profile_client.manual_profiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.profileclient.profile_client.manual_profiles" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.profileclient.profile_client.remove_profile">
+<code class="descname">remove_profile</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/profileclient.html#profile_client.remove_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.profileclient.profile_client.remove_profile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.profileclient.profile_client.save_and_quit">
+<code class="descname">save_and_quit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/profileclient.html#profile_client.save_and_quit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.profileclient.profile_client.save_and_quit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.profileclient.profile_client.save_profiles">
+<code class="descname">save_profiles</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/profileclient.html#profile_client.save_profiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.profileclient.profile_client.save_profiles" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.gui.profileclient.resource_path">
+<code class="descclassname">ctqa.gui.profileclient.</code><code class="descname">resource_path</code><span class="sig-paren">(</span><em>relative_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/profileclient.html#resource_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.profileclient.resource_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ctqa.gui.selectlist">
+<span id="ctqa-gui-selectlist-module"></span><h2>ctqa.gui.selectlist module<a class="headerlink" href="#module-ctqa.gui.selectlist" title="Permalink to this headline">¶</a></h2>
+<p>Select List</p>
+<p>Contains logic for implementing a list with selection, addition, and deletion functions.</p>
+<dl class="class">
+<dt id="ctqa.gui.selectlist.select_list">
+<em class="property">class </em><code class="descclassname">ctqa.gui.selectlist.</code><code class="descname">select_list</code><span class="sig-paren">(</span><em>parent</em>, <em>*args</em>, <em>**kw</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/selectlist.html#select_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.selectlist.select_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.Frame</span></code></p>
+<p>Main Select List class for instantiating the list in a Tkinter frame.</p>
+<dl class="method">
+<dt id="ctqa.gui.selectlist.select_list.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>title</em>, <em>subtitle</em>, <em>id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/selectlist.html#select_list.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.selectlist.select_list.add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.selectlist.select_list.bind_select_callback">
+<code class="descname">bind_select_callback</code><span class="sig-paren">(</span><em>callback</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/selectlist.html#select_list.bind_select_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.selectlist.select_list.bind_select_callback" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.selectlist.select_list.change_id">
+<code class="descname">change_id</code><span class="sig-paren">(</span><em>oldid</em>, <em>newid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/selectlist.html#select_list.change_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.selectlist.select_list.change_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.selectlist.select_list.remove_selected">
+<code class="descname">remove_selected</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/selectlist.html#select_list.remove_selected"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.selectlist.select_list.remove_selected" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.selectlist.select_list.select_color">
+<code class="descname">select_color</code><span class="sig-paren">(</span><em>id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/selectlist.html#select_list.select_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.selectlist.select_list.select_color" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.selectlist.select_list.select_element">
+<code class="descname">select_element</code><span class="sig-paren">(</span><em>id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/selectlist.html#select_list.select_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.selectlist.select_list.select_element" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ctqa.gui.selectlist.select_list.unselect_color">
+<code class="descname">unselect_color</code><span class="sig-paren">(</span><em>id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/gui/selectlist.html#select_list.unselect_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.gui.selectlist.select_list.unselect_color" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ctqa.gui">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ctqa.gui" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Reece Walsh.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.9',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

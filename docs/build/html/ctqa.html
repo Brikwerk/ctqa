@@ -1,0 +1,634 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ctqa package &mdash; CTQA 0.9 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> CTQA
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">ctqa package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-ctqa.app">ctqa.app module</a></li>
+<li><a class="reference internal" href="#module-ctqa.audit">ctqa.audit module</a></li>
+<li><a class="reference internal" href="#module-ctqa.auditmethods">ctqa.auditmethods module</a></li>
+<li><a class="reference internal" href="#module-ctqa.autoprofiles">ctqa.autoprofiles module</a></li>
+<li><a class="reference internal" href="#module-ctqa.confutil">ctqa.confutil module</a></li>
+<li><a class="reference internal" href="#module-ctqa.datautil">ctqa.datautil module</a></li>
+<li><a class="reference internal" href="#module-ctqa.firstrun">ctqa.firstrun module</a></li>
+<li><a class="reference internal" href="#module-ctqa.imgfetch">ctqa.imgfetch module</a></li>
+<li><a class="reference internal" href="#module-ctqa.logutil">ctqa.logutil module</a></li>
+<li><a class="reference internal" href="#module-ctqa.profileutil">ctqa.profileutil module</a></li>
+<li><a class="reference internal" href="#module-ctqa.reportutil">ctqa.reportutil module</a></li>
+<li><a class="reference internal" href="#module-ctqa.servicemanager">ctqa.servicemanager module</a></li>
+<li><a class="reference internal" href="#module-ctqa">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CTQA</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>ctqa package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/ctqa.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ctqa-package">
+<h1>ctqa package<a class="headerlink" href="#ctqa-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ctqa.gui.html">ctqa.gui package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ctqa.gui.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ctqa.gui.html#module-ctqa.gui.app">ctqa.gui.app module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ctqa.gui.html#module-ctqa.gui.client">ctqa.gui.client module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ctqa.gui.html#module-ctqa.gui.configclient">ctqa.gui.configclient module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ctqa.gui.html#module-ctqa.gui.logwatcher">ctqa.gui.logwatcher module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ctqa.gui.html#module-ctqa.gui.profileclient">ctqa.gui.profileclient module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ctqa.gui.html#module-ctqa.gui.selectlist">ctqa.gui.selectlist module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ctqa.gui.html#module-ctqa.gui">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ctqa.sources.html">ctqa.sources package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ctqa.sources.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ctqa.sources.html#module-ctqa.sources.orthanc">ctqa.sources.orthanc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ctqa.sources.html#module-ctqa.sources">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ctqa.app">
+<span id="ctqa-app-module"></span><h2>ctqa.app module<a class="headerlink" href="#module-ctqa.app" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">CTQA App Module</div>
+<div class="line">Description: Main CTQA application file. Contains logic for preparing/starting execution.</div>
+</div>
+<dl class="function">
+<dt id="ctqa.app.run">
+<code class="descclassname">ctqa.app.</code><code class="descname">run</code><span class="sig-paren">(</span><em>config</em>, <em>profiles</em>, <em>__DEBUG</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/app.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.app.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main function for preparing and running the CTQA audit.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ctqa.audit">
+<span id="ctqa-audit-module"></span><h2>ctqa.audit module<a class="headerlink" href="#module-ctqa.audit" title="Permalink to this headline">¶</a></h2>
+<p>Audit Utility</p>
+<p>A module that contains logic for running an audit, grouping images by series, and running homogeneity/linearity calculations.</p>
+<dl class="function">
+<dt id="ctqa.audit.auditImages">
+<code class="descclassname">ctqa.audit.</code><code class="descname">auditImages</code><span class="sig-paren">(</span><em>datasets</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/audit.html#auditImages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.audit.auditImages" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves audit method based off of the reader’s manufacturer and
+performs appropriate audits based on this.</p>
+<p>Input, <em>datasets</em>, is expected to be a 2D array. The function loops
+through each element on the first level and executes the audits based on
+the contents of the second level array.</p>
+<p>Expected Contents of Second Level Array:</p>
+<p>[ MACHINE_NAME , MACHINE_PROFILE , MACHINE_QC_IMAGE ]</p>
+<p><strong>Please Note:</strong> MACHINE_QC_IMAGE is referring to a pydicom dicom object.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.audit.computeHomogeneity">
+<code class="descclassname">ctqa.audit.</code><code class="descname">computeHomogeneity</code><span class="sig-paren">(</span><em>audit</em>, <em>dataset</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/audit.html#computeHomogeneity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.audit.computeHomogeneity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempts to rescale DICOM pixel data by the DICOM RescaleIntercept/Slope tags.
+After attempted rescale, a region is selected from the pixel   data. Which region is dependant on the <em>audit</em> parameter. A 1D array of DICOM pixel   data is returned.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.audit.getAuditDatasets">
+<code class="descclassname">ctqa.audit.</code><code class="descname">getAuditDatasets</code><span class="sig-paren">(</span><em>series</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/audit.html#getAuditDatasets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.audit.getAuditDatasets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selects a specified slice from a series based off of a value in 
+a reader’s profile</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.audit.groupSeries">
+<code class="descclassname">ctqa.audit.</code><code class="descname">groupSeries</code><span class="sig-paren">(</span><em>imgs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/audit.html#groupSeries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.audit.groupSeries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function for grouping passed images by their series UID</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.audit.performHomogeneityAudit">
+<code class="descclassname">ctqa.audit.</code><code class="descname">performHomogeneityAudit</code><span class="sig-paren">(</span><em>method</em>, <em>img</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/audit.html#performHomogeneityAudit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.audit.performHomogeneityAudit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepares a spot in the global data variable (runs setupHomogeneityData) for data
+coming from the audits and runs each audit listed under the method parameter.   The output of each method is stored under the StudyDate (DICOM tag).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.audit.reformROIArray">
+<code class="descclassname">ctqa.audit.</code><code class="descname">reformROIArray</code><span class="sig-paren">(</span><em>data</em>, <em>x1</em>, <em>x2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/audit.html#reformROIArray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.audit.reformROIArray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loops through flat ROI array and turns into 2d ROI array</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.audit.run">
+<code class="descclassname">ctqa.audit.</code><code class="descname">run</code><span class="sig-paren">(</span><em>profiles</em>, <em>imgs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/audit.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.audit.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main function for running the audit.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.audit.scalePixelData">
+<code class="descclassname">ctqa.audit.</code><code class="descname">scalePixelData</code><span class="sig-paren">(</span><em>pixelData</em>, <em>rInt</em>, <em>rSlope</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/audit.html#scalePixelData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.audit.scalePixelData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scales pixel image values linearly by rescale values</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.audit.selectArea">
+<code class="descclassname">ctqa.audit.</code><code class="descname">selectArea</code><span class="sig-paren">(</span><em>arr</em>, <em>x1</em>, <em>y1</em>, <em>x2</em>, <em>y2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/audit.html#selectArea"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.audit.selectArea" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selects a specified area from a 2D array and fills a 1D arr with the values</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.audit.setupHomogeneityData">
+<code class="descclassname">ctqa.audit.</code><code class="descname">setupHomogeneityData</code><span class="sig-paren">(</span><em>method</em>, <em>img</em>, <em>date</em>, <em>reader</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/audit.html#setupHomogeneityData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.audit.setupHomogeneityData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepares a spot in the global DATA variable for incoming audit data.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ctqa.auditmethods">
+<span id="ctqa-auditmethods-module"></span><h2>ctqa.auditmethods module<a class="headerlink" href="#module-ctqa.auditmethods" title="Permalink to this headline">¶</a></h2>
+<p>Audit Methods Module</p>
+<p>A module that contains data regarding the audits available for a CT machine, sorted by manufacturer.</p>
+<dl class="function">
+<dt id="ctqa.auditmethods.getAuditDirections">
+<code class="descclassname">ctqa.auditmethods.</code><code class="descname">getAuditDirections</code><span class="sig-paren">(</span><em>manufacturer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/auditmethods.html#getAuditDirections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.auditmethods.getAuditDirections" title="Permalink to this definition">¶</a></dt>
+<dd><p>The audit directions are gotten based off of the manufacturer string.</p>
+<p>EX: [‘NORTH’, ‘SOUTH’, ‘EAST’, ‘WEST’, ‘CENTER’]</p>
+<p>If no manufacturer is found for the passed string, the default is returned.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.auditmethods.getMethod">
+<code class="descclassname">ctqa.auditmethods.</code><code class="descname">getMethod</code><span class="sig-paren">(</span><em>manufacturer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/auditmethods.html#getMethod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.auditmethods.getMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets audit methods by passed manufacturer string. Uses manufacturer string
+as a key to search the <em>METHODS</em> Dictionary object.</p>
+<p>If no suitable manufacturer is found, the default audit methods are used.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ctqa.autoprofiles">
+<span id="ctqa-autoprofiles-module"></span><h2>ctqa.autoprofiles module<a class="headerlink" href="#module-ctqa.autoprofiles" title="Permalink to this headline">¶</a></h2>
+<p>Auto Profiles Module</p>
+<p>A module that contains logic for automatically identifying CT reader profiles from a linked database.</p>
+<dl class="function">
+<dt id="ctqa.autoprofiles.getSize">
+<code class="descclassname">ctqa.autoprofiles.</code><code class="descname">getSize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/autoprofiles.html#getSize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.autoprofiles.getSize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets size of all images from source</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.autoprofiles.run">
+<code class="descclassname">ctqa.autoprofiles.</code><code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/autoprofiles.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.autoprofiles.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loops through all images and attempts to find new profiles.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ctqa.confutil">
+<span id="ctqa-confutil-module"></span><h2>ctqa.confutil module<a class="headerlink" href="#module-ctqa.confutil" title="Permalink to this headline">¶</a></h2>
+<p>CTQA Config Utility</p>
+<p>Utility for creating/saving/loading/updating a JSON configuration file.</p>
+<dl class="function">
+<dt id="ctqa.confutil.createConfig">
+<code class="descclassname">ctqa.confutil.</code><code class="descname">createConfig</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/confutil.html#createConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.confutil.createConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates JSON config file with the specified name and path.
+Defaults to the name config.json and stores at root.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.confutil.loadConfig">
+<code class="descclassname">ctqa.confutil.</code><code class="descname">loadConfig</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/confutil.html#loadConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.confutil.loadConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempts to load json config named/specced from path</p>
+<p>Returns the JSON config or -1 (Bad validation)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.confutil.openConfig">
+<code class="descclassname">ctqa.confutil.</code><code class="descname">openConfig</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/confutil.html#openConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.confutil.openConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempts to open the file at the passed path. Returns a dict object if found
+and parsed successfully.</p>
+<p>Catches errors for FileNotFound (returns 0) and JSONDecodeError (returns -1).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.confutil.saveConfig">
+<code class="descclassname">ctqa.confutil.</code><code class="descname">saveConfig</code><span class="sig-paren">(</span><em>path</em>, <em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/confutil.html#saveConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.confutil.saveConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempts to save the passed config at the passed path.</p>
+<p>Returns 1 on success and -1 on a FileNotFound error.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.confutil.updateConfig">
+<code class="descclassname">ctqa.confutil.</code><code class="descname">updateConfig</code><span class="sig-paren">(</span><em>path</em>, <em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/confutil.html#updateConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.confutil.updateConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates a config file at the passed path with the specified key : value pair.</p>
+<p>Returns 1 on success and -1 on failure (Key doesn’t exist or was unable to save file).
+All errors are logged.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.confutil.validateConfig">
+<code class="descclassname">ctqa.confutil.</code><code class="descname">validateConfig</code><span class="sig-paren">(</span><em>conf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/confutil.html#validateConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.confutil.validateConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempts to validate passed dictionary object according to config standards.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ctqa.datautil">
+<span id="ctqa-datautil-module"></span><h2>ctqa.datautil module<a class="headerlink" href="#module-ctqa.datautil" title="Permalink to this headline">¶</a></h2>
+<p>Data Utility</p>
+<p>Handles the saving and loading of CT QA data (audit results).</p>
+<dl class="function">
+<dt id="ctqa.datautil.load">
+<code class="descclassname">ctqa.datautil.</code><code class="descname">load</code><span class="sig-paren">(</span><em>folderpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/datautil.html#load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.datautil.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads CT QA data from the file on the passed path.</p>
+<p>Returns -1 if JSON data is malformed.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.datautil.save">
+<code class="descclassname">ctqa.datautil.</code><code class="descname">save</code><span class="sig-paren">(</span><em>DATA</em>, <em>savelocation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/datautil.html#save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.datautil.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves all site’s data from a dict object to the passed location</p>
+<p>Returns -1 if JSON data is malformed.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ctqa.firstrun">
+<span id="ctqa-firstrun-module"></span><h2>ctqa.firstrun module<a class="headerlink" href="#module-ctqa.firstrun" title="Permalink to this headline">¶</a></h2>
+<p>First Run Module</p>
+<p>Contains logic for aiding in a user’s first run of the CTQA application.</p>
+<dl class="function">
+<dt id="ctqa.firstrun.run">
+<code class="descclassname">ctqa.firstrun.</code><code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/firstrun.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.firstrun.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>The function run on the CTQA applications first run.</p>
+<p>The user is asked if they want to run through a guided setup. If they agree,
+they are taken through filling out the configuration and profile values. At
+the end, the regular CTQA application GUI is started and shown.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ctqa.imgfetch">
+<span id="ctqa-imgfetch-module"></span><h2>ctqa.imgfetch module<a class="headerlink" href="#module-ctqa.imgfetch" title="Permalink to this headline">¶</a></h2>
+<p>Image Fetcher</p>
+<p>Module for selecting/loading images from the appropriate source/module.</p>
+<dl class="function">
+<dt id="ctqa.imgfetch.getAllImages">
+<code class="descclassname">ctqa.imgfetch.</code><code class="descname">getAllImages</code><span class="sig-paren">(</span><em>conf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/imgfetch.html#getAllImages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.imgfetch.getAllImages" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a list of all image paths from the image source. The source is based off of the value from passed config.</p>
+<p>Returns -1 if the source is bad.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.imgfetch.getImages">
+<code class="descclassname">ctqa.imgfetch.</code><code class="descname">getImages</code><span class="sig-paren">(</span><em>conf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/imgfetch.html#getImages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.imgfetch.getImages" title="Permalink to this definition">¶</a></dt>
+<dd><p>Based off of the Source attribute in passed config, an image source is used to fetch a list of new image paths.</p>
+<p>Returns -1 if the source is bad.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.imgfetch.getSizeOfImages">
+<code class="descclassname">ctqa.imgfetch.</code><code class="descname">getSizeOfImages</code><span class="sig-paren">(</span><em>conf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/imgfetch.html#getSizeOfImages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.imgfetch.getSizeOfImages" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the size of all images from images source based off of the passed configuration.</p>
+<p>Returns -1 if the source is bad.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.imgfetch.getTestImgs">
+<code class="descclassname">ctqa.imgfetch.</code><code class="descname">getTestImgs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/imgfetch.html#getTestImgs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.imgfetch.getTestImgs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets application test image paths.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.imgfetch.resource_path">
+<code class="descclassname">ctqa.imgfetch.</code><code class="descname">resource_path</code><span class="sig-paren">(</span><em>relative_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/imgfetch.html#resource_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.imgfetch.resource_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches application resource paths.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ctqa.logutil">
+<span id="ctqa-logutil-module"></span><h2>ctqa.logutil module<a class="headerlink" href="#module-ctqa.logutil" title="Permalink to this headline">¶</a></h2>
+<p>CTQA Logging Utility</p>
+<p>Utility for creating/instantiating a logger.</p>
+<dl class="function">
+<dt id="ctqa.logutil.initLog">
+<code class="descclassname">ctqa.logutil.</code><code class="descname">initLog</code><span class="sig-paren">(</span><em>fileName</em>, <em>logName</em>, <em>debug</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/logutil.html#initLog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.logutil.initLog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes the logger and returns the logger object.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ctqa.profileutil">
+<span id="ctqa-profileutil-module"></span><h2>ctqa.profileutil module<a class="headerlink" href="#module-ctqa.profileutil" title="Permalink to this headline">¶</a></h2>
+<p>CTQA Config Utility</p>
+<p>Utility for creating/saving/loading/updating a JSON configuration file.</p>
+<dl class="function">
+<dt id="ctqa.profileutil.get">
+<code class="descclassname">ctqa.profileutil.</code><code class="descname">get</code><span class="sig-paren">(</span><em>path</em>, <em>key</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/profileutil.html#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.profileutil.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the value from the passed key on the passed path</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.profileutil.getDefaultProfile">
+<code class="descclassname">ctqa.profileutil.</code><code class="descname">getDefaultProfile</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/profileutil.html#getDefaultProfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.profileutil.getDefaultProfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a deep copy of the default profile.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.profileutil.getProfileName">
+<code class="descclassname">ctqa.profileutil.</code><code class="descname">getProfileName</code><span class="sig-paren">(</span><em>profile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/profileutil.html#getProfileName"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.profileutil.getProfileName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assembles the profile ID based off of the profile keys.</p>
+<p>Returns -1 if one of the keys isn’t present.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.profileutil.init">
+<code class="descclassname">ctqa.profileutil.</code><code class="descname">init</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/profileutil.html#init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.profileutil.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes the profiles file to an empty JSON object and saves it.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.profileutil.keys">
+<code class="descclassname">ctqa.profileutil.</code><code class="descname">keys</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/profileutil.html#keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.profileutil.keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of keys present in the top level of the profiles file.</p>
+<p>Returns -1 if the loaded profiles object isn’t dict type.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.profileutil.newProfile">
+<code class="descclassname">ctqa.profileutil.</code><code class="descname">newProfile</code><span class="sig-paren">(</span><em>path</em>, <em>readerid</em>, <em>statname</em>, <em>manfct</em>, <em>manfctname</em>, <em>instname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/profileutil.html#newProfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.profileutil.newProfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a dict object from the DEFAULT_PROFILE dict object. This new dict object
+is filled out with the passed values and returned.</p>
+<p>If saving or opening the profiles file fails, a -1 is returned.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.profileutil.numKeys">
+<code class="descclassname">ctqa.profileutil.</code><code class="descname">numKeys</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/profileutil.html#numKeys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.profileutil.numKeys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of keys present in the top level of the profiles file.</p>
+<p>Returns -1 if the loaded profiles object isn’t dict type.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.profileutil.openProfiles">
+<code class="descclassname">ctqa.profileutil.</code><code class="descname">openProfiles</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/profileutil.html#openProfiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.profileutil.openProfiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempts to open the profiles file at the passed location.</p>
+<p>If a FileNotFound or JSONDecodeError is encountered, -1 is returned.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.profileutil.removeProfile">
+<code class="descclassname">ctqa.profileutil.</code><code class="descname">removeProfile</code><span class="sig-paren">(</span><em>path</em>, <em>key</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/profileutil.html#removeProfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.profileutil.removeProfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes profile and returns the values/None. Returns -1 in the event of failure.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.profileutil.saveProfiles">
+<code class="descclassname">ctqa.profileutil.</code><code class="descname">saveProfiles</code><span class="sig-paren">(</span><em>path</em>, <em>profiles</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/profileutil.html#saveProfiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.profileutil.saveProfiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempts to save the passed profiles dict object to the passed path.</p>
+<p>If a FileNotFound error is encountered, -1 is returned.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.profileutil.validProfile">
+<code class="descclassname">ctqa.profileutil.</code><code class="descname">validProfile</code><span class="sig-paren">(</span><em>profile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/profileutil.html#validProfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.profileutil.validProfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks a profile for valid values in the present keys.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ctqa.reportutil">
+<span id="ctqa-reportutil-module"></span><h2>ctqa.reportutil module<a class="headerlink" href="#module-ctqa.reportutil" title="Permalink to this headline">¶</a></h2>
+<p>Report Utility</p>
+<p>Generates and saves a CT machine’s report based off of audit data.</p>
+<dl class="function">
+<dt id="ctqa.reportutil.generateReport">
+<code class="descclassname">ctqa.reportutil.</code><code class="descname">generateReport</code><span class="sig-paren">(</span><em>dataPath</em>, <em>savelocation</em>, <em>title</em>, <em>graphdays</em>, <em>forecastdays</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/reportutil.html#generateReport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.reportutil.generateReport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves audit data from the data path, organizes a site’s data into a displayable format,
+and creates a PNG graph at the passed save location.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ctqa.servicemanager">
+<span id="ctqa-servicemanager-module"></span><h2>ctqa.servicemanager module<a class="headerlink" href="#module-ctqa.servicemanager" title="Permalink to this headline">¶</a></h2>
+<p>Service Manager</p>
+<p>Detects the OS and installs the CTQA service to run the audit on a regular basis.</p>
+<dl class="function">
+<dt id="ctqa.servicemanager.install">
+<code class="descclassname">ctqa.servicemanager.</code><code class="descname">install</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/servicemanager.html#install"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.servicemanager.install" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detects the OS and runs the appropriate installation method.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.servicemanager.install_windows">
+<code class="descclassname">ctqa.servicemanager.</code><code class="descname">install_windows</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/servicemanager.html#install_windows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.servicemanager.install_windows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempts to install the CTQA Audit utility as a task in Windows Task Scheduler.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.servicemanager.service_installed">
+<code class="descclassname">ctqa.servicemanager.</code><code class="descname">service_installed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/servicemanager.html#service_installed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.servicemanager.service_installed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if service is installed. Returns True or False.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.servicemanager.uninstall">
+<code class="descclassname">ctqa.servicemanager.</code><code class="descname">uninstall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/servicemanager.html#uninstall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.servicemanager.uninstall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detects the OS and runs the appropriate uninstallation method.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctqa.servicemanager.uninstall_windows">
+<code class="descclassname">ctqa.servicemanager.</code><code class="descname">uninstall_windows</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/servicemanager.html#uninstall_windows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.servicemanager.uninstall_windows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempts to uninstall the CTQA Audit task with the Schtasks command</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ctqa">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ctqa" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Reece Walsh.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.9',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

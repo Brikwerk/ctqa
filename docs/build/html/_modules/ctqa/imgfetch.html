@@ -1,0 +1,281 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ctqa.imgfetch &mdash; CTQA 0.9 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> CTQA
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">CTQA</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>ctqa.imgfetch</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ctqa.imgfetch</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Image Fetcher</span>
+
+<span class="sd">Module for selecting/loading images from the appropriate source/module.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">ctqa.sources</span> <span class="k">import</span> <span class="n">orthanc</span> <span class="k">as</span> <span class="n">orthanc</span>
+
+<span class="c1">#Logging</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">ctqa</span> <span class="k">import</span> <span class="n">logutil</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">logutil</span><span class="o">.</span><span class="n">MAIN_LOG_NAME</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="resource_path"><a class="viewcode-back" href="../../ctqa.html#ctqa.imgfetch.resource_path">[docs]</a><span class="k">def</span> <span class="nf">resource_path</span><span class="p">(</span><span class="n">relative_path</span><span class="p">):</span>
+  <span class="sd">&#39;&#39;&#39;Fetches application resource paths.&#39;&#39;&#39;</span>
+
+  <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s1">&#39;_MEIPASS&#39;</span><span class="p">):</span>
+    <span class="c1">#ifndef __INTELLISENSE__</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">_MEIPASS</span><span class="p">,</span> <span class="n">relative_path</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">),</span> <span class="n">relative_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="getImages"><a class="viewcode-back" href="../../ctqa.html#ctqa.imgfetch.getImages">[docs]</a><span class="k">def</span> <span class="nf">getImages</span><span class="p">(</span><span class="n">conf</span><span class="p">):</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Based off of the Source attribute in passed config, an image source is used to fetch a list of new image paths.</span>
+<span class="sd">  </span>
+<span class="sd">  Returns -1 if the source is bad.</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+
+  <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Source&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;ORTHANC&#39;</span><span class="p">:</span>
+    <span class="n">imgs</span> <span class="o">=</span> <span class="n">orthanc</span><span class="o">.</span><span class="n">fetchImages</span><span class="p">(</span><span class="n">conf</span><span class="p">[</span><span class="s2">&quot;OrthancRESTAddress&quot;</span><span class="p">],</span> <span class="n">conf</span><span class="p">[</span><span class="s2">&quot;LastImageNumber&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">imgs</span>
+  <span class="k">elif</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Source&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;TEST&#39;</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">getTestImgs</span><span class="p">()</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Invalid source passed. Please enter a valid source in the configuration.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="getAllImages"><a class="viewcode-back" href="../../ctqa.html#ctqa.imgfetch.getAllImages">[docs]</a><span class="k">def</span> <span class="nf">getAllImages</span><span class="p">(</span><span class="n">conf</span><span class="p">):</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Gets a list of all image paths from the image source. The source is based off of the value from passed config.</span>
+<span class="sd">  </span>
+<span class="sd">  Returns -1 if the source is bad.</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+
+  <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Source&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;ORTHANC&#39;</span><span class="p">:</span>
+    <span class="n">imgs</span> <span class="o">=</span> <span class="n">orthanc</span><span class="o">.</span><span class="n">fetchImages</span><span class="p">(</span><span class="n">conf</span><span class="p">[</span><span class="s2">&quot;OrthancRESTAddress&quot;</span><span class="p">],</span> <span class="n">conf</span><span class="p">[</span><span class="s2">&quot;LastImageNumber&quot;</span><span class="p">],</span> <span class="n">profileinit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">imgs</span>
+  <span class="k">elif</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Source&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;TEST&#39;</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">getTestImgs</span><span class="p">()</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Invalid source passed. Please enter a valid source in the configuration.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="getSizeOfImages"><a class="viewcode-back" href="../../ctqa.html#ctqa.imgfetch.getSizeOfImages">[docs]</a><span class="k">def</span> <span class="nf">getSizeOfImages</span><span class="p">(</span><span class="n">conf</span><span class="p">):</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Gets the size of all images from images source based off of the passed configuration.</span>
+<span class="sd">  </span>
+<span class="sd">  Returns -1 if the source is bad.</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+
+  <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Source&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;ORTHANC&#39;</span><span class="p">:</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="n">orthanc</span><span class="o">.</span><span class="n">getSizeOfImages</span><span class="p">(</span><span class="n">conf</span><span class="p">[</span><span class="s2">&quot;OrthancRESTAddress&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">num</span>
+  <span class="k">elif</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Source&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;TEST&#39;</span><span class="p">:</span>
+    <span class="k">return</span> <span class="mf">1.5</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Invalid source passed. Please enter a valid source in the configuration.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div>
+
+<div class="viewcode-block" id="getTestImgs"><a class="viewcode-back" href="../../ctqa.html#ctqa.imgfetch.getTestImgs">[docs]</a><span class="k">def</span> <span class="nf">getTestImgs</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;Gets application test image paths.&#39;&#39;&#39;</span>
+
+  <span class="k">return</span> <span class="p">[</span>
+    <span class="n">resource_path</span><span class="p">(</span><span class="s2">&quot;test/data/imgA.dcm&quot;</span><span class="p">),</span>
+    <span class="n">resource_path</span><span class="p">(</span><span class="s2">&quot;test/data/imgB.dcm&quot;</span><span class="p">),</span> 
+    <span class="n">resource_path</span><span class="p">(</span><span class="s2">&quot;test/data/imgC.dcm&quot;</span><span class="p">)</span>
+  <span class="p">]</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Reece Walsh.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.9',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

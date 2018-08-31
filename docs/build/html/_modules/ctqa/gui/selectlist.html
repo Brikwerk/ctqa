@@ -1,0 +1,363 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ctqa.gui.selectlist &mdash; CTQA 0.9 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> CTQA
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">CTQA</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>ctqa.gui.selectlist</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ctqa.gui.selectlist</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Select List</span>
+
+<span class="sd">Contains logic for implementing a list with selection, addition, and deletion functions.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="k">import</span> <span class="n">messagebox</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="k">import</span> <span class="n">ttk</span>
+
+
+<div class="viewcode-block" id="select_list"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.selectlist.select_list">[docs]</a><span class="k">class</span> <span class="nc">select_list</span><span class="p">(</span><span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">):</span>
+  <span class="sd">&#39;&#39;&#39;Main Select List class for instantiating the list in a Tkinter frame.&#39;&#39;&#39;</span>
+
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">selectcallbacks</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">selected</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">kw</span> <span class="o">=</span> <span class="n">kw</span>
+
+    <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+
+    <span class="c1"># create a canvas object and a vertical scrollbar for scrolling it</span>
+    <span class="n">vscrollbar</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Scrollbar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">)</span>
+    <span class="n">vscrollbar</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">FALSE</span><span class="p">)</span>
+    <span class="n">canvas</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Canvas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bd</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">highlightthickness</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">,</span>
+                    <span class="n">yscrollcommand</span><span class="o">=</span><span class="n">vscrollbar</span><span class="o">.</span><span class="n">set</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="o">=</span> <span class="n">canvas</span>
+    <span class="n">canvas</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">LEFT</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">BOTH</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">TRUE</span><span class="p">)</span>
+    <span class="n">vscrollbar</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="n">canvas</span><span class="o">.</span><span class="n">yview</span><span class="p">)</span>
+
+    <span class="c1"># reset the view</span>
+    <span class="n">canvas</span><span class="o">.</span><span class="n">xview_moveto</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">canvas</span><span class="o">.</span><span class="n">yview_moveto</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># create a frame inside the canvas which will be scrolled with it</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">interior</span> <span class="o">=</span> <span class="n">interior</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+    <span class="n">interior_id</span> <span class="o">=</span> <span class="n">canvas</span><span class="o">.</span><span class="n">create_window</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="n">interior</span><span class="p">,</span>
+                                        <span class="n">anchor</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">NW</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_mousewheel</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+      <span class="n">canvas</span><span class="o">.</span><span class="n">yview_scroll</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">delta</span> <span class="o">/</span> <span class="mi">120</span><span class="p">)),</span> <span class="s2">&quot;units&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Hack to fix bound scroll behaviour on Mac&#39;s variant of tkinter</span>
+    <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;Darwin&#39;</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">bind_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">bind_all</span><span class="p">(</span><span class="s2">&quot;&lt;MouseWheel&gt;&quot;</span><span class="p">,</span> <span class="n">_on_mousewheel</span><span class="p">)</span>
+
+    <span class="c1"># track changes to the canvas and frame width and sync them,</span>
+    <span class="c1"># also updating the scrollbar</span>
+    <span class="k">def</span> <span class="nf">_configure_interior</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+        <span class="c1"># update the scrollbars to match the size of the inner frame</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="n">interior</span><span class="o">.</span><span class="n">winfo_reqwidth</span><span class="p">(),</span> <span class="n">interior</span><span class="o">.</span><span class="n">winfo_reqheight</span><span class="p">())</span>
+        <span class="n">canvas</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">scrollregion</span><span class="o">=</span><span class="s2">&quot;0 0 </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">size</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">interior</span><span class="o">.</span><span class="n">winfo_reqwidth</span><span class="p">()</span> <span class="o">!=</span> <span class="n">canvas</span><span class="o">.</span><span class="n">winfo_width</span><span class="p">():</span>
+            <span class="c1"># update the canvas&#39;s width to fit the inner frame</span>
+            <span class="n">canvas</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">interior</span><span class="o">.</span><span class="n">winfo_reqwidth</span><span class="p">())</span>
+
+    <span class="n">interior</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Configure&gt;&#39;</span><span class="p">,</span> <span class="n">_configure_interior</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">_configure_canvas</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">interior</span><span class="o">.</span><span class="n">winfo_reqwidth</span><span class="p">()</span> <span class="o">!=</span> <span class="n">canvas</span><span class="o">.</span><span class="n">winfo_width</span><span class="p">():</span>
+            <span class="c1"># update the inner frame&#39;s width to fill the canvas</span>
+            <span class="n">canvas</span><span class="o">.</span><span class="n">itemconfigure</span><span class="p">(</span><span class="n">interior_id</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">canvas</span><span class="o">.</span><span class="n">winfo_width</span><span class="p">())</span>
+
+    <span class="n">canvas</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Configure&gt;&#39;</span><span class="p">,</span> <span class="n">_configure_canvas</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_destroy</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">unbind_all</span><span class="p">(</span><span class="s1">&#39;&lt;MouseWheel&gt;&#39;</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">interior</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Destroy&gt;&#39;</span><span class="p">,</span> <span class="n">_destroy</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="select_list.add"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.selectlist.select_list.add">[docs]</a>  <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">subtitle</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># Setting item contents and settings</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s1">&#39;container&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interior</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s1">&#39;container&#39;</span><span class="p">],</span>
+      <span class="n">text</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+      <span class="n">justify</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">LEFT</span><span class="p">,</span>
+      <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span>
+      <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s1">&#39;subtitle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s1">&#39;container&#39;</span><span class="p">],</span>
+      <span class="n">text</span><span class="o">=</span><span class="n">subtitle</span><span class="p">,</span>
+      <span class="n">justify</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">LEFT</span><span class="p">,</span>
+      <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span>
+      <span class="n">width</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+
+    <span class="c1"># Setting labels and frame same color as bg if available</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">kw</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;background&#39;</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s1">&#39;container&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">config</span><span class="p">(</span>
+        <span class="n">background</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kw</span><span class="p">[</span><span class="s1">&#39;background&#39;</span><span class="p">])</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">config</span><span class="p">(</span>
+        <span class="n">background</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kw</span><span class="p">[</span><span class="s1">&#39;background&#39;</span><span class="p">],</span>
+        <span class="n">highlightbackground</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kw</span><span class="p">[</span><span class="s1">&#39;background&#39;</span><span class="p">])</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s1">&#39;subtitle&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">config</span><span class="p">(</span>
+        <span class="n">background</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kw</span><span class="p">[</span><span class="s1">&#39;background&#39;</span><span class="p">],</span>
+        <span class="n">highlightbackground</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kw</span><span class="p">[</span><span class="s1">&#39;background&#39;</span><span class="p">])</span>
+
+    <span class="c1"># Packing</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s1">&#39;container&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s1">&#39;subtitle&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+
+    <span class="c1"># Setting font</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">font</span><span class="o">=</span><span class="s1">&#39;Helvetica 11 bold&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s1">&#39;subtitle&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">font</span><span class="o">=</span><span class="s1">&#39;Helvetica 10 bold&#39;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s1">&#39;#a2a1a1&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Binding select on click to elm</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s1">&#39;container&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;Button-1&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_element</span><span class="p">(</span><span class="nb">id</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;Button-1&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_element</span><span class="p">(</span><span class="nb">id</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s1">&#39;subtitle&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;Button-1&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_element</span><span class="p">(</span><span class="nb">id</span><span class="p">))</span>
+
+    <span class="c1"># Selecting elm if it&#39;s the first addition</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">selected</span> <span class="o">=</span> <span class="nb">id</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">select_color</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="select_list.bind_select_callback"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.selectlist.select_list.bind_select_callback">[docs]</a>  <span class="k">def</span> <span class="nf">bind_select_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">selectcallbacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="select_list.remove_selected"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.selectlist.select_list.remove_selected">[docs]</a>  <span class="k">def</span> <span class="nf">remove_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">selected</span><span class="p">][</span><span class="s1">&#39;container&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">selected</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="select_list.select_color"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.selectlist.select_list.select_color">[docs]</a>  <span class="k">def</span> <span class="nf">select_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s1">&#39;container&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">background</span><span class="o">=</span><span class="s1">&#39;#0068d9&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">background</span><span class="o">=</span><span class="s1">&#39;#0068d9&#39;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#0068d9&#39;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s1">&#39;subtitle&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">background</span><span class="o">=</span><span class="s1">&#39;#0068d9&#39;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#0068d9&#39;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="select_list.unselect_color"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.selectlist.select_list.unselect_color">[docs]</a>  <span class="k">def</span> <span class="nf">unselect_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s1">&#39;container&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">background</span><span class="o">=</span><span class="s1">&#39;#fff&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">background</span><span class="o">=</span><span class="s1">&#39;#fff&#39;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#fff&#39;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s1">&#39;subtitle&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">background</span><span class="o">=</span><span class="s1">&#39;#fff&#39;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#fff&#39;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s1">&#39;#a2a1a1&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="select_list.select_element"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.selectlist.select_list.select_element">[docs]</a>  <span class="k">def</span> <span class="nf">select_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">unselect_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">selected</span> <span class="o">=</span> <span class="nb">id</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">select_color</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+    <span class="c1"># Call all bound callbacks</span>
+    <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectcallbacks</span><span class="p">:</span>
+      <span class="n">callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="select_list.change_id"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.selectlist.select_list.change_id">[docs]</a>  <span class="k">def</span> <span class="nf">change_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">oldid</span><span class="p">,</span> <span class="n">newid</span><span class="p">):</span>
+    <span class="n">tempItem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="n">oldid</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">oldid</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">tempItem</span><span class="p">[</span><span class="n">newid</span><span class="p">]</span> <span class="o">=</span> <span class="n">tempItem</span>
+
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected</span> <span class="o">==</span> <span class="n">oldid</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">selected</span> <span class="o">==</span> <span class="n">newid</span></div></div>
+    
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Reece Walsh.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.9',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

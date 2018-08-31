@@ -1,0 +1,762 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ctqa.gui.profileclient &mdash; CTQA 0.9 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> CTQA
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">CTQA</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>ctqa.gui.profileclient</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ctqa.gui.profileclient</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">platform</span><span class="o">,</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="k">import</span> <span class="n">messagebox</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="k">import</span> <span class="n">font</span> <span class="k">as</span> <span class="n">tkFont</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="k">import</span> <span class="n">ttk</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">logutil</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">profileutil</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">autoprofiles</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">auditmethods</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">selectlist</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">logutil</span><span class="o">.</span><span class="n">MAIN_LOG_NAME</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="resource_path"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.profileclient.resource_path">[docs]</a><span class="k">def</span> <span class="nf">resource_path</span><span class="p">(</span><span class="n">relative_path</span><span class="p">):</span>
+  <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s1">&#39;_MEIPASS&#39;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">_MEIPASS</span><span class="p">,</span> <span class="n">relative_path</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">),</span> <span class="n">relative_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="profile_client"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.profileclient.profile_client">[docs]</a><span class="k">class</span> <span class="nc">profile_client</span><span class="p">:</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">firstrun</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">firstrun</span> <span class="o">=</span> <span class="n">firstrun</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">background</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">resizable</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Darwin&#39;</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="s1">&#39;750x500&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="s1">&#39;650x500&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;CTQA Audit Profiles&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+      <span class="n">img</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">PhotoImage</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">resource_path</span><span class="p">(</span><span class="s1">&#39;res/ctqa-icon.gif&#39;</span><span class="p">))</span>
+      <span class="n">parent</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;wm&#39;</span><span class="p">,</span> <span class="s1">&#39;iconphoto&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">.</span><span class="n">_w</span><span class="p">,</span> <span class="n">img</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">tk</span><span class="o">.</span><span class="n">TclError</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: Could not load ctqa-icon.gif from resources folder&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Setting up absolute locations</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">logpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">+</span> <span class="s1">&#39;/ctqa.log&#39;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">confpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">+</span> <span class="s1">&#39;/config.json&#39;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">reportspath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">+</span> <span class="s1">&#39;/reports&#39;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profilepath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">+</span> <span class="s1">&#39;/profiles.json&#39;</span>
+
+    <span class="c1">#Setting up component count</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tempid</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1">#Attempting to get profiles</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span> <span class="o">=</span> <span class="n">profileutil</span><span class="o">.</span><span class="n">openProfiles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profilepath</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profilesToAdd</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profilesChanged</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># Placing components</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">load_components</span><span class="p">()</span>
+
+    <span class="c1"># Binding keyboard shortcuts</span>
+    <span class="c1"># Ctrl-Shift-S =&gt; Save and Quit</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Control-Shift-Key-S&gt;&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_and_quit</span><span class="p">())</span>
+  
+
+<div class="viewcode-block" id="profile_client.load_components"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.profileclient.profile_client.load_components">[docs]</a>  <span class="k">def</span> <span class="nf">load_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c1"># Save and close buttons</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">buttonframe</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">savebutton</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buttonframe</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Save Profiles&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">DISABLED</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">save_profiles</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># Detecting if opened from client or first run</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">firstrun</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">closebutton</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buttonframe</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Next&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">exit_client</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">closebutton</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buttonframe</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Close&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">exit_client</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">closebutton</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">savebutton</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">15</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">buttonframe</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+    <span class="c1"># Frame for client elements</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">borderwidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">relief</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">SUNKEN</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+
+    <span class="c1"># Creating profile display and profile settings display</span>
+    <span class="c1"># If the profiles didn&#39;t load, offer to create profiles</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">background</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">errMsg</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Error: Could not load profiles.</span><span class="se">\n\n</span><span class="s1"> Would you like to:&#39;</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">genProfs</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Auto Find Profiles&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">23</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">auto_profiles</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">manProfs</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Enter Profiles Manually&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">23</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">manual_profiles</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">errMsg</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">genProfs</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;ne&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">manProfs</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;nw&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+
+      <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="c1">#Reconfiguring old elements and adding auto profile</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">borderwidth</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">genProfs</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buttonframe</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Auto Find Profiles&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">23</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">auto_profiles</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">genProfs</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+
+      <span class="c1"># Profile selection frame</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">profsel</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#fff&#39;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s2">&quot;#999&quot;</span><span class="p">,</span> <span class="n">highlightcolor</span><span class="o">=</span><span class="s2">&quot;#999&quot;</span><span class="p">,</span> <span class="n">highlightthickness</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">borderwidth</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+      
+      <span class="c1"># Profile information frame</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">profinfo</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">borderwidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">relief</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">SUNKEN</span><span class="p">)</span>
+      <span class="c1"># Adding container for info in profinfo</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfo</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">)</span>
+
+      <span class="c1"># Setting up profile selection</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">profsel</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;nsew&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">profinfo</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;nsew&#39;</span><span class="p">)</span>
+
+      <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+      <span class="c1"># Adding buttons to profile selection</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">profselbuttons</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profsel</span><span class="p">)</span>
+      <span class="c1"># Button styling for mac</span>
+      <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Darwin&#39;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profselbuttons</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">background</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
+
+      <span class="c1"># Add button</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">profadd</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profselbuttons</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">29</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">,</span><span class="n">borderwidth</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+      <span class="c1"># Add button styling on mac</span>
+      <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Darwin&#39;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profadd</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
+      <span class="k">try</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profaddimage</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">PhotoImage</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">resource_path</span><span class="p">(</span><span class="s1">&#39;res/add.gif&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profadd</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">profaddimage</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profadd</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profaddimage</span>
+      <span class="k">except</span> <span class="n">tk</span><span class="o">.</span><span class="n">TclError</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profadd</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Unable to load add profiles button image&quot;</span><span class="p">)</span>
+        <span class="k">pass</span>
+
+      <span class="c1">#Del button</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">profdel</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profselbuttons</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">29</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">,</span> <span class="n">borderwidth</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+      <span class="c1"># Del button styling on mac</span>
+      <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Darwin&#39;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profdel</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
+      <span class="k">try</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profdelimage</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">PhotoImage</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">resource_path</span><span class="p">(</span><span class="s1">&#39;res/del.gif&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profdel</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">profdelimage</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profdel</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profaddimage</span>
+      <span class="k">except</span> <span class="n">tk</span><span class="o">.</span><span class="n">TclError</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profdel</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Unable to load delete profiles button image&quot;</span><span class="p">)</span>
+        <span class="k">pass</span>
+      
+      <span class="bp">self</span><span class="o">.</span><span class="n">profselbuttons</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">profadd</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">profdel</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">profadd</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">add_profile</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">profdel</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">remove_profile</span><span class="p">)</span>
+
+      <span class="c1"># Creating list</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">proflist</span> <span class="o">=</span> <span class="n">selectlist</span><span class="o">.</span><span class="n">select_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profsel</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="s1">&#39;#fff&#39;</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">proflist</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">)</span>
+
+      <span class="k">for</span> <span class="n">profile</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proflist</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">[</span><span class="n">profile</span><span class="p">][</span><span class="s1">&#39;StationName&#39;</span><span class="p">],</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">[</span><span class="n">profile</span><span class="p">][</span><span class="s1">&#39;Manufacturer&#39;</span><span class="p">],</span>
+          <span class="n">profile</span>
+        <span class="p">)</span>
+
+      <span class="c1"># Binding display_info to select event for proflist</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">proflist</span><span class="o">.</span><span class="n">bind_select_callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display_info</span><span class="p">)</span>
+      <span class="c1"># Attempting to display info from selected profile</span>
+      <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">proflist</span><span class="o">.</span><span class="n">selected</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proflist</span><span class="o">.</span><span class="n">selected</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="profile_client.display_info"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.profileclient.profile_client.display_info">[docs]</a>  <span class="k">def</span> <span class="nf">display_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="o">.</span><span class="n">winfo_exists</span><span class="p">():</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+
+    <span class="c1"># Recreating container for info in profinfo</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfo</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+
+    <span class="c1"># Getting profile settings from profilesToAdd or profiles</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="p">):</span>
+      <span class="n">profile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">profilesToAdd</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="p">):</span>
+      <span class="n">profile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profilesToAdd</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Profile with id: </span><span class="si">%s</span><span class="s1"> could not be found&#39;</span> <span class="o">%</span> <span class="nb">id</span><span class="p">)</span>
+      <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="c1"># Labels</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profinfoname</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Station Name:&#39;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profinfomanf</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Manufacturer:&#39;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profinfomanfmod</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Manufacturer Model:&#39;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profinfoinst</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Institution Name:&#39;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profhomogname</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Homogeneity </span><span class="se">\n</span><span class="s1">Slice Location:&#39;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">proflinname</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Linearity </span><span class="se">\n</span><span class="s1">Slice Location:&#39;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># Baseline frame creation + placement</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profbaselinelabelframe</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profbaselinelabelframe</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;nsew&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profbaselinelabelframe</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profbaselinelabelframe</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profbaselinelabelframe</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1">#Baseline labels + placement</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profbaselabelmean</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profbaselinelabelframe</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Mean:&#39;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profbaselabelstd</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profbaselinelabelframe</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Std Dev:&#39;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profbaselabelmean</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;se&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profbaselabelstd</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;ne&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+
+    <span class="c1"># Label placement</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profinfoname</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stick</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profinfomanf</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">stick</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profinfomanfmod</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">stick</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profinfoinst</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stick</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profhomogname</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">stick</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">proflinname</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">stick</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+
+    <span class="c1"># Data Entry</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentryname</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">35</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profcombo</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Combobox</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">35</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentrymanfmod</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">35</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentryinst</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">35</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentryhomog</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">35</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentrylinear</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">35</span><span class="p">)</span>
+
+    <span class="c1"># Data entry placement</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentryname</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profcombo</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentrymanfmod</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentryinst</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentryhomog</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentrylinear</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Populating data entry</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentryname</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;StationName&#39;</span><span class="p">])</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentrymanfmod</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;ManufacturerModelName&#39;</span><span class="p">])</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentryinst</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;InstitutionName&#39;</span><span class="p">])</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentryhomog</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;HomogeneityPosition&#39;</span><span class="p">])</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentrylinear</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;LinearityPosition&#39;</span><span class="p">])</span>
+
+    <span class="c1"># Manufacturer combo box setup</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profcombo</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">profileutil</span><span class="o">.</span><span class="n">MANF_LIST</span> <span class="c1"># Load list of a valid manf options</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profcombo</span><span class="p">[</span><span class="s1">&#39;state&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;readonly&#39;</span>
+    <span class="c1"># If the profile&#39;s manfacturer info is in the list, set combobox to it</span>
+    <span class="k">if</span> <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;Manufacturer&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">profileutil</span><span class="o">.</span><span class="n">MANF_LIST</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">profcombo</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;Manufacturer&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">profcombo</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;Select a manfacturer...&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profcombo</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;ComboboxSelected&gt;&gt;&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_change</span><span class="p">(</span><span class="s1">&#39;Manufacturer&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profcombo</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="nb">id</span><span class="p">))</span> <span class="c1"># Save and update components on change</span>
+
+    <span class="c1"># Baseline Entries</span>
+    <span class="k">try</span><span class="p">:</span>
+      <span class="n">directions</span> <span class="o">=</span> <span class="n">auditmethods</span><span class="o">.</span><span class="n">getAuditDirections</span><span class="p">(</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;Manufacturer&#39;</span><span class="p">])</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+      <span class="n">directions</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;NORTH&#39;</span><span class="p">,</span> <span class="s1">&#39;SOUTH&#39;</span><span class="p">,</span> <span class="s1">&#39;EAST&#39;</span><span class="p">,</span> <span class="s1">&#39;WEST&#39;</span><span class="p">,</span> <span class="s1">&#39;CENTER&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Adding std deviation to directions</span>
+    <span class="n">directions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;STD&#39;</span><span class="p">)</span>
+    
+    <span class="bp">self</span><span class="o">.</span><span class="n">baselineentries</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">baselinecont</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">LabelFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Baseline Water CT#&#39;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">baselinecont</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">baselinecont</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">baselinecont</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">entryCount</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">direction</span> <span class="ow">in</span> <span class="n">directions</span><span class="p">:</span>
+      <span class="c1"># Setting up baseline direction label</span>
+      <span class="c1"># Not placing label for STD</span>
+      <span class="k">if</span> <span class="n">direction</span> <span class="o">!=</span> <span class="s1">&#39;STD&#39;</span><span class="p">:</span>
+        <span class="n">directionlabel</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baselinecont</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">direction</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
+        <span class="n">directionlabel</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">entryCount</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
+
+      <span class="c1"># Setting up baseline direction entry</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">baselineentries</span><span class="p">[</span><span class="n">direction</span><span class="p">]</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baselinecont</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+      <span class="c1"># Placing STD on next Line</span>
+      <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;STD&#39;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">baselineentries</span><span class="p">[</span><span class="n">direction</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">entryCount</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;n&#39;</span><span class="p">)</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">baselineentries</span><span class="p">[</span><span class="n">direction</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">entryCount</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;n&#39;</span><span class="p">)</span>
+
+      <span class="bp">self</span><span class="o">.</span><span class="n">baselinecont</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="n">entryCount</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+      <span class="n">entryCount</span> <span class="o">=</span> <span class="n">entryCount</span> <span class="o">+</span> <span class="mi">1</span>
+
+      <span class="k">if</span> <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;Baseline&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span> <span class="o">!=</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">baselineentries</span><span class="p">[</span><span class="n">direction</span><span class="p">]</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tk</span><span class="o">.</span><span class="n">END</span><span class="p">)</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;Baseline&#39;</span><span class="p">][</span><span class="n">direction</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">baselineentries</span><span class="p">[</span><span class="n">direction</span><span class="p">]</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">baselineentries</span><span class="p">[</span><span class="n">direction</span><span class="p">]</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+      <span class="c1"># Method that captures variable and returns lambda function with it</span>
+      <span class="c1"># We perform this so that we avoid the for loop overwriting the direction variable</span>
+      <span class="c1"># When the binding is called later (eg STD would be called for every direction)</span>
+      <span class="k">def</span> <span class="nf">make_lambda</span><span class="p">(</span><span class="n">var</span><span class="p">):</span>
+        <span class="k">return</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_change</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">baselineentries</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="nb">id</span><span class="p">,</span> <span class="n">baseline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+      <span class="bp">self</span><span class="o">.</span><span class="n">baselineentries</span><span class="p">[</span><span class="n">direction</span><span class="p">]</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;KeyRelease&gt;&quot;</span><span class="p">,</span> <span class="n">make_lambda</span><span class="p">(</span><span class="n">direction</span><span class="p">))</span>
+    
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">baselinecont</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;nsew&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">20</span><span class="p">))</span>
+    
+
+    <span class="c1"># Binding data entry to component_change</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentryname</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;KeyRelease&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_change</span><span class="p">(</span><span class="s2">&quot;StationName&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profentryname</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="nb">id</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentrymanfmod</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;KeyRelease&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_change</span><span class="p">(</span><span class="s2">&quot;ManufacturerModelName&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profentrymanfmod</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="nb">id</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentryinst</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;KeyRelease&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_change</span><span class="p">(</span><span class="s2">&quot;InstitutionName&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profentryinst</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="nb">id</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentryhomog</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;KeyRelease&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_change</span><span class="p">(</span><span class="s2">&quot;HomogeneityPosition&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profentryhomog</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="nb">id</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentrylinear</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;KeyRelease&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_change</span><span class="p">(</span><span class="s2">&quot;LinearityPosition&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profentrylinear</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="nb">id</span><span class="p">))</span>
+
+    <span class="c1"># Row and Column weights</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="profile_client.component_change"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.profileclient.profile_client.component_change">[docs]</a>  <span class="k">def</span> <span class="nf">component_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comp</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">profid</span><span class="p">,</span> <span class="n">baseline</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="c1"># Parsing input from homog/linearity</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">changes_made</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">comp</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;HomogeneityPosition&#39;</span><span class="p">,</span> <span class="s1">&#39;LinearityPosition&#39;</span><span class="p">]:</span>
+      <span class="k">try</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+      <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span>
+    
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">profid</span><span class="p">):</span>
+      <span class="c1"># Updating current profile value</span>
+      <span class="k">if</span> <span class="n">baseline</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">[</span><span class="n">profid</span><span class="p">][</span><span class="s1">&#39;Baseline&#39;</span><span class="p">][</span><span class="n">comp</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+          <span class="k">pass</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">[</span><span class="n">profid</span><span class="p">][</span><span class="n">comp</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">profilesChanged</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">profilesToAdd</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">profid</span><span class="p">):</span>
+      <span class="k">if</span> <span class="n">baseline</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">profilesToAdd</span><span class="p">[</span><span class="n">profid</span><span class="p">][</span><span class="s1">&#39;Baseline&#39;</span><span class="p">][</span><span class="n">comp</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+          <span class="k">pass</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profilesToAdd</span><span class="p">[</span><span class="n">profid</span><span class="p">][</span><span class="n">comp</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Profile with id: </span><span class="si">%s</span><span class="s1"> could not be found&#39;</span> <span class="o">%</span> <span class="n">profid</span><span class="p">)</span>
+      <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="profile_client.auto_profiles"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.profileclient.profile_client.auto_profiles">[docs]</a>  <span class="k">def</span> <span class="nf">auto_profiles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c1"># Asking if the user wishes to download all images from source</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">autoprofiles</span><span class="o">.</span><span class="n">getSize</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;Auto finding CT profiles will download </span><span class="si">%s</span><span class="s1"> MB of images and clear any unsaved, manually entered profiles.</span>
+<span class="s1">      </span><span class="se">\n</span><span class="s1"> Are you sure you wish to continue?&#39;&#39;&#39;</span> <span class="o">%</span> <span class="n">size</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">update</span><span class="p">()</span> <span class="c1"># Ensuring messagebox works on mac</span>
+      <span class="n">userchoice</span> <span class="o">=</span> <span class="n">messagebox</span><span class="o">.</span><span class="n">askyesno</span><span class="p">(</span><span class="s2">&quot;Image Download&quot;</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+
+      <span class="c1"># If the user agrees</span>
+      <span class="k">if</span> <span class="n">userchoice</span><span class="p">:</span>
+        <span class="c1"># Showing progress bar</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auto_profiles_progress</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Toplevel</span><span class="p">(</span><span class="n">master</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auto_profiles_progress</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="s1">&#39;250x100&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auto_profiles_title</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">LabelFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">auto_profiles_progress</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Finding Profiles&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auto_profiles_title</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Progressbar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">auto_profiles_title</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;indeterminate&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="c1"># Defining auto profile function to run on a thread</span>
+        <span class="k">def</span> <span class="nf">run_auto</span><span class="p">(</span><span class="n">cleanup</span><span class="p">):</span>
+          <span class="c1"># Running auto profiler</span>
+          <span class="n">autoprofiles</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+          <span class="c1"># Cleaning up</span>
+          <span class="n">cleanup</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">cleanup</span><span class="p">():</span>
+          <span class="c1"># Re-opening profiles.json with new profiles</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span> <span class="o">=</span> <span class="n">profileutil</span><span class="o">.</span><span class="n">openProfiles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profilepath</span><span class="p">)</span>
+
+          <span class="c1"># Reloading the profile client</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">proflist</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">proflist</span><span class="o">.</span><span class="n">interior</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">proflist</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">buttonframe</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">load_components</span><span class="p">()</span>
+
+          <span class="c1">#Destroying progress bar</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">auto_profiles_progress</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+        
+        <span class="c1"># Running auto profiler on thread</span>
+        <span class="n">thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">run_auto</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">cleanup</span><span class="p">,))</span>
+        <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;Invalid configuration profile. The utility was unable to check for images to download from the source.</span>
+<span class="s1">      </span><span class="se">\n</span><span class="s1"> Please check the configuration for valid values and attempt to auto find again.&#39;&#39;&#39;</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+      <span class="n">messagebox</span><span class="o">.</span><span class="n">showerror</span><span class="p">(</span><span class="s1">&#39;Auto Find Error&#39;</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="profile_client.manual_profiles"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.profileclient.profile_client.manual_profiles">[docs]</a>  <span class="k">def</span> <span class="nf">manual_profiles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">buttonframe</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">load_components</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="profile_client.add_profile"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.profileclient.profile_client.add_profile">[docs]</a>  <span class="k">def</span> <span class="nf">add_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c1"># Adding new profile under a temp key to the select list</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">proflist</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;Station Name&#39;</span><span class="p">,</span> <span class="s1">&#39;Manufacturer&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tempid</span><span class="p">)</span>
+
+    <span class="c1"># Adding new temp profile key to profilesToAdd dict</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profilesToAdd</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tempid</span><span class="p">]</span> <span class="o">=</span> <span class="n">profileutil</span><span class="o">.</span><span class="n">getDefaultProfile</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">display_info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tempid</span><span class="p">)</span>
+    
+    <span class="c1"># Selecting newly created profile</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">proflist</span><span class="o">.</span><span class="n">select_element</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tempid</span><span class="p">)</span>
+
+    <span class="c1"># Incrementing key for next profile</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tempid</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1">#Enabling the save button since we made changes</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">changes_made</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="profile_client.remove_profile"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.profileclient.profile_client.remove_profile">[docs]</a>  <span class="k">def</span> <span class="nf">remove_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c1"># Popping from profilesToAdd in case it was a new profile</span>
+    <span class="c1"># Will return none if it&#39;s an existing profile</span>
+    <span class="n">wasNewProfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profilesToAdd</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proflist</span><span class="o">.</span><span class="n">selected</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># If the profile was not in profilesToAdd, the key exists in the profiles.json</span>
+    <span class="c1"># file, thus, we need to delete it from there as well. We delete the profile dict</span>
+    <span class="c1"># and will save the profile dict back to profiles.json on save</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">wasNewProfile</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proflist</span><span class="o">.</span><span class="n">selected</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    
+    <span class="c1"># Removing profile from list</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">proflist</span><span class="o">.</span><span class="n">remove_selected</span><span class="p">()</span>
+    <span class="c1"># Enabling saving</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">changes_made</span><span class="p">()</span>
+
+    <span class="c1"># Clearing profile info frame, if it exists</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="o">.</span><span class="n">winfo_exists</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="profile_client.changes_made"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.profileclient.profile_client.changes_made">[docs]</a>  <span class="k">def</span> <span class="nf">changes_made</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">savebutton</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">NORMAL</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="profile_client.save_profiles"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.profileclient.profile_client.save_profiles">[docs]</a>  <span class="k">def</span> <span class="nf">save_profiles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c1"># If a profile change has been made, iterate through profiles</span>
+    <span class="c1"># and check that the key is the sum of the attributes</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profilesChanged</span><span class="p">:</span>
+      <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">currentName</span> <span class="o">=</span> <span class="n">profileutil</span><span class="o">.</span><span class="n">getProfileName</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">currentName</span> <span class="o">!=</span> <span class="n">key</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">currentName</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+          <span class="n">tempProfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">[</span><span class="n">currentName</span><span class="p">]</span> <span class="o">=</span> <span class="n">tempProfile</span>
+          <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Key change detected&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Merging new profiles with current profiles</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profilesToAdd</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="c1"># Validating and saving profiles</span>
+      <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">profilesToAdd</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">profile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profilesToAdd</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="c1"># Checking that profile is valid</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">profileutil</span><span class="o">.</span><span class="n">validProfile</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+          <span class="c1"># If so, we make the id from the attrbs</span>
+          <span class="nb">id</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;StationName&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;-&#39;</span><span class="o">+</span>
+            <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;Manufacturer&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">+</span><span class="s1">&#39;-&#39;</span><span class="o">+</span>
+            <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;ManufacturerModelName&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">+</span><span class="s1">&#39;-&#39;</span><span class="o">+</span>
+            <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;InstitutionName&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+          <span class="p">)</span>
+          <span class="c1"># Assign to own field in the profiles dict</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">profile</span>
+        <span class="k">else</span><span class="p">:</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+          <span class="n">messagebox</span><span class="o">.</span><span class="n">showerror</span><span class="p">(</span><span class="s1">&#39;Save Error&#39;</span><span class="p">,</span> <span class="s1">&#39;Could not save profiles. An error occured during &#39;</span> <span class="o">+</span>
+            <span class="s1">&#39;the save. </span><span class="se">\n</span><span class="s1">Please make sure all profile fields are filled in. </span><span class="se">\n</span><span class="s1">Consult &#39;</span><span class="o">+</span>
+            <span class="s1">&#39;the log for more details.&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+          <span class="k">return</span>
+    <span class="c1"># Resetting profilesToAdd</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profilesToAdd</span> <span class="o">=</span> <span class="p">{}</span>
+    
+    <span class="c1"># Saving profiles</span>
+    <span class="n">profileutil</span><span class="o">.</span><span class="n">saveProfiles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profilepath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">)</span>
+    <span class="c1"># Reload components panel due to self.profiles update</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">buttonframe</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">load_components</span><span class="p">()</span>
+    <span class="c1"># Disable save button</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">savebutton</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">DISABLED</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="profile_client.add_placeholder_to"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.profileclient.profile_client.add_placeholder_to">[docs]</a>  <span class="k">def</span> <span class="nf">add_placeholder_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry</span><span class="p">,</span> <span class="n">placeholder</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">normal_color</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">cget</span><span class="p">(</span><span class="s2">&quot;fg&quot;</span><span class="p">)</span>
+    <span class="n">normal_font</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">cget</span><span class="p">(</span><span class="s2">&quot;font&quot;</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">font</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="n">font</span> <span class="o">=</span> <span class="n">normal_font</span>
+
+    <span class="n">state</span> <span class="o">=</span> <span class="n">Placeholder_State</span><span class="p">()</span>
+    <span class="n">state</span><span class="o">.</span><span class="n">normal_color</span><span class="o">=</span><span class="n">normal_color</span>
+    <span class="n">state</span><span class="o">.</span><span class="n">normal_font</span><span class="o">=</span><span class="n">normal_font</span>
+    <span class="n">state</span><span class="o">.</span><span class="n">placeholder_color</span><span class="o">=</span><span class="n">color</span>
+    <span class="n">state</span><span class="o">.</span><span class="n">placeholder_font</span><span class="o">=</span><span class="n">font</span>
+    <span class="n">state</span><span class="o">.</span><span class="n">placeholder_text</span> <span class="o">=</span> <span class="n">placeholder</span>
+    <span class="n">state</span><span class="o">.</span><span class="n">with_placeholder</span><span class="o">=</span><span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">on_focusin</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">entry</span><span class="o">=</span><span class="n">entry</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">):</span>
+      <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">with_placeholder</span><span class="p">:</span>
+        <span class="n">entry</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">)</span>
+        <span class="n">entry</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">fg</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">normal_color</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">state</span><span class="o">.</span><span class="n">normal_font</span><span class="p">)</span>
+    
+        <span class="n">state</span><span class="o">.</span><span class="n">with_placeholder</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">on_focusout</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">entry</span><span class="o">=</span><span class="n">entry</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">):</span>
+      <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">entry</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">placeholder_text</span><span class="p">)</span>
+        <span class="n">entry</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">fg</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">placeholder_color</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">state</span><span class="o">.</span><span class="n">placeholder_font</span><span class="p">)</span>
+        
+        <span class="n">state</span><span class="o">.</span><span class="n">with_placeholder</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="n">entry</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">placeholder</span><span class="p">)</span>
+    <span class="n">entry</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">fg</span> <span class="o">=</span> <span class="n">color</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">font</span><span class="p">)</span>
+
+    <span class="n">entry</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;FocusIn&gt;&#39;</span><span class="p">,</span> <span class="n">on_focusin</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">)</span>
+    <span class="n">entry</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;FocusOut&gt;&#39;</span><span class="p">,</span> <span class="n">on_focusout</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">)</span>
+    
+    <span class="n">entry</span><span class="o">.</span><span class="n">placeholder_state</span> <span class="o">=</span> <span class="n">state</span>
+
+    <span class="k">return</span> <span class="n">state</span></div>
+
+
+
+<div class="viewcode-block" id="profile_client.exit_client"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.profileclient.profile_client.exit_client">[docs]</a>  <span class="k">def</span> <span class="nf">exit_client</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">firstrun</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span></div>
+
+  
+<div class="viewcode-block" id="profile_client.save_and_quit"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.profileclient.profile_client.save_and_quit">[docs]</a>  <span class="k">def</span> <span class="nf">save_and_quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">save_profiles</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">exit_client</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="Placeholder_State"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.profileclient.Placeholder_State">[docs]</a><span class="k">class</span> <span class="nc">Placeholder_State</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+  <span class="vm">__slots__</span> <span class="o">=</span> <span class="s1">&#39;normal_color&#39;</span><span class="p">,</span> <span class="s1">&#39;normal_font&#39;</span><span class="p">,</span> <span class="s1">&#39;placeholder_text&#39;</span><span class="p">,</span> <span class="s1">&#39;placeholder_color&#39;</span><span class="p">,</span> <span class="s1">&#39;placeholder_font&#39;</span><span class="p">,</span> <span class="s1">&#39;with_placeholder&#39;</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Reece Walsh.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.9',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
