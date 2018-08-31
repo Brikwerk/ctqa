@@ -2,18 +2,15 @@
 
 block_cipher = None
 
-options = [ 
-    ('--onefile', None, 'OPTION'),
-    ('--windowed', None, 'OPTION')
-]
 
 a = Analysis(['run.py'],
+             pathex=['R:\\CTQA-Dev'],
              binaries=[],
              datas=[
                  ('res/*', 'res'),
                  ('test/data/*', 'test/data')
                 ],
-             hiddenimports=[],
+             hiddenimports = [],
              hookspath=[],
              runtime_hooks=[],
              excludes=[],
@@ -24,17 +21,20 @@ pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 exe = EXE(pyz,
           a.scripts,
-          options,
-          a.binaries,
-          a.zipfiles,
-          a.datas,
-          name='run',
+          exclude_binaries=True,
+          name='CTQA',
           debug=True,
           strip=False,
           upx=True,
-          runtime_tmpdir=None,
           console=True,
           icon='res/ctqa-icon.ico' )
+coll = COLLECT(exe,
+               a.binaries,
+               a.zipfiles,
+               a.datas,
+               strip=False,
+               upx=True,
+               name='CTQA')
 
 app = BUNDLE(exe,
          name='CTQA.app',
