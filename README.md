@@ -25,15 +25,15 @@ Note for windows users: An illustrated guide exists under the docs folder
 
 3. To compile CTQA, run:
 
-'''
+```
 pyinstaller run.spec
-'''
+```
 
 or for a binary with a console debug output:
 
-'''
+```
 pyinstaller run-debug.spec
-'''
+```
 
 # Notes:
 CTs used with this utility must output DICOM tags StationName, Manufacturer, ManufacturerModelName, and InstitutionName. These attributes are used to recognize a CT from given images.
