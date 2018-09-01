@@ -11,7 +11,8 @@ Currently compatible with Orthanc PACS server instances.
 
 Note for windows users: An illustrated guide exists under the docs folder
 
-1. Please download a compatible release distribution from [here](https:/github.com/Brikwerk/ctqa/releases)
+1. Please download a compatible release distribution from 
+[here](https:/github.com/brikwerk/ctqa/releases)
 
 2. Extract the executable to a sensible location. Please keep in mind that the windows distribution of CTQA will create extra files and folders.
 
