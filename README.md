@@ -5,6 +5,10 @@ An application for automated CT quality assurance.
 
 Currently compatible with Orthanc PACS server instances.
 
+The application currently is capable of monitoring homogeneity values to detect drift. Homogeneity values from the center of a phantom image are collected over time and reports are generated from this. Homogeneity drift detection is computed through linear regression of the past month of points. A prediction is made two months into the future with the trend.
+
+Generated reports can also be emailed to the user when new data is checked. Currently, only Microsoft exchange servers are supported for email notifications.
+
 # Getting Started
 
 ## Running CTQA
