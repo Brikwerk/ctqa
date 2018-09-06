@@ -40,4 +40,4 @@ pyinstaller run-debug.spec
 ```
 
 # Notes:
-CTs used with this utility must output DICOM tags StationName, Manufacturer, ManufacturerModelName, and InstitutionName. These attributes are used to recognize a CT from given images.
+CTs used with this utility must output DICOM tags StationName (0008,1010), Manufacturer (0008,0070), ManufacturerModelName (0008,1090), and InstitutionName (0008,0080). These attributes are used to recognize a CT from given images.
