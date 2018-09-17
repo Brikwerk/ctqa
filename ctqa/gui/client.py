@@ -171,20 +171,8 @@ class ctqa_client:
     try:
       self.statImg = Image.open(resource_path('res/service-unreg.gif'))
       self.statImgTk = ImageTk.PhotoImage(self.statImg)
-
-      # Creating status labels
-      # Status indicator
-      #self.roundedbutton = tk.Label(self.statusFrame, anchor='s', compound=tk.RIGHT, text='CTQA Status:  ', image=self.statImgTk, bg="#ccc")
-      #self.roundedbutton.image = self.statImgTk
-      #self.roundedbutton.pack(expand=True, side='top', fill='x')
     except FileNotFoundError:
       logger.error("ERROR: Could not load service-unreg.gif from resources folder")
-
-      # Creating status labels
-      # Status indicator
-      #self.serviceStatus = "Unregistered"
-      #self.roundedbutton = tk.Label(self.statusFrame, anchor='s', compound=tk.RIGHT, text='CTQA Status:  ' + self.serviceStatus, bg="#ccc")
-      #self.roundedbutton.pack(expand=True, side='top', fill='x')
 
     #Fetching Source status
     if isinstance(self.config, int):
@@ -195,9 +183,6 @@ class ctqa_client:
     # Source status
     self.sourcestatus = tk.Label(self.statusFrame, anchor=tk.CENTER, text="Source: " + str(srcres), bg='#ccc')
     self.sourcestatus.pack(expand=True, side='top', fill='x')
-    # Last run status
-    #self.lastrunstatus = tk.Label(self.statusFrame, anchor='n', text="Last Run: 18/07/11", bg='#ccc')
-    #self.lastrunstatus.pack(expand=True, side='top', fill='x', pady=(0,10))
 
     # Creating CTQA config buttons frame
     self.configFrame = tk.Frame(self.settingsFrame, height=300, width=100, background='#ddd')
@@ -219,9 +204,6 @@ class ctqa_client:
     # Manage QA Profiles
     self.configServiceProfiles = tk.Button(self.configFrame, text="Manage QA Profiles", highlightbackground='#ddd', command=self.open_profile_client)
     self.configServiceProfiles.pack(expand=True, fill='x')
-
-    # Refreshing service status pane to check for installation
-    #self.refresh_service_status()
 
 
   def createLogElements(self):
@@ -515,8 +497,6 @@ class ctqa_client:
   def service_uninstall(self):
     # Attempt to uninstall service
     servicemanager.uninstall()
-    # Refresh service panel after attempted uninstall
-    #self.refresh_service_status()
 
 
   def refresh_service_status(self):
