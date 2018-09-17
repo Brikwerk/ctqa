@@ -76,14 +76,17 @@ def groupSeries(imgs):
         hasattr(data, 'InstitutionName') and \
         hasattr(data, 'RescaleSlope') and \
         hasattr(data, 'RescaleIntercept') and \
-        hasattr(data, 'pixel_array'):
-          # Organizing by Series UID in dict object. Data appended into list.
-          seriesUID = data.SeriesInstanceUID
-          if SERIES.get(seriesUID) == None: # If list doesn't exist
-            SERIES[seriesUID] = []
-            SERIES[seriesUID].append(data)
-          else: # List does exist
-            SERIES[seriesUID].append(data)
+        hasattr(data, 'pixel_array') and \
+        hasattr(data, 'ImageType'):
+          # Checking that the image type tag is ORIGINAL/PRIMARY/AXIAL (A QC type)
+          if data.ImageType == ['ORIGINAL', 'PRIMARY', 'AXIAL']:
+            # Organizing by Series UID in dict object. Data appended into list.
+            seriesUID = data.SeriesInstanceUID
+            if SERIES.get(seriesUID) == None: # If list doesn't exist
+              SERIES[seriesUID] = []
+              SERIES[seriesUID].append(data)
+            else: # List does exist
+              SERIES[seriesUID].append(data)
 
     except AttributeError as e: # Passing over any img w/o UID
       logger.error('Attribute Error on image in dataset: ' + str(e))
