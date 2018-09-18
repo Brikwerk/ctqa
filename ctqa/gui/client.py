@@ -11,6 +11,7 @@ from tkinter import messagebox
 from PIL import Image, ImageTk
 from collections import deque
 from .. import servicemanager
+from .. import reportutil
 from . import profileclient
 from . import configclient
 from . import credclient
@@ -62,6 +63,9 @@ class ctqa_client:
     self.mainfrm = ttk.Frame(self.parent, style='Main.TFrame', padding=(10, 5, 10, 5))
     self.mainfrm.grid(column=0, row=0, sticky=(tk.N, tk.S, tk.E, tk.W))
 
+    # Menubar
+    self.createMenubar()
+
     # Report section
     self.createReportList()
     self.createReportElements()
@@ -86,6 +90,23 @@ class ctqa_client:
 
     self.parent.attributes("-topmost", True)
     self.parent.attributes('-topmost', 0)
+
+  
+  def createMenubar(self):
+    menubar = tk.Menu(self.parent)
+
+    # Create CTQA pulldown menu
+    filemenu = tk.Menu(menubar, tearoff=0)
+    filemenu.add_command(label="Exit", command=self.parent.quit)
+    menubar.add_cascade(label="CTQA", menu=filemenu)
+
+    # Create Reports pulldown menu
+    editmenu = tk.Menu(menubar, tearoff=0)
+    editmenu.add_command(label="Regenerate Reports", command=self.regenerate_reports)
+    menubar.add_cascade(label="Reports", menu=editmenu)
+
+    # Display menu
+    self.parent.config(menu=menubar)
 
 
   def createReportList(self):
@@ -498,73 +519,24 @@ class ctqa_client:
     # Attempt to uninstall service
     servicemanager.uninstall()
 
+  def regenerate_reports(self):
+    '''Finds all report folders and updates reports based on existing data'''
+    # Getting report names and paths to the data
+    datapath = os.path.join(self.location, "data")
+    pathitems = os.listdir(datapath)
+    subnames = []
+    for item in pathitems:
+      itempath = os.path.join(datapath, item)
+      if os.path.isdir(itempath):
+        subnames.append(item)
 
-  def refresh_service_status(self):
-    sysos = platform.system()
-
-    # Detecting which method to check for service
-    if sysos == 'Windows':
-      # Connection to Windows Task Scheduler
-      scheduler = win32com.client.Dispatch("Schedule.Service")
-      scheduler.Connect()
-
-      # Getting root folder and getting task names
-      rootFolder = scheduler.GetFolder("\\")
-      tasks = rootFolder.GetTasks(0)
-      names = [tasks.Item(i+1).Name for i in range(tasks.Count)]
-
-      # If CTQA is present in task names, update image and button
-      if 'CTQA' in names:
-        self.service_on()
-      else:
-        self.service_off()
-
-    elif sysos == 'Linux' or sysos == 'Darwin':
-      # TODO: Check chron jobs here
-      print('')
-
-
-  def service_on(self):
-    '''Update service status pane to reflect that the CTQA audit service is on'''
-    # Updating service status image
-    try:
-      self.statImg = Image.open(resource_path('res/service-on.gif'))
-      self.statImgTk = ImageTk.PhotoImage(self.statImg)
-
-      self.roundedbutton.config(image=self.statImgTk)
-
-      self.roundedbutton.image = self.statImgTk
-    except FileNotFoundError:
-      logger.error("ERROR: Could not load service-on.gif from resources folder")
-    
-    # Updating button text
-    self.roundedbutton.config(text='CTQA Status: Running ')
-
-    # Updating install button text/command
-    self.configServiceInst.config(text="Uninstall Service")
-    self.configServiceInst.config(command=self.service_uninstall)
-
-    self.lastrunstatus.config(text='Last Run: NA')
-
-
-  def service_off(self):
-    '''Updates service status pane to reflect that the CTQA audit service is off'''
-    # Updating service status image
-    try:
-      self.statImg = Image.open(resource_path('res/service-unreg.gif'))
-      self.statImgTk = ImageTk.PhotoImage(self.statImg)
-
-      self.roundedbutton.config(image=self.statImgTk)
-
-      self.roundedbutton.image = self.statImgTk
-    except FileNotFoundError:
-      logger.error("ERROR: Could not load service-unreg.gif from resources folder")
-    
-    #Updating button text
-    self.roundedbutton.config(text='CTQA Status: Unregistered ')
-
-    # Updating install button text/command
-    self.configServiceInst.config(text="Install Service")
-    self.configServiceInst.config(command=self.service_install)
-
-    self.lastrunstatus.config(text='Last Run: NA')
+    # Generating reports
+    for site in subnames:
+      # Put together data.json location
+      sitepath = os.path.join(datapath, site)
+      # Get title from site name
+      title = site.split('-')[3] + '-' + site.split('-')[2] + '-' + site.split('-')[0]
+      # If the Reports folder location isn't DEFAULT, store reports there
+      replocation = 'reports'
+      # Create report
+      reportutil.generateReport(sitepath, replocation, title, self.config.get("DaysToGraph"), self.config['DaysToForecast'])
