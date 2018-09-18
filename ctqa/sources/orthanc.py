@@ -9,7 +9,7 @@ import shutil
 import tempfile
 import httplib2
 import http
-import sys
+import sys, os
 import json
 import logging
 
@@ -23,6 +23,8 @@ else:
     
 #Logger init
 logger = logging.getLogger(logutil.MAIN_LOG_NAME)
+
+LOCATION = os.path.abspath(os.path.dirname(sys.argv[0]))
 
 
 def getSizeOfImages(address):
@@ -90,8 +92,10 @@ def fetchImages(URL, lastImageNumber, profileinit=False):
           
   logger.debug("Retrieved/stored images: %s", images)
   
+  # If this isn't a profile initialization run from the auto-profiler
   if not profileinit:
-    confutil.updateConfig(confutil.DEFAULT_CONFIG_LOCATION, "LastImageNumber", start)  
+    configpath = os.path.join(LOCATION, confutil.DEFAULT_CONFIG_LOCATION)
+    confutil.updateConfig(configpath, "LastImageNumber", start)  
   
   return images
 
