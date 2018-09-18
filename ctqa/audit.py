@@ -77,9 +77,9 @@ def groupSeries(imgs):
         hasattr(data, 'RescaleSlope') and \
         hasattr(data, 'RescaleIntercept') and \
         hasattr(data, 'pixel_array') and \
-        hasattr(data, 'ImageType'):
-          # Checking that the image type tag is ORIGINAL/PRIMARY/AXIAL (A QC type)
-          if data.ImageType == ['ORIGINAL', 'PRIMARY', 'AXIAL']:
+        hasattr(data, 'PatientBirthDate'):
+          # Checking that the image has NO birthdate
+          if data.PatientBirthDate == '':
             # Organizing by Series UID in dict object. Data appended into list.
             seriesUID = data.SeriesInstanceUID
             if SERIES.get(seriesUID) == None: # If list doesn't exist
