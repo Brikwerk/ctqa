@@ -5,6 +5,7 @@ Detects the OS and installs the CTQA service to run the audit on a regular basis
 '''
 
 import platform
+import pywintypes
 import win32com
 import win32com.shell.shell as shell
 import win32event
@@ -55,8 +56,14 @@ def install_windows():
     hh = dict['hProcess']
     ret = win32event.WaitForSingleObject(hh, -1)
     logger.debug("Shell installation result: " + str(ret))
-  except Exception as e:
+  except pywintypes.error as e:
     logger.error("Error in UAC prompt for windows installation: " + str(e))
+
+  # If CTQA is present in task names, update image and button
+  #if service_installed():
+  #  logger.warning('Service was installed successfully.')
+  #else:
+  #  logger.error('Unsuccessful service install')
 
 
 def uninstall():
