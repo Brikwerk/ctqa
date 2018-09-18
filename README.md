@@ -9,7 +9,7 @@ The application is capable of monitoring homogeneity values and detecting an imm
 
 Generated reports can also be emailed to the user when new data is checked. Currently, only Microsoft exchange servers are supported for email notifications.
 
-# Notes:
+## Notes:
 CTs used with this utility must output DICOM tags StationName (0008,1010), Manufacturer (0008,0070), ManufacturerModelName (0008,1090), ImageType (0008,0008) with values ORIGINAL/PRIMARY/AXIAL, and InstitutionName (0008,0080). These attributes are used to recognize a CT from given images.
 
 # Getting Started
