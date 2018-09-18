@@ -58,8 +58,8 @@ class credentials_client:
     # Creating Protocol label and textbox
     self.protocollabel = tk.Label(self.mainframe, text='Protocol')
     self.protocolcombo = ttk.Combobox(self.mainframe, width=23, background='#ededed')
-    self.protocolcombo['values'] = ['Exchange', 'SMTP']
-    self.protocolcombo.set('SMTP')
+    self.protocolcombo['values'] = ['Exchange']
+    self.protocolcombo.set('Exchange')
     self.protocolcombo['state'] = 'readonly'
     # Placing
     self.protocollabel.grid(column=0, row=0, sticky='w', padx=(10,0), pady=(10,10))
