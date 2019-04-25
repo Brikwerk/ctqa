@@ -1,1 +1,1 @@
-virtualenv --no-site-packages --distribute .env && ".env\Scripts\activate.bat" && pip install -r requirements.txt
+virtualenv --no-site-packages --distribute venv && "venv\Scripts\activate.bat" && pip install -r requirements.txt
