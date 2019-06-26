@@ -1,1 +1,1 @@
-".env/Scripts/activate"
+"venv/Scripts/activate"
