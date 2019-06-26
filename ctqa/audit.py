@@ -10,6 +10,8 @@ import pydicom
 import numpy as np
 from . import profileutil
 from . import auditmethods
+from . import phantomcenter as phantom
+import cv2
 import json
 import os
 import io
@@ -137,16 +139,14 @@ def getAuditDatasets(series):
     # Reading profile into local var
     profile = PROFILES[reader]
 
-    # Checking to make sure we have enough images to take the homogeneity and linearity image
-    if len(instances) < profile["HomogeneityPosition"]:
-      logger.error("Homogeneity slice position is greater than the total number of images in the series " + uid)
-      continue
-    elif len(instances) < profile["LinearityPosition"]:
-      logger.error("Linearity slice position is greater than the total number of images in the series " + uid)
-      continue
-    # Getting images
-    homogeneityimage = instances[profile["HomogeneityPosition"]-1]
-    linearityimage = instances[profile["LinearityPosition"]-1]
+    # Getting images at preferred slice location
+    homogeneityimage = None
+    linearityimage = None
+    for instance in instances:
+      if int(instance[0x20,0x1041].value) == profile["HomogeneityPosition"]:
+        homogeneityimage = instance
+      if int(instance[0x20,0x1041].value) == profile["LinearityPosition"]:
+        linearityimage = instance      
 
     #Assigning to AUDIT_IMAGES
     AUDIT_IMAGES.append([reader, profile, homogeneityimage, linearityimage])
@@ -205,7 +205,10 @@ def performHomogeneityAudit(method, img):
       img.InstitutionName.upper()
     )
   except AttributeError as e:
-    logger.error(str(e) + ' in series ' + str(img.SeriesInstanceUID))
+    if hasattr(img, "SeriesInstanceUID"):
+      logger.error(str(e) + ' in series ' + str(img.SeriesInstanceUID))
+    else:
+      logger.error(str(e) + ' in image ' + str(img))
     return
 
   # Getting img date
@@ -281,17 +284,24 @@ def computeHomogeneity(audit, dataset):
     scaledData = scalePixelData(dataset.pixel_array, dataset.RescaleIntercept, dataset.RescaleSlope)
   else:
     errMsg = "ERROR: No RescaleIntercept and RescaleSlope values were found"
-    logger.debug(errMsg)
+    logger.error(errMsg)
     scaledData = dataset.pixel_array
 
   try:
     dataset.PixelSpacing
   except AttributeError:
     logger.error('No Pixel spacing attribute for image %s' % dataset.SeriesInstanceUID)
+  
+  # # Getting phantom center
+  scaled_data = phantom.get_scaled_image(dataset)
+  circle_coords = phantom.get_circles(scaled_data)
+  centerY = int(circle_coords[0][0])
+  centerX = int(circle_coords[0][1])
 
   # Getting initial config values from image
-  centerX = int(dataset.Rows/2) # Center of image X/Y
-  centerY = int(dataset.Columns/2)
+  # centerX = int(dataset.Rows/2) # Center of image X/Y
+  # centerY = int(dataset.Columns/2)
+
   spacingXROI = audit["spacing"]/dataset.PixelSpacing[1] # For getting different ROIs
   spacingYROI = audit["spacing"]/dataset.PixelSpacing[0]
   halfLengthROI = math.sqrt(audit["size"])/2
@@ -381,6 +391,3 @@ def selectArea(arr, x1, y1, x2, y2):
       areaArr.append(arr[row][col])
   
   return areaArr
-
-
-  
