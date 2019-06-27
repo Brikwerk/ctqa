@@ -10,4 +10,4 @@ exchangelib>=1.11.4
 cryptography>=2.3.1 
 pywin32>=223
 numpy>=1.16.4
-opencv-python==3.3.0.9
+opencv-python==4.1.0.25
