@@ -197,19 +197,8 @@ class profile_client:
     self.profinfomanfmod = tk.Label(self.profinfocont, text='Manufacturer Model:', highlightbackground='#ddd', bg='#ddd')
     self.profinfoinst = tk.Label(self.profinfocont, text='Institution Name:', highlightbackground='#ddd', bg='#ddd')
     self.profhomogname = tk.Label(self.profinfocont, text='Homogeneity \nSlice Location:', highlightbackground='#ddd', bg='#ddd')
-    self.proflinname = tk.Label(self.profinfocont, text='Linearity \nSlice Location:', highlightbackground='#ddd', bg='#ddd')
-    
-    # Baseline frame creation + placement
-    self.profbaselinelabelframe = tk.Frame(self.profinfocont, highlightbackground='#ddd', bg='#ddd')
-    self.profbaselinelabelframe.grid(column=0, row=6, sticky='nsew')
-    self.profbaselinelabelframe.grid_columnconfigure(0, weight=1)
-    self.profbaselinelabelframe.grid_rowconfigure(0, weight=1)
-    self.profbaselinelabelframe.grid_rowconfigure(1, weight=1)
-    #Baseline labels + placement
-    self.profbaselabelmean = tk.Label(self.profbaselinelabelframe, text='Mean:', highlightbackground='#ddd', bg='#ddd')
-    self.profbaselabelstd = tk.Label(self.profbaselinelabelframe, text='Std Dev:', highlightbackground='#ddd', bg='#ddd')
-    self.profbaselabelmean.grid(column=0, row=0, sticky='se', padx=(0,10), pady=(40,0))
-    self.profbaselabelstd.grid(column=0, row=1, sticky='ne', padx=(0,10), pady=(20,0))
+    self.profupperlimit = tk.Label(self.profinfocont, text='Upper Homogeneity Limit:', highlightbackground='#ddd', bg='#ddd')
+    self.proflowerlimit = tk.Label(self.profinfocont, text='Lower Homogeneity Limit:', highlightbackground='#ddd', bg='#ddd')
 
     # Label placement
     self.profinfoname.grid(column=0, row=0, stick='e', padx=(0,10))
@@ -217,7 +206,8 @@ class profile_client:
     self.profinfomanfmod.grid(column=0, row=2, stick='e', padx=(0,10))
     self.profinfoinst.grid(column=0, row=3, stick='e', padx=(0,10))
     self.profhomogname.grid(column=0, row=4, stick='e', padx=(0,10))
-    self.proflinname.grid(column=0, row=5, stick='e', padx=(0,10))
+    self.profupperlimit.grid(column=0, row=5, stick='e', padx=(0,10))
+    self.proflowerlimit.grid(column=0, row=6, stick='e', padx=(0,10))
 
     # Data Entry
     self.profentryname = tk.Entry(self.profinfocont, width=35)
@@ -225,7 +215,8 @@ class profile_client:
     self.profentrymanfmod = tk.Entry(self.profinfocont, width=35)
     self.profentryinst = tk.Entry(self.profinfocont, width=35)
     self.profentryhomog = tk.Entry(self.profinfocont, width=35)
-    self.profentrylinear = tk.Entry(self.profinfocont, width=35)
+    self.profentryupper = tk.Entry(self.profinfocont, width=35)
+    self.profentrylower = tk.Entry(self.profinfocont, width=35)
 
     # Data entry placement
     self.profentryname.grid(column=1, row=0, sticky='w')
@@ -233,14 +224,16 @@ class profile_client:
     self.profentrymanfmod.grid(column=1, row=2, sticky='w')
     self.profentryinst.grid(column=1, row=3, sticky='w')
     self.profentryhomog.grid(column=1, row=4, sticky='w')
-    self.profentrylinear.grid(column=1, row=5, sticky='w')
+    self.profentryupper.grid(column=1, row=5, sticky='w')
+    self.profentrylower.grid(column=1, row=6, sticky='w')
 
     # Populating data entry
     self.profentryname.insert(0, profile['StationName'])
     self.profentrymanfmod.insert(0, profile['ManufacturerModelName'])
     self.profentryinst.insert(0, profile['InstitutionName'])
     self.profentryhomog.insert(0, profile['HomogeneityPosition'])
-    self.profentrylinear.insert(0, profile['LinearityPosition'])
+    self.profentryupper.insert(0, profile['UpperHomogeneityLimit'])
+    self.profentrylower.insert(0, profile['LowerHomogeneityLimit'])
 
     # Manufacturer combo box setup
     self.profcombo['values'] = profileutil.MANF_LIST # Load list of a valid manf options
@@ -252,66 +245,13 @@ class profile_client:
       self.profcombo.set('Select a manfacturer...')
     self.profcombo.bind('<<ComboboxSelected>>', lambda event: self.component_change('Manufacturer', self.profcombo.get(), id)) # Save and update components on change
 
-    # Baseline Entries
-    try:
-      directions = auditmethods.getAuditDirections(profile['Manufacturer'])
-    except AttributeError:
-      directions = ['NORTH', 'SOUTH', 'EAST', 'WEST', 'CENTER']
-
-    # Adding std deviation to directions
-    directions.append('STD')
-    
-    self.baselineentries = {}
-    self.baselinecont = tk.LabelFrame(self.profinfocont, text='Baseline Water CT#', highlightbackground='#ddd', bg='#ddd')
-    self.baselinecont.grid_rowconfigure(0, weight=1)
-    self.baselinecont.grid_rowconfigure(1, weight=1)
-    self.baselinecont.grid_rowconfigure(2, weight=1)
-    entryCount = 0
-    for direction in directions:
-      # Setting up baseline direction label
-      # Not placing label for STD
-      if direction != 'STD':
-        directionlabel = tk.Label(self.baselinecont, text=direction, highlightbackground='#ddd', bg='#ddd')
-        directionlabel.grid(column=entryCount, row=0, sticky='s')
-
-      # Setting up baseline direction entry
-      self.baselineentries[direction] = tk.Entry(self.baselinecont, width=5)
-
-      # Placing STD on next Line
-      if direction == 'STD':
-        self.baselineentries[direction].grid(column=entryCount-1, row=2, sticky='n')
-      else:
-        self.baselineentries[direction].grid(column=entryCount, row=1, sticky='n')
-
-      self.baselinecont.grid_columnconfigure(entryCount, weight=1)
-
-      entryCount = entryCount + 1
-
-      if profile['Baseline'].get(direction) != False:
-        self.baselineentries[direction].delete(0, tk.END)
-        val = profile['Baseline'][direction]
-        self.baselineentries[direction].insert(0, val)
-      else:
-        self.baselineentries[direction].insert(0, 0)
-
-      # Method that captures variable and returns lambda function with it
-      # We perform this so that we avoid the for loop overwriting the direction variable
-      # When the binding is called later (eg STD would be called for every direction)
-      def make_lambda(var):
-        return lambda event: self.component_change(var, self.baselineentries[var].get(), id, baseline=True)
-
-      self.baselineentries[direction].bind("<KeyRelease>", make_lambda(direction))
-    
-
-    self.baselinecont.grid(column=1, row=6, sticky='nsew', padx=(0,20))
-    
-
     # Binding data entry to component_change
     self.profentryname.bind("<KeyRelease>", lambda event: self.component_change("StationName", self.profentryname.get(), id))
     self.profentrymanfmod.bind("<KeyRelease>", lambda event: self.component_change("ManufacturerModelName", self.profentrymanfmod.get(), id))
     self.profentryinst.bind("<KeyRelease>", lambda event: self.component_change("InstitutionName", self.profentryinst.get(), id))
     self.profentryhomog.bind("<KeyRelease>", lambda event: self.component_change("HomogeneityPosition", self.profentryhomog.get(), id))
-    self.profentrylinear.bind("<KeyRelease>", lambda event: self.component_change("LinearityPosition", self.profentrylinear.get(), id))
+    self.profentryupper.bind("<KeyRelease>", lambda event: self.component_change("UpperHomogeneityLimit", self.profentryupper.get(), id))
+    self.profentrylower.bind("<KeyRelease>", lambda event: self.component_change("LowerHomogeneityLimit", self.profentrylower.get(), id))
 
     # Row and Column weights
     self.profinfocont.grid_columnconfigure(0, weight=2)
@@ -328,7 +268,7 @@ class profile_client:
   def component_change(self, comp, val, profid, baseline=False):
     # Parsing input from homog/linearity
     self.changes_made()
-    if comp in ['HomogeneityPosition', 'LinearityPosition']:
+    if comp in ['HomogeneityPosition', 'LinearityPosition', 'UpperHomogeneityLimit', 'LowerHomogeneityLimit']:
       try:
         val = int(val)
       except ValueError:

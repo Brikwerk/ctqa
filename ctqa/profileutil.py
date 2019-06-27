@@ -21,6 +21,8 @@ DEFAULT_PROFILE = {
   'ManufacturerModelName':'',
   'InstitutionName':'',
   'HomogeneityPosition':0,
+  'UpperHomogeneityLimit':4,
+  'LowerHomogeneityLimit':-4,
   'LinearityPosition':0,
   'Baseline': {
     'STD':False,
@@ -165,6 +167,8 @@ def newProfile(path, readerid, statname, manfct, manfctname, instname):
     prof[readerid]['ManufacturerModelName'] = manfctname.upper()
     prof[readerid]['InstitutionName'] = instname.upper()
     prof[readerid]['HomogeneityPosition'] = 0
+    prof[readerid]['UpperHomogeneityLimit'] = 4
+    prof[readerid]['LowerHomogeneityLimit'] = -4
     prof[readerid]['LinearityPosition'] = 0
     prof[readerid]['Baseline'] = {
       'STD':False,
