@@ -19,3 +19,5 @@ config.json
 profiles.json
 /.env
 ek
+/roi_selections
+ctqa.log.*
