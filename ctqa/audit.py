@@ -17,6 +17,7 @@ import os
 import io
 import sys
 import math
+import time
 
 # Logging
 import logging
@@ -170,14 +171,21 @@ def auditImages(datasets):
   **Please Note:** MACHINE_QC_IMAGE is referring to a pydicom dicom object.
   '''
 
+  profile = None
   for dataset in datasets:
-    profile = dataset[1]
-    manufacturer = profile["Manufacturer"]
-    method = auditmethods.getMethod(manufacturer)
+    try:
+      profile = dataset[1]
+      manufacturer = profile["Manufacturer"]
+      method = auditmethods.getMethod(manufacturer)
 
-    logger.debug("Auditing " + dataset[0])
-    
-    performHomogeneityAudit(method, dataset[2])
+      logger.debug("Auditing " + dataset[0])
+      
+      performHomogeneityAudit(method, dataset[2])
+
+    except Exception as e:
+      if profile:
+        logger.error("Error during audit of machine %s" % profileutil.getProfileName(profile))
+      logger.error(str(e))
     
 
 #----------------------------------------------------------------------------------
@@ -295,6 +303,7 @@ def computeHomogeneity(audit, dataset):
   # # Getting phantom center
   scaled_data = phantom.get_scaled_image(dataset)
   circle_coords = phantom.get_circles(scaled_data)
+
   centerY = int(circle_coords[0][0])
   centerX = int(circle_coords[0][1])
 
@@ -340,6 +349,24 @@ def computeHomogeneity(audit, dataset):
     yr = int(centerX + halfLengthXROI)
     xr = int((centerY + spacingYROI) + halfLengthYROI)
 
+  if not os.path.isdir("./roi_selections"):
+    os.mkdir("./roi_selections")
+
+  deleteOldROISelections()
+
+  roi_img_path = './roi_selections/' + dataset.StationName + '.' + dataset.StudyDate + '.jpg'
+  if os.path.isfile(roi_img_path):
+    img = cv2.imread(roi_img_path)
+  else:
+    img = phantom.get_scaled_image(dataset)
+    img = phantom.set_window(img, 0, 50)
+    img = cv2.cvtColor(img,cv2.COLOR_GRAY2BGR)
+    print(circle_coords)
+    cv2.circle(img,(circle_coords[0][0],circle_coords[0][1]),circle_coords[0][2],(0,255,0),5)
+
+  cv2.rectangle(img, (xl,yl), (xr,yr),(0,0,255),3)
+  cv2.imwrite(roi_img_path, img)
+
   # Performing ROI audit
   roi = selectArea(scaledData, xl, yl, xr, yr)
 
@@ -380,6 +407,19 @@ def scalePixelData(pixelData, rInt, rSlope):
     scaledPixelData.append(scaledPixelRow)
   
   return scaledPixelData
+
+
+def deleteOldROISelections():
+  """Deletes any old ROI selection graphics"""
+  selectionPath = "./roi_selections"
+  days = 120
+  now = time.time()
+
+  for f in os.listdir(selectionPath):
+    filePath = os.path.join(selectionPath, f)
+    if os.stat(filePath).st_mtime < now - days * 86400:
+      if os.path.isfile(filePath):
+        os.remove(filePath)
 
 
 def selectArea(arr, x1, y1, x2, y2):
