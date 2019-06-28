@@ -18,6 +18,7 @@ import io
 import sys
 import math
 import time
+import uuid
 
 # Logging
 import logging
@@ -33,6 +34,7 @@ DATA = {
   "Homogeneity":{},
   "Linearity":{}
 }
+SHORT_UUID = None
 
 def run(profiles, imgs):
   '''Main function for running the audit.'''
@@ -226,6 +228,10 @@ def performHomogeneityAudit(method, img):
   # Creating alias for data location in DATA global
   dataloc = DATA["Homogeneity"][reader][date]
 
+  # Setting unique 8 char UUID for this audit
+  global SHORT_UUID
+  SHORT_UUID = uuid.uuid4().hex[:8]
+
   # Running homogeneity audit for each audit
   for auditKey in method:
     logger.debug("Running " + auditKey)
@@ -354,7 +360,7 @@ def computeHomogeneity(audit, dataset):
 
   deleteOldROISelections()
 
-  roi_img_path = './roi_selections/' + dataset.StationName + '.' + dataset.StudyDate + '.jpg'
+  roi_img_path = './roi_selections/' + dataset.StationName + '.' + dataset.StudyDate + '.' + SHORT_UUID + '.jpg'
   if os.path.isfile(roi_img_path):
     img = cv2.imread(roi_img_path)
   else:
