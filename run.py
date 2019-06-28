@@ -52,9 +52,7 @@ def main():
   profileutil.init(LOCATION + '/profiles.json')
   profiles = profileutil.openProfiles(LOCATION + '/profiles.json')
 
-  # Ensuring reports and profiles folders exist. If not, they are created.
-  if not os.path.isdir(LOCATION + "/reports"):
-    os.makedirs(LOCATION + '/reports')
+  # Ensuring data folder exists. If not, they are created.
   if not os.path.isdir(LOCATION + "/data"):
     os.makedirs(LOCATION + '/data')
   
