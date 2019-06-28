@@ -18,7 +18,7 @@ import os, sys
 from ctqa import datautil
 
 
-def generateReport(dataPath, savelocation, title, graphdays, forecastdays):
+def generateReport(dataPath, savelocation, title, graphdays, forecastdays, report_type="daily"):
   '''
   Retrieves audit data from the data path, organizes a site's data into a displayable format,
   and creates a PNG graph at the passed save location.
@@ -110,10 +110,11 @@ def generateReport(dataPath, savelocation, title, graphdays, forecastdays):
   plt.tight_layout()
 
   # Setting location for export to reports folder, local to executable
-  path = os.path.dirname(sys.argv[0])
   file = title + '.png'
-  loc = os.path.abspath(path)
-  file_loc = os.path.join(loc, 'reports', file)
+  loc = os.path.abspath(savelocation)
+  # Ensuring the save location exists
+  os.makedirs(loc, exist_ok=True)
+  file_loc = os.path.join(loc, file)
 
   # Saving png image to savelocation
   plt.savefig(file_loc, dpi=300)

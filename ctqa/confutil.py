@@ -18,8 +18,10 @@ DEFAULT_CONFIG = {
   "FirstRun" : True,
   "LastRun" : "",
   "DaysToForecast": 60,
-  "DaysToGraph": 365,
-  "LastPACSDateChecked": False
+  "DailyReportDaysToGraph": 365,
+  "WeeklyReportDaysToGraph": 90,
+  "LastPACSDateChecked": False,
+  "ReportLocation": "./reports"
 }
 DEFAULT_CONFIG_LENGTH = 3
 DEFAULT_CONFIG_LOCATION = 'config.json'
@@ -184,10 +186,10 @@ def validateConfig(conf):
     return -1
 
   # Checking for valid forecast/graph days
-  if not isinstance(conf.get("DaysToForecast"), int) or not isinstance(conf.get("DaysToGraph"), int):
+  if not isinstance(conf.get("DaysToForecast"), int) or not isinstance(conf.get("DailyReportDaysToGraph"), int) or not isinstance(conf.get("WeeklyReportDaysToGraph"), int):
     logger.error("DaysToForecast/Graph is not an int value")
     return -1
-  elif not conf.get('DaysToForecast') >= 0 or not conf.get('DaysToGraph'):
+  elif not conf.get('DaysToForecast') >= 0 or not conf.get('DailyReportDaysToGraph') >= 0 or not conf.get('WeeklyReportDaysToGraph') >= 0:
     logger.error('DaysToForecast/Graph must be greater than zero')
     return -1
 

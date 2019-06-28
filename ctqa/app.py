@@ -66,11 +66,9 @@ def run(config, profiles, __DEBUG):
     # Get path to site folder in data folder
     sitePath = os.path.join(LOCATION, 'data', site)
     # Get title from site name
-    title = site.split('-')[3] + '-' + site.split('-')[2] + '-' + site.split('-')[0]
-    # If the Reports folder location isn't DEFAULT, store reports there
-    replocation = 'reports'
+    dailyTitle = 'DAILY-' + site.split('-')[3] + '-' + site.split('-')[2] + '-' + site.split('-')[0]
     # Create report
-    reportutil.generateReport(sitePath, replocation, title, CONFIG.get("DaysToGraph"), CONFIG['DaysToForecast'])
+    reportutil.generateReport(sitePath, CONFIG.get("ReportLocation"), dailyTitle, CONFIG.get("DailyReportDaysToGraph"), CONFIG['DaysToForecast'])
 
   # Getting changed report names and emailing
   siteNames = results['Homogeneity'].keys()

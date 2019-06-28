@@ -102,7 +102,9 @@ class ctqa_client:
 
     # Create Reports pulldown menu
     editmenu = tk.Menu(menubar, tearoff=0)
-    editmenu.add_command(label="Regenerate Reports", command=self.regenerate_reports)
+    editmenu.add_command(label="Regenerate Daily Reports", command=self.regenerate_reports)
+    menubar.add_cascade(label="Reports", menu=editmenu)
+    editmenu.add_command(label="Regenerate Weekly Reports", command=lambda: self.regenerate_reports(report_type="weekly"))
     menubar.add_cascade(label="Reports", menu=editmenu)
 
     # Display menu
@@ -345,7 +347,7 @@ class ctqa_client:
         if repFolderExists:
           reports = glob.glob(self.reportspath + '/*.png')
           newReports = []
-          for report in reports: # Detecing time created change
+          for report in reports: # Detecting time created change
             try:
               newReports.append(report) 
               newReports.append(os.path.getmtime(report))
@@ -511,16 +513,14 @@ class ctqa_client:
   def service_install(self):
     # Attempt a service manager install
     servicemanager.install()
-    # Refresh service panel after attempted install
-    #self.refresh_service_status()
 
 
   def service_uninstall(self):
     # Attempt to uninstall service
     servicemanager.uninstall()
 
-  def regenerate_reports(self):
-    '''Finds all report folders and updates reports based on existing data'''
+  def regenerate_reports(self, report_type="daily"):
+    '''Finds all data folders and updates reports based on existing data'''
     # Getting report names and paths to the data
     datapath = os.path.join(self.location, "data")
     pathitems = os.listdir(datapath)
@@ -534,9 +534,15 @@ class ctqa_client:
     for site in subnames:
       # Put together data.json location
       sitepath = os.path.join(datapath, site)
-      # Get title from site name
-      title = site.split('-')[3] + '-' + site.split('-')[2] + '-' + site.split('-')[0]
-      # If the Reports folder location isn't DEFAULT, store reports there
-      replocation = 'reports'
-      # Create report
-      reportutil.generateReport(sitepath, replocation, title, self.config.get("DaysToGraph"), self.config['DaysToForecast'])
+
+      # Generating daily or weekly reports
+      if report_type == "daily":
+        # Get title from site name
+        title = 'DAILY-' + site.split('-')[3] + '-' + site.split('-')[2] + '-' + site.split('-')[0]
+        # Create report
+        reportutil.generateReport(sitepath, self.config.get("ReportLocation"), title, self.config.get("DailyReportDaysToGraph"), self.config['DaysToForecast'])
+      elif report_type == "weekly":
+        # Get title from site name
+        title = 'WEEKLY-' + site.split('-')[3] + '-' + site.split('-')[2] + '-' + site.split('-')[0]
+        # Create report
+        reportutil.generateReport(sitepath, self.config.get("ReportLocation"), title, self.config.get("WeeklyReportDaysToGraph"), self.config['DaysToForecast'], report_type="weekly")

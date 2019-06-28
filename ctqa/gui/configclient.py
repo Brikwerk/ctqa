@@ -96,20 +96,29 @@ class config_client:
       self.fcentry.insert(0, self.config["DaysToForecast"])
       self.fcentry.bind("<KeyRelease>", lambda event: self.valid_days(self.fcentry.get(), "DaysToForecast"))
 
-      # Setting up number of days for graphs
-      self.gdlabel = tk.Label(self.mainframe, text='Days to Graph:', bg='#ededed')
+      # Setting up number of days for daily graphs
+      self.gdlabel = tk.Label(self.mainframe, text='Daily Report Days to Graph:', bg='#ededed')
       self.gdentry = tk.Entry(self.mainframe, width=25, justify=tk.RIGHT, highlightbackground='#ededed')
       self.gdlabel.grid(column=0, row=2, sticky='w', padx=(10,0), pady=(20,10))
       self.gdentry.grid(column=1, row=2, sticky='e', padx=(0,10), pady=(20,10))
-      self.gdentry.insert(0, self.config["DaysToGraph"])
-      self.gdentry.bind("<KeyRelease>", lambda event: self.valid_days(self.gdentry.get(), "DaysToGraph"))
+      self.gdentry.insert(0, self.config["DailyReportDaysToGraph"])
+      self.gdentry.bind("<KeyRelease>", lambda event: self.valid_days(self.gdentry.get(), "DailyReportDaysToGraph"))
+
+      # Setting up number of days for weekly graphs
+      self.wgdlabel = tk.Label(self.mainframe, text='Weekly Report Days to Graph:', bg='#ededed')
+      self.wgdentry = tk.Entry(self.mainframe, width=25, justify=tk.RIGHT, highlightbackground='#ededed')
+      self.wgdlabel.grid(column=0, row=3, sticky='w', padx=(10,0), pady=(20,10))
+      self.wgdentry.grid(column=1, row=3, sticky='e', padx=(0,10), pady=(20,10))
+      self.wgdentry.insert(0, self.config["WeeklyReportDaysToGraph"])
+      self.wgdentry.bind("<KeyRelease>", lambda event: self.valid_days(self.wgdentry.get(), "WeeklyReportDaysToGraph"))
 
       self.mainframe.grid_columnconfigure(0, weight=1)
       self.mainframe.grid_columnconfigure(1, weight=1)
       self.mainframe.grid_rowconfigure(0, weight=1)
       self.mainframe.grid_rowconfigure(1, weight=1)
       self.mainframe.grid_rowconfigure(2, weight=1)
-      self.mainframe.grid_rowconfigure(3, weight=8)
+      self.mainframe.grid_rowconfigure(3, weight=1)
+      self.mainframe.grid_rowconfigure(4, weight=1)
     else:
       self.errMsg = tk.Label(self.mainframe, text='Error: Could not load config file.\n\n Would you like to generate a new one?')
       self.genConf = tk.Button(self.mainframe, text="Generate Config", width=20, command=self.generate_new_config)
@@ -146,7 +155,7 @@ class config_client:
     if 'self.scomps' in locals(): # If scomps exists from before, we destroy it
       self.scomps.destroy()
     self.scomps = tk.Frame(self.mainframe, background='#ededed')
-    self.scomps.grid(column=0, row=3, columnspan=2, rowspan=2, sticky='nsew')
+    self.scomps.grid(column=0, row=4, columnspan=2, rowspan=2, sticky='nsew')
     if src == 'TEST':
       return
     elif src == 'ORTHANC':
@@ -213,9 +222,12 @@ class config_client:
         if comp == "DaysToForecast":
           self.fcentry.delete(0, tk.END)
           self.fcentry.insert(0, self.config.get(comp))
-        elif comp == "DaysToGraph":
+        elif comp == "DailyReportDaysToGraph":
           self.gdentry.delete(0, tk.END)
           self.gdentry.insert(0, self.config.get(comp))
+        elif comp == "WeeklyReportDaysToGraph":
+          self.wgdentry.delete(0, tk.END)
+          self.wgdentry.insert(0, self.config.get(comp))
 
 
   def component_change(self, name, value):
