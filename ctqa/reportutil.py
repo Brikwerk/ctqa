@@ -120,3 +120,31 @@ def generateReport(dataPath, savelocation, title, graphdays, forecastdays, repor
   plt.savefig(file_loc, dpi=300)
   # Clearing plot. MUST DO THIS UNLESS YOU WANT THE OLD PLOT TO REMAIN FOR ANOTHER RUN
   plt.close()
+
+
+def regenerateReports(dataPath, reportsPath, daysToGraph, daysToForecast, report_type="daily"):
+  '''Finds all data folders and updates reports based on existing data'''
+  # Getting report names and paths to the data
+  pathitems = os.listdir(dataPath)
+  subnames = []
+  for item in pathitems:
+    itempath = os.path.join(dataPath, item)
+    if os.path.isdir(itempath):
+      subnames.append(item)
+
+  # Generating reports
+  for site in subnames:
+    # Put together data.json location
+    sitepath = os.path.join(dataPath, site)
+
+    # Generating daily or weekly reports
+    if report_type == "daily":
+      # Get title from site name
+      title = 'DAILY-' + site.split('-')[3] + '-' + site.split('-')[2] + '-' + site.split('-')[0]
+      # Create report
+      generateReport(sitepath, reportsPath, title, daysToGraph, daysToForecast)
+    elif report_type == "weekly":
+      # Get title from site name
+      title = 'WEEKLY-' + site.split('-')[3] + '-' + site.split('-')[2] + '-' + site.split('-')[0]
+      # Create report
+      generateReport(sitepath, reportsPath, title, daysToGraph, daysToForecast, report_type="weekly")
