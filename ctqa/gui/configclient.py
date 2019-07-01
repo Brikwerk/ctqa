@@ -97,7 +97,7 @@ class config_client:
       self.fcentry.bind("<KeyRelease>", lambda event: self.valid_days(self.fcentry.get(), "DaysToForecast"))
 
       # Setting up number of days for daily graphs
-      self.gdlabel = tk.Label(self.mainframe, text='Daily Report Days to Graph:', bg='#ededed')
+      self.gdlabel = tk.Label(self.mainframe, text='Days to Graph (Daily):', bg='#ededed')
       self.gdentry = tk.Entry(self.mainframe, width=25, justify=tk.RIGHT, highlightbackground='#ededed')
       self.gdlabel.grid(column=0, row=2, sticky='w', padx=(10,0), pady=(20,10))
       self.gdentry.grid(column=1, row=2, sticky='e', padx=(0,10), pady=(20,10))
@@ -105,7 +105,7 @@ class config_client:
       self.gdentry.bind("<KeyRelease>", lambda event: self.valid_days(self.gdentry.get(), "DailyReportDaysToGraph"))
 
       # Setting up number of days for weekly graphs
-      self.wgdlabel = tk.Label(self.mainframe, text='Weekly Report Days to Graph:', bg='#ededed')
+      self.wgdlabel = tk.Label(self.mainframe, text='Days to Graph (Weekly):', bg='#ededed')
       self.wgdentry = tk.Entry(self.mainframe, width=25, justify=tk.RIGHT, highlightbackground='#ededed')
       self.wgdlabel.grid(column=0, row=3, sticky='w', padx=(10,0), pady=(20,10))
       self.wgdentry.grid(column=1, row=3, sticky='e', padx=(0,10), pady=(20,10))
