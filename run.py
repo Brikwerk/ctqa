@@ -17,8 +17,8 @@ CONFIG = None # Stores config JSON file
 
 # Flags
 __AUDIT = False # Switches to audit run
-__SERVICE = False # Switches to service run
 __DEBUG = False # Allows debug logging
+__WEEKLY = False # Generates weekly logs on audit
 __SAVEROIS = False # Used for saving ROIs of a single dicom image
 
 # Setting flags
@@ -27,6 +27,9 @@ if "--audit" in sys.argv:
   
 if '--debug' in sys.argv:
   __DEBUG = True
+
+if "--weekly" in sys.argv:
+  __WEEKLY = True
 
 # Determining which type of run we want
 #--------------------------------------
@@ -59,11 +62,14 @@ def main():
   # Choose and run
   # Check for first run if not a service call
   frconf = confutil.openConfig(confPath) # Checking config file without validation
-  if type(frconf) == dict and (frconf.get("FirstRun") == True and not __SERVICE):
+  if type(frconf) == dict and (frconf.get("FirstRun") == True):
     firstrun.run()
   elif __RUNTYPE == 1: # Audit run
     try:
-      app.run(config, profiles, __DEBUG)
+      if __WEEKLY:
+        app.run(config, profiles, __DEBUG, weekly=True)
+      else:
+        app.run(config, profiles, __DEBUG)
     except Exception as e:
       logger.error(e)
   else: # Client Run

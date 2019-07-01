@@ -23,7 +23,7 @@ logger = logging.getLogger(logutil.MAIN_LOG_NAME)
 LOCATION = os.path.abspath(os.path.dirname(sys.argv[0]))
 
 # Main function
-def run(config, profiles, __DEBUG):
+def run(config, profiles, __DEBUG, weekly=False):
   """Main function for preparing and running the CTQA audit."""
 
   # Checking passed config
@@ -68,7 +68,13 @@ def run(config, profiles, __DEBUG):
     # Get title from site name
     dailyTitle = 'DAILY-' + site.split('-')[3] + '-' + site.split('-')[2] + '-' + site.split('-')[0]
     # Create report
-    reportutil.generateReport(sitePath, CONFIG.get("ReportLocation"), dailyTitle, CONFIG.get("DailyReportDaysToGraph"), CONFIG['DaysToForecast'])
+    if not weekly:
+      reportutil.generateReport(sitePath, CONFIG.get("ReportLocation"), dailyTitle, 
+        CONFIG.get("DailyReportDaysToGraph"), CONFIG['DaysToForecast'])
+  # Regnerate reports if weekly no matter what
+  if weekly:
+    reportutil.regenerateReports(dataFolderLocation, CONFIG.get("ReportLocation"), 
+      CONFIG.get("WeeklyReportDaysToGraph"), CONFIG['DaysToForecast'], report_type="weekly")
 
   # Getting changed report names and emailing
   siteNames = results['Homogeneity'].keys()
