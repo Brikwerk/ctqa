@@ -101,10 +101,23 @@ class ctqa_client:
     menubar.add_cascade(label="CTQA", menu=filemenu)
 
     # Create Reports pulldown menu
+    # Daily report regen
     editmenu = tk.Menu(menubar, tearoff=0)
-    editmenu.add_command(label="Regenerate Daily Reports", command=self.regenerate_reports)
+    editmenu.add_command(label="Regenerate Daily Reports", command=lambda: reportutil.regenerateReports(
+      os.path.join(self.location, "data"),
+      self.config.get("ReportLocation"),
+      self.config.get("DailyReportDaysToGraph"),
+      self.config.get("DaysToForecast")
+    ))
+    # Weekly report regen
     menubar.add_cascade(label="Reports", menu=editmenu)
-    editmenu.add_command(label="Regenerate Weekly Reports", command=lambda: self.regenerate_reports(report_type="weekly"))
+    editmenu.add_command(label="Regenerate Weekly Reports", command=lambda: reportutil.regenerateReports(
+      os.path.join(self.location, "data"),
+      self.config.get("ReportLocation"),
+      self.config.get("WeeklyReportDaysToGraph"),
+      self.config.get("DaysToForecast"),
+      report_type="weekly"
+    ))
     menubar.add_cascade(label="Reports", menu=editmenu)
 
     # Display menu
@@ -215,9 +228,13 @@ class ctqa_client:
     # Start service
     self.configServiceControl = tk.Button(self.configFrame, text="Notifications", highlightbackground='#ddd', command=self.open_credentials_client)
     self.configServiceControl.pack(expand=True, fill='x', pady=(0,2))
-    # Manual Run
-    self.configServiceInst = tk.Button(self.configFrame, text="Install Service", highlightbackground='#ddd', command=self.service_install)
-    self.configServiceInst.pack(expand=True, fill='x', pady=(0,10))
+    # Service (un)install
+    if not self.config.get("ServicesInstalled"):
+      self.configServiceInst = tk.Button(self.configFrame, text="Install Service", highlightbackground='#ddd', command=self.service_install)
+      self.configServiceInst.pack(expand=True, fill='x', pady=(0,10))
+    else:
+      self.configServiceInst = tk.Button(self.configFrame, text="Uninstall Service", highlightbackground='#ddd', command=self.service_uninstall)
+      self.configServiceInst.pack(expand=True, fill='x', pady=(0,10))
     # Manual Run
     self.configServiceRun = tk.Button(self.configFrame, text="Manual Audit", highlightbackground='#ddd', command=self.manual_audit)
     self.configServiceRun.pack(expand=True, fill='x', pady=(0,2))
@@ -513,36 +530,12 @@ class ctqa_client:
   def service_install(self):
     # Attempt a service manager install
     servicemanager.install()
+    self.configServiceInst.configure(text='Uninstall Service')
+    self.configServiceInst.configure(command=self.service_uninstall)
 
 
   def service_uninstall(self):
     # Attempt to uninstall service
     servicemanager.uninstall()
-
-  def regenerate_reports(self, report_type="daily"):
-    '''Finds all data folders and updates reports based on existing data'''
-    # Getting report names and paths to the data
-    datapath = os.path.join(self.location, "data")
-    pathitems = os.listdir(datapath)
-    subnames = []
-    for item in pathitems:
-      itempath = os.path.join(datapath, item)
-      if os.path.isdir(itempath):
-        subnames.append(item)
-
-    # Generating reports
-    for site in subnames:
-      # Put together data.json location
-      sitepath = os.path.join(datapath, site)
-
-      # Generating daily or weekly reports
-      if report_type == "daily":
-        # Get title from site name
-        title = 'DAILY-' + site.split('-')[3] + '-' + site.split('-')[2] + '-' + site.split('-')[0]
-        # Create report
-        reportutil.generateReport(sitepath, self.config.get("ReportLocation"), title, self.config.get("DailyReportDaysToGraph"), self.config['DaysToForecast'])
-      elif report_type == "weekly":
-        # Get title from site name
-        title = 'WEEKLY-' + site.split('-')[3] + '-' + site.split('-')[2] + '-' + site.split('-')[0]
-        # Create report
-        reportutil.generateReport(sitepath, self.config.get("ReportLocation"), title, self.config.get("WeeklyReportDaysToGraph"), self.config['DaysToForecast'], report_type="weekly")
+    self.configServiceInst.configure(text='Install Service')
+    self.configServiceInst.configure(command=self.service_install)

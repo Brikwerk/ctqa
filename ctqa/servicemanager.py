@@ -12,11 +12,12 @@ import win32event
 #TODO: Import chron job module
 import os
 import sys
+from ctqa import confutil
 
 # Getting OS
 SYSNAME = platform.system()
 # Getting audit exec location
-LOCATION = os.path.abspath(sys.argv[0])
+LOCATION = os.path.abspath(os.path.dirname(sys.argv[0]))
 
 #Logging
 import logging
@@ -41,8 +42,8 @@ def install():
 def install_windows():
   '''Attempts to install the CTQA Audit utility as a task in Windows Task Scheduler.'''
 
-  params = '/Create /SC Daily /RU System /TN "CTQA" /TR "' + LOCATION + ' --audit --debug"'
-
+  params = '/Create /SC Daily /RU System /TN "CTQA" /TR "' + LOCATION + ' --audit --debug" /ST 07:00'
+  params_weekly = '/Create /SC Weekly /RU System /D FRI /TN "CTQA-Weekly" /TR "' + LOCATION + ' --audit --weekly --debug" /ST 07:00'
   logger.debug('Installing with script: ' + params)
 
   # Check that the service isn't already installed
@@ -52,12 +53,23 @@ def install_windows():
 
   # Attempt to exec as admin. Catch denial of UAC prompt.
   try:
+    # Daily audit installation
     dict = shell.ShellExecuteEx(fMask = 256 + 64, lpVerb='runas', lpFile='Schtasks.exe', lpParameters=params)
     hh = dict['hProcess']
     ret = win32event.WaitForSingleObject(hh, -1)
-    logger.debug("Shell installation result: " + str(ret))
+    logger.debug("Shell CTQA Daily Audit installation result: " + str(ret))
+
+    # Weekly audit installation
+    dict = shell.ShellExecuteEx(fMask = 256 + 64, lpVerb='runas', lpFile='Schtasks.exe', lpParameters=params_weekly)
+    hh = dict['hProcess']
+    ret = win32event.WaitForSingleObject(hh, -1)
+    logger.debug("Shell CTQA Weekly Audit installation result: " + str(ret))
+
   except pywintypes.error as e:
     logger.error("Error in UAC prompt for windows installation: " + str(e))
+
+  print(os.path.join(LOCATION, confutil.DEFAULT_CONFIG_LOCATION))
+  confutil.updateConfig(os.path.join(LOCATION, confutil.DEFAULT_CONFIG_LOCATION), "ServicesInstalled", True)
 
   # If CTQA is present in task names, update image and button
   #if service_installed():
@@ -84,22 +96,28 @@ def uninstall_windows():
   '''Attempts to uninstall the CTQA Audit task with the Schtasks command'''
 
   params = '/delete /TN "CTQA" /f'
+  params_weekly = '/delete /TN "CTQA-Weekly" /f'
 
   logger.debug('Uninstalling with script: ' + params)
 
-  # Checking that service isn't already uninstalled
-  if not service_installed():
-    logger.error("Service already uninstalled")
-    return 0
-
   # Attempt to exec as admin. Catch denial of UAC prompt.
   try:
+    # Uninstall daily audit
     dict = shell.ShellExecuteEx(fMask = 256 + 64, lpVerb='runas', lpFile='Schtasks.exe', lpParameters=params)
     hh = dict['hProcess']
     ret = win32event.WaitForSingleObject(hh, -1)
     logger.debug("Shell uninstallation result: " + str(ret))
+
+    # Uninstall weekly audit
+    dict = shell.ShellExecuteEx(fMask = 256 + 64, lpVerb='runas', lpFile='Schtasks.exe', lpParameters=params_weekly)
+    hh = dict['hProcess']
+    ret = win32event.WaitForSingleObject(hh, -1)
+    logger.debug("Shell uninstallation result: " + str(ret))
+
   except pywintypes.error as e:
     logger.error("Error in UAC prompt for windows installation: " + str(e))
+
+  confutil.updateConfig(os.path.join(LOCATION, confutil.DEFAULT_CONFIG_LOCATION), "ServicesInstalled", False)
 
   #if not service_installed():
   #  logger.warning('Service was uninstalled successfully.')
@@ -116,7 +134,7 @@ def service_installed():
 
   # Getting root folder and getting task names
   rootFolder = scheduler.GetFolder("\\")
-  tasks = rootFolder.GetTasks(0)
+  tasks = rootFolder.GetTasks(1)
   names = [tasks.Item(i+1).Name for i in range(tasks.Count)]
 
   # If CTQA is present in task names, update image and button

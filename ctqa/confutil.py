@@ -21,7 +21,8 @@ DEFAULT_CONFIG = {
   "DailyReportDaysToGraph": 365,
   "WeeklyReportDaysToGraph": 90,
   "LastPACSDateChecked": False,
-  "ReportLocation": "./reports"
+  "ReportLocation": "./reports",
+  "ServicesInstalled": False
 }
 DEFAULT_CONFIG_LENGTH = 3
 DEFAULT_CONFIG_LOCATION = 'config.json'
