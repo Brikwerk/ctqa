@@ -71,12 +71,6 @@ def install_windows():
   print(os.path.join(LOCATION, confutil.DEFAULT_CONFIG_LOCATION))
   confutil.updateConfig(os.path.join(LOCATION, confutil.DEFAULT_CONFIG_LOCATION), "ServicesInstalled", True)
 
-  # If CTQA is present in task names, update image and button
-  #if service_installed():
-  #  logger.warning('Service was installed successfully.')
-  #else:
-  #  logger.error('Unsuccessful service install')
-
 
 def uninstall():
   '''Detects the OS and runs the appropriate uninstallation method.'''
@@ -118,27 +112,3 @@ def uninstall_windows():
     logger.error("Error in UAC prompt for windows installation: " + str(e))
 
   confutil.updateConfig(os.path.join(LOCATION, confutil.DEFAULT_CONFIG_LOCATION), "ServicesInstalled", False)
-
-  #if not service_installed():
-  #  logger.warning('Service was uninstalled successfully.')
-  #else:
-  #  logger.error('Unsuccessful service uninstall')
-
-
-def service_installed():
-  '''Checks if service is installed. Returns True or False.'''
-
-   # Checking that CTQA service was installed correctly
-  scheduler = win32com.client.Dispatch("Schedule.Service")
-  scheduler.Connect()
-
-  # Getting root folder and getting task names
-  rootFolder = scheduler.GetFolder("\\")
-  tasks = rootFolder.GetTasks(1)
-  names = [tasks.Item(i+1).Name for i in range(tasks.Count)]
-
-  # If CTQA is present in task names, update image and button
-  if 'CTQA' in names:
-    return True
-  else:
-    return False
