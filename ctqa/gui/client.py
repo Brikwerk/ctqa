@@ -105,17 +105,13 @@ class ctqa_client:
     editmenu = tk.Menu(menubar, tearoff=0)
     editmenu.add_command(label="Regenerate Daily Reports", command=lambda: reportutil.regenerateReports(
       os.path.join(self.location, "data"),
-      self.config.get("ReportLocation"),
-      self.config.get("DailyReportDaysToGraph"),
-      self.config.get("DaysToForecast")
+      self.config
     ))
     # Weekly report regen
     menubar.add_cascade(label="Reports", menu=editmenu)
     editmenu.add_command(label="Regenerate Weekly Reports", command=lambda: reportutil.regenerateReports(
       os.path.join(self.location, "data"),
-      self.config.get("ReportLocation"),
-      self.config.get("WeeklyReportDaysToGraph"),
-      self.config.get("DaysToForecast"),
+      self.config,
       report_type="weekly"
     ))
     menubar.add_cascade(label="Reports", menu=editmenu)

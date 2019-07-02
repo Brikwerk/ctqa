@@ -3,7 +3,10 @@ Report Utility
 
 Generates and saves a CT machine's report based off of audit data.
 '''
-
+import logging
+from ctqa import logutil
+# Explicitly disabling matplotlib to prevent log spam
+logging.getLogger('matplotlib').setLevel(logging.WARNING)
 import matplotlib
 # Using simplified mpl backend due to exclusive png creation
 matplotlib.use('Agg')
@@ -16,13 +19,27 @@ import numpy as np
 import json
 import os, sys
 from ctqa import datautil
+from ctqa import profileutil
+
+#Logger init
+logger = logging.getLogger(logutil.MAIN_LOG_NAME)
 
 
-def generateReport(dataPath, savelocation, title, graphdays, forecastdays, report_type="daily"):
+def generateReport(dataPath, config, title, upperlimit, lowerlimit, report_type="daily"):
   '''
   Retrieves audit data from the data path, organizes a site's data into a displayable format,
   and creates a PNG graph at the passed save location.
   '''
+
+  logger.debug("Generating report: " + title)
+
+  # Config variable assignment
+  savelocation = config.get("ReportLocation")
+  forecastdays = config.get("DaysToForecast")
+  if report_type == "daily":
+    graphdays = config.get("DailyReportDaysToGraph")
+  else:
+    graphdays = config.get("WeeklyReportDaysToGraph")
 
   # Getting data
   jsonData = datautil.load(dataPath)
@@ -58,13 +75,15 @@ def generateReport(dataPath, savelocation, title, graphdays, forecastdays, repor
   plt.axes().xaxis.set_major_formatter(monthsFmt)
   plt.axes().xaxis.set_minor_locator(days)
 
-  plt.ylim((-6, 6))
+  # Setting axis bounds
+  plt.xlim((datenow - graphdays, datenow + forecastdays + 5))
+
   # Calibration levels
-  plt.axhline(4, color='red', linewidth=1, label='Control Limits')
-  plt.axhline(-4, color='red', linewidth=1)
+  plt.axhline(upperlimit, color='red', linewidth=1, label='Control Limits')
+  plt.axhline(lowerlimit, color='red', linewidth=1)
   # Warning levels
-  plt.axhline(2, color='black', linewidth=1)
-  plt.axhline(-2, color='black', linewidth=1)
+  plt.axhline(upperlimit/2, color='orange', linewidth=1)
+  plt.axhline(lowerlimit/2, color='orange', linewidth=1)
   # Center line
   plt.axhline(0, color='black', linewidth=1)
 
@@ -122,7 +141,7 @@ def generateReport(dataPath, savelocation, title, graphdays, forecastdays, repor
   plt.close()
 
 
-def regenerateReports(dataPath, reportsPath, daysToGraph, daysToForecast, report_type="daily"):
+def regenerateReports(dataPath, config, report_type="daily"):
   '''Finds all data folders and updates reports based on existing data'''
   # Getting report names and paths to the data
   pathitems = os.listdir(dataPath)
@@ -132,19 +151,31 @@ def regenerateReports(dataPath, reportsPath, daysToGraph, daysToForecast, report
     if os.path.isdir(itempath):
       subnames.append(item)
 
+  # Getting profiles
+  profiles = profileutil.openProfiles(profileutil.DEFAULT_PROFILE_NAME)
+  if profiles == -1  or profiles == 0:
+    raise Exception("Could not load profiles")
+
   # Generating reports
   for site in subnames:
     # Put together data.json location
     sitepath = os.path.join(dataPath, site)
+    
+    # Getting site profile stats
+    siteprofile = profiles[site]
+    upperlimit = siteprofile.get("UpperHomogeneityLimit")
+    lowerlimit = siteprofile.get("LowerHomogeneityLimit")
 
     # Generating daily or weekly reports
+    sitesplit = site.split("-")
+    shortitle = sitesplit[3] + '-' + sitesplit[2] + '-' + sitesplit[0]
     if report_type == "daily":
       # Get title from site name
-      title = 'DAILY-' + site.split('-')[3] + '-' + site.split('-')[2] + '-' + site.split('-')[0]
+      title = 'DAILY-' + shortitle
       # Create report
-      generateReport(sitepath, reportsPath, title, daysToGraph, daysToForecast)
+      generateReport(sitepath, config, title, upperlimit, lowerlimit)
     elif report_type == "weekly":
       # Get title from site name
-      title = 'WEEKLY-' + site.split('-')[3] + '-' + site.split('-')[2] + '-' + site.split('-')[0]
+      title = 'WEEKLY-' + shortitle
       # Create report
-      generateReport(sitepath, reportsPath, title, daysToGraph, daysToForecast, report_type="weekly")
+      generateReport(sitepath, config, title, upperlimit, lowerlimit, report_type="weekly")

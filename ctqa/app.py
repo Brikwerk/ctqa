@@ -69,12 +69,13 @@ def run(config, profiles, __DEBUG, weekly=False):
     dailyTitle = 'DAILY-' + site.split('-')[3] + '-' + site.split('-')[2] + '-' + site.split('-')[0]
     # Create report
     if not weekly:
-      reportutil.generateReport(sitePath, CONFIG.get("ReportLocation"), dailyTitle, 
-        CONFIG.get("DailyReportDaysToGraph"), CONFIG['DaysToForecast'])
+      # Getting site's upper/lower limits
+      upperlimit = PROFILES[site]["UpperHomogeneityLimit"]
+      lowerlimit = PROFILES[site]["LowerHomogeneityLimit"]
+      reportutil.generateReport(sitePath, CONFIG, dailyTitle, upperlimit, lowerlimit)
   # Regnerate reports if weekly no matter what
   if weekly:
-    reportutil.regenerateReports(dataFolderLocation, CONFIG.get("ReportLocation"), 
-      CONFIG.get("WeeklyReportDaysToGraph"), CONFIG['DaysToForecast'], report_type="weekly")
+    reportutil.regenerateReports(dataFolderLocation, CONFIG, report_type="weekly")
 
   # Getting changed report names and emailing
   siteNames = results['Homogeneity'].keys()
