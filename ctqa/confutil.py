@@ -22,7 +22,11 @@ DEFAULT_CONFIG = {
   "WeeklyReportDaysToGraph": 90,
   "LastPACSDateChecked": False,
   "ReportLocation": "./reports",
-  "ServicesInstalled": False
+  "ServicesInstalled": False,
+  "WarningHook": "",
+  "FailureHook": "",
+  "DailyReportHook": "",
+  "WeeklyReportHook": ""
 }
 DEFAULT_CONFIG_LENGTH = 3
 DEFAULT_CONFIG_LOCATION = 'config.json'
