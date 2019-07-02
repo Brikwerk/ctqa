@@ -43,13 +43,8 @@ def install_windows():
   '''Attempts to install the CTQA Audit utility as a task in Windows Task Scheduler.'''
 
   params = '/Create /SC Daily /RU System /TN "CTQA" /TR "' + LOCATION + ' --audit --debug" /ST 07:00'
-  params_weekly = '/Create /SC Weekly /RU System /D FRI /TN "CTQA-Weekly" /TR "' + LOCATION + ' --audit --weekly --debug" /ST 07:00'
+  params_weekly = '/Create /SC Weekly /RU System /D MON /TN "CTQA-Weekly" /TR "' + LOCATION + ' --audit --weekly --debug" /ST 07:00'
   logger.debug('Installing with script: ' + params)
-
-  # Check that the service isn't already installed
-  if service_installed():
-    logger.error("Service already installed")
-    return 0
 
   # Attempt to exec as admin. Catch denial of UAC prompt.
   try:
