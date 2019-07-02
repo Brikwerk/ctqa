@@ -15,6 +15,7 @@ logger = logging.getLogger(logutil.MAIN_LOG_NAME)
 
 
 # Constants
+DEFAULT_PROFILE_NAME = "profiles.json"
 DEFAULT_PROFILE = {
   'StationName':'',
   'Manufacturer':'',
