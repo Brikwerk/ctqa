@@ -121,6 +121,16 @@ def generateReport(dataPath, config, title, upperlimit, lowerlimit, report_type=
 
   # Creating legend
   handles, labels = plt.axes().get_legend_handles_labels()
+  strdates = list(jsonData["Homogeneity"].keys())
+  if len(strdates) >= 1:
+    # Creating blank rectangle for date holder
+    blankrectangle = matplotlib.patches.Rectangle((0, 0), 1, 1, fc="w", fill=False, edgecolor='none', linewidth=0)
+    handles.append(blankrectangle)
+    # Getting last point date as string
+    strdates.sort()
+    lastdatepoint = strdates[len(strdates)-1]
+    lastdatepoint = "Last Point: %s/%s/%s" % (lastdatepoint[0:4], lastdatepoint[4:6], lastdatepoint[6:8])
+    labels.append(lastdatepoint)
   plt.axes().legend(handles, labels)
 
   # Title
