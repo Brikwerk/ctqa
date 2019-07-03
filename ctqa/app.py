@@ -72,15 +72,24 @@ def run(config, profiles, __DEBUG, weekly=False):
       # Getting site's upper/lower limits
       upperlimit = PROFILES[site]["UpperHomogeneityLimit"]
       lowerlimit = PROFILES[site]["LowerHomogeneityLimit"]
-      reportutil.generateReport(sitePath, CONFIG, dailyTitle, upperlimit, lowerlimit)
+      prediction = reportutil.generateReport(sitePath, CONFIG, dailyTitle, upperlimit, lowerlimit)
+      # Warning if prediction exceeds upper/lower limit
+      if prediction != None and (prediction > upperlimit or prediction < lowerlimit):
+        notifications.notify_of_warning(site, CONFIG["DaysToForecast"], prediction)
+      
+      # Recording report generated and location
+      reportlocation = os.path.abspath(os.path.join(CONFIG["ReportLocation"], dailyTitle + ".png"))
+      notifications.DATA["changedReports"].append(reportlocation)
   # Regnerate reports if weekly no matter what
   if weekly:
     reportutil.regenerateReports(dataFolderLocation, CONFIG, report_type="weekly")
-
-  # Getting changed report names and emailing
-  siteNames = results['Homogeneity'].keys()
-  notifications.mail_reports(siteNames)
-
+  
+  # Set notifications to weekly or daily
+  if weekly:
+    notifications.DATA["runType"] = "weekly"
+  else:
+    notifications.DATA["runType"] = "daily"
+  print(notifications.DATA)
   
   # Ensuring test images are deleted
   if CONFIG.get("Source") != "TEST":

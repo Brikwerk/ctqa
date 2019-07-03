@@ -11,6 +11,7 @@ import numpy as np
 from . import profileutil
 from . import auditmethods
 from . import phantomcenter as phantom
+from . import notifications
 import cv2
 import json
 import os
@@ -182,7 +183,13 @@ def auditImages(datasets):
 
       logger.debug("Auditing " + dataset[0])
       
-      performHomogeneityAudit(method, dataset[2])
+      roi = performHomogeneityAudit(method, dataset[2])
+
+      # Checking if the ROI exceeds the site's bounds
+      if roi > profile["UpperHomogeneityLimit"] or roi < profile["LowerHomogeneityLimit"]:
+        sitename = profileutil.getProfileName(profile)
+        date = dataset[2].StudyDate
+        notifications.notify_of_failure(sitename, date, roi)
 
     except Exception as e:
       if profile:
@@ -215,11 +222,18 @@ def performHomogeneityAudit(method, img):
       img.InstitutionName.upper()
     )
   except AttributeError as e:
-    if hasattr(img, "SeriesInstanceUID"):
-      logger.error(str(e) + ' in series ' + str(img.SeriesInstanceUID))
+    if hasattr(img, "SOPInstanceUID"):
+      logger.error(str(e) + ' in series ' + str(img.SOPInstanceUID))
     else:
       logger.error(str(e) + ' in image ' + str(img))
     return
+
+  logger.debug("Image Study Instance UID" + str(img.StudyInstanceUID))
+  logger.debug("Image Series Instance UID" + str(img.SeriesInstanceUID))
+  logger.debug("Image SOP Instance UID" + str(img.SOPInstanceUID))
+
+  if img.SOPInstanceUID == "1.2.392.200036.9116.2.6.1.37.2430416890.1561961354.616050":
+    print(img)
 
   # Getting img date
   date = img.StudyDate
@@ -255,6 +269,8 @@ def performHomogeneityAudit(method, img):
       directionroi = dataloc["PERIPHERAL"][audit["direction"]] # Getting direction roi mean
       # Performing comparison between center and periph roi means
       dataloc["PERIPHERAL-COMP"][audit["direction"]] = np.absolute(centerroi - directionroi)
+
+  return centerroi
 
 
 def setupHomogeneityData(method, img, date, reader):

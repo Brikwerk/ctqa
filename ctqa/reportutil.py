@@ -20,6 +20,7 @@ import json
 import os, sys
 from ctqa import datautil
 from ctqa import profileutil
+from ctqa import notifications
 
 #Logger init
 logger = logging.getLogger(logutil.MAIN_LOG_NAME)
@@ -108,7 +109,8 @@ def generateReport(dataPath, config, title, upperlimit, lowerlimit, report_type=
       lastrois.append(centerrois[i])
 
   # Fitting regression for decalibration prediction if we have enough data
-  # Aiming for at least 3 points of data in the last month. 
+  # Aiming for at least 3 points of data in the last month.
+  forecastend = None
   if len(lastdates) > 2:
     # Fitting linear polynomial
     fit = np.polyfit(lastdates, lastrois, 1) # Fitting to dates/rois to a single degree polynomial
@@ -149,6 +151,8 @@ def generateReport(dataPath, config, title, upperlimit, lowerlimit, report_type=
   plt.savefig(file_loc, dpi=300)
   # Clearing plot. MUST DO THIS UNLESS YOU WANT THE OLD PLOT TO REMAIN FOR ANOTHER RUN
   plt.close()
+
+  return forecastend
 
 
 def regenerateReports(dataPath, config, report_type="daily"):
