@@ -4,7 +4,6 @@ from tkinter import ttk
 
 import logging
 from .. import logutil
-from .. import encryption
 logger = logging.getLogger(logutil.MAIN_LOG_NAME)
 
 

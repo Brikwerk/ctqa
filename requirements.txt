@@ -6,8 +6,6 @@ pyinstaller>=3.3.1
 matplotlib>=2.2.2
 sphinx>=1.7.7
 sphinx-rtd-theme>=0.4.1
-exchangelib>=1.11.4
-cryptography>=2.3.1 
 pywin32>=223
 numpy>=1.16.4
 opencv-python==4.1.0.25
