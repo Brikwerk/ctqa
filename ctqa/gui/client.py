@@ -520,7 +520,7 @@ class ctqa_client:
 
   def open_credentials_client(self):
     top = Toplevel()
-    hooksclient.credentials_client(top)
+    hooksclient.hooks_client(top)
 
 
   def service_install(self):

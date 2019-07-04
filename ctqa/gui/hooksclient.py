@@ -1,6 +1,8 @@
 import os, sys, json, platform
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
+from .. import confutil
 
 import logging
 from .. import logutil
@@ -13,8 +15,8 @@ def resource_path(relative_path):
   return os.path.join(os.path.abspath("."), relative_path)
 
 
-class credentials_client:
-  '''Instantiates a Tkinter frame that takes email settings and credentials to email new reports'''
+class hooks_client:
+  '''Instantiates a Tkinter frame that sets up hooks for CTQA events'''
 
   def __init__(self, parent, firstrun=False):
     self.parent = parent
@@ -22,7 +24,7 @@ class credentials_client:
     self.firstrun = firstrun
     self.parent.resizable(width=False, height=False)
     self.parent.geometry('400x250')
-    self.parent.title('CTQA Notification Credentials')
+    self.parent.title('CTQA Notification Hooks')
     try:
       img = tk.PhotoImage(file=resource_path('res/ctqa-icon.gif'))
       parent.tk.call('wm', 'iconphoto', parent._w, img)
@@ -32,6 +34,8 @@ class credentials_client:
     # Setting up absolute locations
     self.location = os.path.abspath(os.path.dirname(sys.argv[0]))
     self.reportspath = os.path.join(self.location, 'reports')
+    self.configpath = os.path.join(self.location, confutil.DEFAULT_CONFIG_LOCATION)
+    self.config = confutil.loadConfig(self.configpath)
 
     # Placing components
     self.load_components()
@@ -39,7 +43,7 @@ class credentials_client:
   
   def load_components(self):
     self.buttonframe = tk.Frame(self.parent, background='#ededed')
-    self.savebutton = tk.Button(self.buttonframe, text='Save Credentials', width=20, command=self.save_creds, highlightbackground='#ededed')
+    self.savebutton = tk.Button(self.buttonframe, text='Save Hooks', width=20, command=self.save_hooks, highlightbackground='#ededed')
     
     # Detecting if opened from client or first run
     if self.firstrun:
@@ -51,36 +55,36 @@ class credentials_client:
     self.buttonframe.pack(side='bottom', fill='x', padx=10, pady=(0,10))
 
     # Frame for config elements
-    self.mainframe = tk.LabelFrame(self.parent, text='Credentials', background='#ededed')
+    self.mainframe = tk.LabelFrame(self.parent, text='Hooks', background='#ededed')
     self.mainframe.pack(side='top', expand=True, fill='both', padx=10, pady=10)
 
-    # Creating Protocol label and textbox
-    self.protocollabel = tk.Label(self.mainframe, text='Protocol')
-    self.protocolcombo = ttk.Combobox(self.mainframe, width=23, background='#ededed')
-    self.protocolcombo['values'] = ['Exchange']
-    self.protocolcombo.set('Exchange')
-    self.protocolcombo['state'] = 'readonly'
-    # Placing
-    self.protocollabel.grid(column=0, row=0, sticky='w', padx=(10,0), pady=(10,10))
-    self.protocolcombo.grid(column=1, row=0, sticky='e', padx=(0,10), pady=(10,10))
+    # Creating Failure hook label and textbox
+    self.failurelabel = tk.Label(self.mainframe, text='Failure Hook')
+    self.failureentry = tk.Entry(self.mainframe, width=35, justify=tk.LEFT, highlightbackground='#ededed')
+    self.failureentry.insert(0, self.config["FailureHook"])
+    self.failurelabel.grid(column=0, row=0, sticky='w', padx=(10,0), pady=(10,10))
+    self.failureentry.grid(column=1, row=0, sticky='e', padx=(0,10), pady=(10,10))
 
-    # Creating Email Address label and textbox
-    self.addresslabel = tk.Label(self.mainframe, text='Email Address')
-    self.addressentry = tk.Entry(self.mainframe, width=25, justify=tk.LEFT, highlightbackground='#ededed')
-    self.addresslabel.grid(column=0, row=1, sticky='w', padx=(10,0), pady=(10,10))
-    self.addressentry.grid(column=1, row=1, sticky='e', padx=(0,10), pady=(10,10))
+    # Creating Warning hook label and textbox
+    self.warninglabel = tk.Label(self.mainframe, text='Warning Hook')
+    self.warningentry = tk.Entry(self.mainframe, width=35, justify=tk.LEFT, highlightbackground='#ededed')
+    self.warningentry.insert(0, self.config["WarningHook"])
+    self.warninglabel.grid(column=0, row=1, sticky='w', padx=(10,0), pady=(10,10))
+    self.warningentry.grid(column=1, row=1, sticky='e', padx=(0,10), pady=(10,10))
 
-    # Creating Password label and textbox
-    self.passwordlabel = tk.Label(self.mainframe, text='Password')
-    self.passwordentry = tk.Entry(self.mainframe, width=25, show='*', justify=tk.LEFT, highlightbackground='#ededed')
-    self.passwordlabel.grid(column=0, row=2, sticky='w', padx=(10,0), pady=(10,10))
-    self.passwordentry.grid(column=1, row=2, sticky='e', padx=(0,10), pady=(10,10))
+    # Creating Weekly Reports hook label and textbox
+    self.weeklylabel = tk.Label(self.mainframe, text='Weekly Reports Hook')
+    self.weeklyentry = tk.Entry(self.mainframe, width=35, justify=tk.LEFT, highlightbackground='#ededed')
+    self.weeklyentry.insert(0, self.config["WeeklyReportHook"])
+    self.weeklylabel.grid(column=0, row=2, sticky='w', padx=(10,0), pady=(10,10))
+    self.weeklyentry.grid(column=1, row=2, sticky='e', padx=(0,10), pady=(10,10))
 
-    # Creating Receiving email label and textbox
-    self.recvlabel = tk.Label(self.mainframe, text='Receiver')
-    self.recventry = tk.Entry(self.mainframe, width=25, justify=tk.LEFT, highlightbackground='#ededed')
-    self.recvlabel.grid(column=0, row=3, sticky='w', padx=(10,0), pady=(10,10))
-    self.recventry.grid(column=1, row=3, sticky='e', padx=(0,10), pady=(10,10))
+    # Creating Daily reports hook label and textbox
+    self.dailylabel = tk.Label(self.mainframe, text='Daily Reports Hook')
+    self.dailyentry = tk.Entry(self.mainframe, width=35, justify=tk.LEFT, highlightbackground='#ededed')
+    self.dailyentry.insert(0, self.config["DailyReportHook"])
+    self.dailylabel.grid(column=0, row=3, sticky='w', padx=(10,0), pady=(10,10))
+    self.dailyentry.grid(column=1, row=3, sticky='e', padx=(0,10), pady=(10,10))
 
     # Mainframe grid weight setup
     self.mainframe.grid_columnconfigure(0, weight=1)
@@ -91,21 +95,35 @@ class credentials_client:
     self.mainframe.grid_rowconfigure(3, weight=1)
 
 
-  def save_creds(self):
-    fkey = encryption.get_fernet_key()
-    CREDS = {
-      "Protocol": self.protocolcombo.get(),
-      "EmailAddress": self.addressentry.get(),
-      "Password": self.passwordentry.get(),
-      "Receiver": self.recventry.get()
-    }
-    jsonstring = json.dumps(CREDS)
-    token = fkey.encrypt(bytes(jsonstring, encoding='ascii'))
-    
-    # Saving token to file
-    with open('data/enc', 'wb') as outfile:
-      outfile.write(token)
-      outfile.close()
+  def save_hooks(self):
+    """Validates and saves all paths entered into the hook entry components"""
+    hookpaths = [self.failureentry.get(), self.warningentry.get(), self.weeklyentry.get(), self.dailyentry.get()]
+    configkeys = ["FailureHook", "WarningHook", "WeeklyReportHook", "DailyReportHook"]
+
+    for i in range(0, len(hookpaths)):
+      paths = hookpaths[i]
+      key = configkeys[i]
+      validationresult = self.validate_hook(paths)
+      if validationresult:
+        confutil.updateConfig(self.configpath, key, paths)
+      else:
+        messagebox.showerror("Hook Path Error", str(key) + " does not contain a valid path.\n Please enter a valid path separated by semicolons.", parent=self.parent)
+
+
+  def validate_hook(self, paths):
+    paths = paths.split(";")
+    result = True
+
+    try:
+      for path in paths:
+        abspath = os.path.abspath(path)
+        if os.path.isfile(abspath) or os.path.isdir(abspath):
+          continue
+        else:
+          result = False
+      return result
+    except Exception:
+      return False
 
   
   def exit_creds(self):

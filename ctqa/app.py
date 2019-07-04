@@ -80,6 +80,10 @@ def run(config, profiles, __DEBUG, weekly=False):
       # Recording report generated and location
       reportlocation = os.path.abspath(os.path.join(CONFIG["ReportLocation"], dailyTitle + ".png"))
       notifications.DATA["changedReports"].append(reportlocation)
+
+      # Adding relevant daily report to any events that occured
+      if site in notifications.DATA["events"].keys():
+        notifications.DATA["events"][site]["reportLocation"] = reportlocation
   # Regnerate reports if weekly no matter what
   if weekly:
     reportutil.regenerateReports(dataFolderLocation, CONFIG, report_type="weekly")
@@ -89,7 +93,10 @@ def run(config, profiles, __DEBUG, weekly=False):
     notifications.DATA["runType"] = "weekly"
   else:
     notifications.DATA["runType"] = "daily"
-  print(notifications.DATA)
+  logger.debug(notifications.DATA)
+
+  # Sending notifications
+  notifications.send_notifications(CONFIG)
   
   # Ensuring test images are deleted
   if CONFIG.get("Source") != "TEST":
