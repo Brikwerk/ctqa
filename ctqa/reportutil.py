@@ -71,10 +71,11 @@ def generateReport(dataPath, config, title, upperlimit, lowerlimit, report_type=
   days = mdates.WeekdayLocator()
   monthsFmt = mdates.DateFormatter('%Y-%m')
 
+  axes = plt.subplot()
   plt.plot_date(x=centerdates, y=centerrois, fmt='o', label='Center ROI Means', zorder=10)
-  plt.axes().xaxis.set_major_locator(months)
-  plt.axes().xaxis.set_major_formatter(monthsFmt)
-  plt.axes().xaxis.set_minor_locator(days)
+  axes.xaxis.set_major_locator(months)
+  axes.xaxis.set_major_formatter(monthsFmt)
+  axes.xaxis.set_minor_locator(days)
 
   # Setting axis bounds
   plt.xlim((datenow - graphdays, datenow + forecastdays + 5))
@@ -122,7 +123,7 @@ def generateReport(dataPath, config, title, upperlimit, lowerlimit, report_type=
     plt.plot_date(x=[lastdates[0], forecasttime], y=[forecaststart, forecastend], label='Forecast Trend', fmt="--o", zorder=5)
 
   # Creating legend
-  handles, labels = plt.axes().get_legend_handles_labels()
+  handles, labels = axes.get_legend_handles_labels()
   strdates = list(jsonData["Homogeneity"].keys())
   if len(strdates) >= 1:
     # Creating blank rectangle for date holder
@@ -133,7 +134,7 @@ def generateReport(dataPath, config, title, upperlimit, lowerlimit, report_type=
     lastdatepoint = strdates[len(strdates)-1]
     lastdatepoint = "Last Point: %s/%s/%s" % (lastdatepoint[0:4], lastdatepoint[4:6], lastdatepoint[6:8])
     labels.append(lastdatepoint)
-  plt.axes().legend(handles, labels)
+  axes.legend(handles, labels)
 
   # Title
   plt.title(title)
