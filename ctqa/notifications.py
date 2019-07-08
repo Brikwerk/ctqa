@@ -48,23 +48,23 @@ def send_notifications(config):
     # If it's a failure event
     if event["type"] == "failure":
       # Looping through paths and sending the failure event to each one
-      exec_paths(config["FailureHook"], eventstring, "Failure")
+      exec_paths(config["FailureHook"], eventstring, "failure")
     
     # If it's a warning event
     elif event["type"] == "warning":
       # Looping through paths and sending the warning event to each one
-      exec_paths(config["WarningHook"], eventstring, "Warning")
+      exec_paths(config["WarningHook"], eventstring, "warning")
   
   # Sending changed daily reports
   if len(DATA["changedReports"]) > 0:
     dailyreports = json.dumps(DATA["changedReports"])
     dailyreports = encode_json_string(dailyreports)
-    exec_paths(config["DailyReportHook"], dailyreports, "Daily Reports")
+    exec_paths(config["DailyReportHook"], dailyreports, "daily")
 
   if DATA["runType"] == "weekly":
     weeklyreports = json.dumps(get_weekly_reports(config)).replace('"', "'")
     weeklyreports = encode_json_string(weeklyreports)
-    exec_paths(config["WeeklyReportHook"], weeklyreports, "Weekly Reports")
+    exec_paths(config["WeeklyReportHook"], weeklyreports, "weekly")
 
 
 def exec_paths(paths, arg, notificationtype):
@@ -72,7 +72,7 @@ def exec_paths(paths, arg, notificationtype):
 
   for path in paths:
     logger.debug("Notifying " + path + " of " + notificationtype + " with argument " + arg)
-    p = Popen(path + " " + arg)
+    p = Popen(path + " " + arg + " " + notificationtype)
     stderr = p.communicate()
     logger.debug(stderr)
 
