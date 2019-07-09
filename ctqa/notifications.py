@@ -72,7 +72,9 @@ def exec_paths(paths, arg, notificationtype):
 
   for path in paths:
     logger.debug("Notifying " + path + " of " + notificationtype + " with argument " + arg)
-    p = Popen(path + " " + arg + " " + notificationtype)
+    runpath = path + ' "' + arg + '" ' + notificationtype
+    logger.debug("Running: " + runpath)
+    p = Popen(runpath)
     stderr = p.communicate()
     logger.debug(stderr)
 
@@ -89,4 +91,4 @@ def get_weekly_reports(config):
 
 
 def encode_json_string(string):
-  return base64.b64encode(bytes(string, 'utf-8')).decode("utf-8")
+  return base64.urlsafe_b64encode(bytes(string, 'utf-8')).decode("utf-8")
