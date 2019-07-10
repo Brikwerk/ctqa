@@ -86,7 +86,7 @@ def run(config, profiles, __DEBUG, weekly=False):
         notifications.DATA["events"][site]["reportLocation"] = reportlocation
   # Regnerate reports if weekly no matter what
   if weekly:
-    reportutil.regenerateReports(dataFolderLocation, CONFIG, report_type="weekly")
+    reportutil.regenerateReports(dataFolderLocation, CONFIG, PROFILES, report_type="weekly")
   
   # Set notifications to weekly or daily
   if weekly:

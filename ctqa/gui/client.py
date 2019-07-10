@@ -12,6 +12,7 @@ from PIL import Image, ImageTk
 from collections import deque
 from .. import servicemanager
 from .. import reportutil
+from .. import profileutil
 from . import profileclient
 from . import configclient
 from . import hooksclient
@@ -53,10 +54,12 @@ class ctqa_client:
       logger.error("ERROR: Could not load ctqa-icon.gif from resources folder")
 
     self.location = os.path.abspath(os.path.dirname(sys.argv[0]))
-    self.logpath = self.location + '/ctqa.log'
-    self.confpath = self.location + '/config.json'
-    self.reportspath = self.location + '/reports'
+    self.logpath = os.path.join(self.location, 'ctqa.log')
+    self.confpath = os.path.join(self.location, 'config.json')
+    self.profilepath = os.path.join(self.location, 'profiles.json')
+    self.reportspath = os.path.join(self.location, 'reports')
     self.config = confutil.loadConfig(self.confpath)
+    self.profiles = profileutil.openProfiles(self.profilepath)
 
     self.mainfrm_style = ttk.Style()
     self.mainfrm_style.configure('Main.TFrame')
@@ -105,13 +108,15 @@ class ctqa_client:
     editmenu = tk.Menu(menubar, tearoff=0)
     editmenu.add_command(label="Regenerate Daily Reports", command=lambda: reportutil.regenerateReports(
       os.path.join(self.location, "data"),
-      self.config
+      self.config,
+      self.profiles
     ))
     # Weekly report regen
     menubar.add_cascade(label="Reports", menu=editmenu)
     editmenu.add_command(label="Regenerate Weekly Reports", command=lambda: reportutil.regenerateReports(
       os.path.join(self.location, "data"),
       self.config,
+      self.profiles,
       report_type="weekly"
     ))
     menubar.add_cascade(label="Reports", menu=editmenu)
