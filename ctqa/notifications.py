@@ -62,7 +62,7 @@ def send_notifications(config):
     exec_paths(config["DailyReportHook"], dailyreports, "daily")
 
   if DATA["runType"] == "weekly":
-    weeklyreports = json.dumps(get_weekly_reports(config)).replace('"', "'")
+    weeklyreports = json.dumps(get_weekly_reports(config))
     weeklyreports = encode_json_string(weeklyreports)
     exec_paths(config["WeeklyReportHook"], weeklyreports, "weekly")
 
