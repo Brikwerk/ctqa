@@ -42,8 +42,8 @@ def install():
 def install_windows():
   '''Attempts to install the CTQA Audit utility as a task in Windows Task Scheduler.'''
 
-  params = '/Create /SC Daily /RU System /TN "CTQA" /TR "' + LOCATION + ' --audit --debug" /ST 07:00'
-  params_weekly = '/Create /SC Weekly /RU System /D MON /TN "CTQA-Weekly" /TR "' + LOCATION + ' --audit --weekly --debug" /ST 07:00'
+  params = '/Create /SC Daily /RU System /TN "CTQA" /TR "' + os.path.join(LOCATION, sys.argv[0]) + ' --audit --debug" /ST 07:00'
+  params_weekly = '/Create /SC Weekly /RU System /D MON /TN "CTQA-Weekly" /TR "' + os.path.join(LOCATION, sys.argv[0]) + ' --audit --weekly --debug" /ST 07:00'
   logger.debug('Installing with script: ' + params)
 
   # Attempt to exec as admin. Catch denial of UAC prompt.
