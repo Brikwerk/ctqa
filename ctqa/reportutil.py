@@ -156,7 +156,7 @@ def generateReport(dataPath, config, title, upperlimit, lowerlimit, report_type=
   return forecastend
 
 
-def regenerateReports(dataPath, config, report_type="daily"):
+def regenerateReports(dataPath, config, profiles, report_type="daily"):
   '''Finds all data folders and updates reports based on existing data'''
   # Getting report names and paths to the data
   pathitems = os.listdir(dataPath)
@@ -165,11 +165,6 @@ def regenerateReports(dataPath, config, report_type="daily"):
     itempath = os.path.join(dataPath, item)
     if os.path.isdir(itempath):
       subnames.append(item)
-
-  # Getting profiles
-  profiles = profileutil.openProfiles(profileutil.DEFAULT_PROFILE_NAME)
-  if profiles == -1  or profiles == 0:
-    raise Exception("Could not load profiles")
 
   # Generating reports
   for site in subnames:
