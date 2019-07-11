@@ -36,17 +36,21 @@ DATA = {
   "Linearity":{}
 }
 SHORT_UUID = None
+OUTPUT_ROIS = None
 
-def run(profiles, imgs):
+def run(profiles, imgs, output_rois=True):
   '''Main function for running the audit.'''
 
   if len(profiles) < 1: # If we've got no profiles, exit
     logger.warning('No profiles were found. Exiting audit...')
     return
 
-  #Setting profiles global
+  # Setting profiles global
   global PROFILES
   PROFILES = profiles
+
+  global OUTPUT_ROIS
+  OUTPUT_ROIS = output_rois
 
   # Getting grouped images
   series = groupSeries(imgs)
@@ -232,9 +236,6 @@ def performHomogeneityAudit(method, img):
   logger.debug("Image Series Instance UID" + str(img.SeriesInstanceUID))
   logger.debug("Image SOP Instance UID" + str(img.SOPInstanceUID))
 
-  if img.SOPInstanceUID == "1.2.392.200036.9116.2.6.1.37.2430416890.1561961354.616050":
-    print(img)
-
   # Getting img date
   date = img.StudyDate
   # Preparing a spot in the dict object for audit results from img
@@ -374,20 +375,21 @@ def computeHomogeneity(audit, dataset):
   if not os.path.isdir("./roi_selections"):
     os.mkdir("./roi_selections")
 
-  deleteOldROISelections()
+  if OUTPUT_ROIS:
+    deleteOldROISelections()
 
-  roi_img_path = './roi_selections/' + dataset.StationName + '.' + dataset.StudyDate + '.' + SHORT_UUID + '.jpg'
-  if os.path.isfile(roi_img_path):
-    img = cv2.imread(roi_img_path)
-  else:
-    img = phantom.get_scaled_image(dataset)
-    img = phantom.set_window(img, 0, 50)
-    img = cv2.cvtColor(img,cv2.COLOR_GRAY2BGR)
-    print(circle_coords)
-    cv2.circle(img,(circle_coords[0][0],circle_coords[0][1]),circle_coords[0][2],(0,255,0),5)
+    roi_img_path = './roi_selections/' + dataset.StationName + '.' + dataset.StudyDate + '.' + SHORT_UUID + '.jpg'
+    if os.path.isfile(roi_img_path):
+      img = cv2.imread(roi_img_path)
+    else:
+      img = phantom.get_scaled_image(dataset)
+      img = phantom.set_window(img, 0, 50)
+      img = cv2.cvtColor(img,cv2.COLOR_GRAY2BGR)
+      print(circle_coords)
+      cv2.circle(img,(circle_coords[0][0],circle_coords[0][1]),circle_coords[0][2],(0,255,0),5)
 
-  cv2.rectangle(img, (xl,yl), (xr,yr),(0,0,255),3)
-  cv2.imwrite(roi_img_path, img)
+    cv2.rectangle(img, (xl,yl), (xr,yr),(0,0,255),3)
+    cv2.imwrite(roi_img_path, img)
 
   # Performing ROI audit
   roi = selectArea(scaledData, xl, yl, xr, yr)
