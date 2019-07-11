@@ -56,7 +56,7 @@ setup(
     packages=['ctqa'],
     include_package_data=True,
     platforms='any',
-    test_suite='test.test_ctqa',
+    test_suite='test',
     classifiers = [
         'Programming Language :: Python',
         'Development Status :: 2 - Beta',
