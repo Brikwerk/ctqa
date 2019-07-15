@@ -26,7 +26,12 @@ DEFAULT_CONFIG = {
   "WarningHook": "",
   "FailureHook": "",
   "DailyReportHook": "",
-  "WeeklyReportHook": ""
+  "WeeklyReportHook": "",
+  "Email":"",
+  "DailyRecipients":"",
+  "WeeklyRecipients":"",
+  "WarningRecipients":"",
+  "FailureRecipients":""
 }
 DEFAULT_CONFIG_LENGTH = 3
 DEFAULT_CONFIG_LOCATION = 'config.json'
