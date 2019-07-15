@@ -15,7 +15,7 @@ from .. import reportutil
 from .. import profileutil
 from . import profileclient
 from . import configclient
-from . import hooksclient
+from . import notificationsclient
 from . import logwatcher
 from .. import confutil
 import win32com.client
@@ -525,7 +525,7 @@ class ctqa_client:
 
   def open_credentials_client(self):
     top = Toplevel()
-    hooksclient.hooks_client(top)
+    notificationsclient.notifications_client(top)
 
 
   def service_install(self):
