@@ -24,7 +24,7 @@ class notifications_client:
     self.parent.configure(background='#ededed')
     self.firstrun = firstrun
     self.parent.resizable(width=False, height=False)
-    self.parent.geometry('400x550')
+    self.parent.geometry('400x700')
     self.parent.title('CTQA Notification Settings')
     try:
       img = tk.PhotoImage(file=resource_path('res/ctqa-icon.gif'))
@@ -72,11 +72,38 @@ class notifications_client:
     self.passlabel.grid(column=0, row=1, sticky='w', padx=(10,0), pady=(10,10))
     self.passentry.grid(column=1, row=1, sticky='e', padx=(0,10), pady=(10,10))
 
+    # Creating email type dropdown
+    self.servertypechoices = {"SMTP", "IMAP", "POP3", "Exchange"}
+    self.servertypevar = tk.StringVar(self.emailframe)
+    if self.config["EmailServerType"] == "":
+      self.servertypevar.set("SMTP")
+    else:
+      self.servertypevar.set(self.config["EmailServerType"])
+    self.servertype = tk.OptionMenu(self.emailframe, self.servertypevar, *self.servertypechoices)
+    self.servertypelabel = tk.Label(self.emailframe, text='Email Server Type')
+    self.servertypelabel.grid(column=0, row=2, sticky='w', padx=(10,0), pady=(10,10))
+    self.servertype.grid(column=1, row=2, sticky='w', padx=(20,10), pady=(10,10))
+
+    # Creating email server label and textbox
+    self.serverlabel = tk.Label(self.emailframe, text='Email Server')
+    self.serverentry = tk.Entry(self.emailframe, width=35, justify=tk.LEFT, highlightbackground='#ededed')
+    self.serverlabel.grid(column=0, row=3, sticky='w', padx=(10,0), pady=(10,10))
+    self.serverentry.grid(column=1, row=3, sticky='e', padx=(0,10), pady=(10,10))
+
+    # Creating email server label and textbox
+    self.portlabel = tk.Label(self.emailframe, text='Email Server Port')
+    self.portentry = tk.Entry(self.emailframe, width=35, justify=tk.LEFT, highlightbackground='#ededed')
+    self.portlabel.grid(column=0, row=4, sticky='w', padx=(10,0), pady=(10,10))
+    self.portentry.grid(column=1, row=4, sticky='e', padx=(0,10), pady=(10,10))
+
     # Emailframe grid weight setup
     self.emailframe.grid_columnconfigure(0, weight=1)
     self.emailframe.grid_columnconfigure(1, weight=1)
     self.emailframe.grid_rowconfigure(0, weight=1)
     self.emailframe.grid_rowconfigure(1, weight=1)
+    self.emailframe.grid_rowconfigure(2, weight=1)
+    self.emailframe.grid_rowconfigure(3, weight=1)
+    self.emailframe.grid_rowconfigure(4, weight=1)
 
     # Frame for email recipient elements
     self.recipframe = tk.LabelFrame(self.parent, text='Email Recipients', background='#ededed')
