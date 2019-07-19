@@ -9,5 +9,5 @@ sphinx-rtd-theme>=0.4.1
 pywin32>=223
 numpy>=1.16.4
 opencv-python==4.1.0.25
-yagmail==0.11.220
-keyring==19.0.2
+exchangelib==1.12.5
+cryptography==2.7
