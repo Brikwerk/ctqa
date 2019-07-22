@@ -7,10 +7,13 @@ Utility for creating/saving/loading/updating a JSON configuration file.
 import json
 import re
 import os
+import sys
 import logging
 from ctqa import logutil
 
 # Constants
+LOCATION = os.path.abspath(os.path.dirname(sys.argv[0]))
+DEFAULT_REPORT_FOLDER_LOCATION = os.path.join(LOCATION, "reports")
 DEFAULT_CONFIG = {
   "Source" : "",
   "OrthancRESTAddress" : "",
@@ -21,7 +24,7 @@ DEFAULT_CONFIG = {
   "DailyReportDaysToGraph": 365,
   "WeeklyReportDaysToGraph": 90,
   "LastPACSDateChecked": False,
-  "ReportLocation": "./reports",
+  "ReportLocation": DEFAULT_REPORT_FOLDER_LOCATION,
   "ServicesInstalled": False,
   "WarningHook": "",
   "FailureHook": "",

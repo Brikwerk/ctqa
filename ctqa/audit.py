@@ -371,19 +371,25 @@ def computeHomogeneity(audit, dataset):
     yr = int(centerX + halfLengthXROI)
     xr = int((centerY + spacingYROI) + halfLengthYROI)
 
-  if not os.path.isdir("./roi_selections"):
-    os.mkdir("./roi_selections")
+  roi_path = os.path.join(LOCATION, "roi_selections")
+
+  if not os.path.isdir(roi_path):
+    os.mkdir(roi_path)
 
   deleteOldROISelections()
 
-  roi_img_path = './roi_selections/' + dataset.StationName + '.' + dataset.StudyDate + '.' + SHORT_UUID + '.jpg'
+  roi_img_path = roi_path + dataset.StationName + '.' + dataset.StudyDate + '.' + SHORT_UUID + '.jpg'
+  logger.debug("Saving ROI selection to: " + roi_img_path)
   if os.path.isfile(roi_img_path):
     img = cv2.imread(roi_img_path)
   else:
     img = phantom.get_scaled_image(dataset)
     img = phantom.set_window(img, 0, 50)
     img = cv2.cvtColor(img,cv2.COLOR_GRAY2BGR)
-    print(circle_coords)
+
+    logger.debug("Circle Center Coords: ")
+    logger.debug(circle_coords)
+
     cv2.circle(img,(circle_coords[0][0],circle_coords[0][1]),circle_coords[0][2],(0,255,0),5)
 
   cv2.rectangle(img, (xl,yl), (xr,yr),(0,0,255),3)
