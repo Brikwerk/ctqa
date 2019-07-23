@@ -25,10 +25,10 @@ def test_connect(address, password, type, server, port):
 
 
 def smtp_connect(address, password, server, port):
-  smtpserver = smtplib.SMTP(server, port)
+  smtpserver = smtplib.SMTP()
+  smtpserver.connect(server, port)
   smtpserver.ehlo()
   smtpserver.starttls()
-  smtpserver.ehlo()
   resp, message = smtpserver.login(address, password)
   return smtpserver, resp, message
 
@@ -148,6 +148,7 @@ def send_mail_smtp(config, recipients, subject, body, attachments):
       logger.error("Unable to connect to SMTP server: " + str(message.decode("utf-8")))
     logger.debug("SMTP connection successful")
     connection.sendmail(user, recipients, msg.as_string())
+    connection.quit()
   except Exception as e:
     logger.error("Unable to send mail through SMTP: " + str(e))
     return
