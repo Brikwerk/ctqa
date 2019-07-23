@@ -378,7 +378,7 @@ def computeHomogeneity(audit, dataset):
 
   deleteOldROISelections()
 
-  roi_img_path = roi_path + dataset.StationName + '.' + dataset.StudyDate + '.' + SHORT_UUID + '.jpg'
+  roi_img_path = os.path.join(roi_path, dataset.StationName + '.' + dataset.StudyDate + '.' + SHORT_UUID + '.jpg')
   logger.debug("Saving ROI selection to: " + roi_img_path)
   if os.path.isfile(roi_img_path):
     img = cv2.imread(roi_img_path)
