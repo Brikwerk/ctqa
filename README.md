@@ -1,36 +1,90 @@
-# CTQA: CT Quality Assurance
+<p align="center">
+  <a href="" rel="noopener">
+ <img width=200px height=200px src="https://i.imgur.com/XXOE0B4.png" alt="CTQA logo"></a>
+</p>
 
-## Description
-An application for automated CT quality assurance.
+<h3 align="center">CTQA</h3>
 
-Currently compatible with Orthanc PACS server instances.
+<div align="center">
 
-The application is capable of monitoring homogeneity values and detecting an imminent drift out of specification. Homogeneity values are collected from the center of phantom images and a mean value is obtained from the region. Reports are generated from these mean values. The detection of homogeneity value drift is computed through a linear regression of the past month of points. A prediction is made two months into the future with the trend.
+  [![Stars](https://img.shields.io/github/stars/brikwerk/ctqa.svg)]() 
+  [![GitHub Issues](https://img.shields.io/github/issues/brikwerk/ctqa.svg)](https://github.com/brikwerk/ctqa/issues)
+  [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/brikwerk/ctqa.svg)](https://github.com/brikwerk/ctqa/pulls)
+  [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
 
-Generated reports can also be emailed to the user when new data is checked. Currently, only Microsoft exchange servers are supported for email notifications.
+</div>
 
-## Notes:
-CTs used with this utility must output DICOM tags StationName (0008,1010), Manufacturer (0008,0070), ManufacturerModelName (0008,1090), PatientBirthDate (0010,0030) with *no birth date*, and InstitutionName (0008,0080). These attributes are used to recognize a CT from given images.
+---
 
-# Getting Started
+<p align="center"> This utility aims to perform automated QA testing on CT machines for technologists.
+    <br> 
+</p>
 
-## Running CTQA
+## Table of Contents
+- [About](#about)
+- [Feature List](#feature_list)
+- [Getting Started](#getting_started)
+- [Usage](#usage)
+- [Built Using](#built_using)
+- [Authors](#authors)
+- [Acknowledgments](#acknowledgement)
 
-Note for windows users: An illustrated guide exists under the docs folder
+## About <a name = "about"></a>
+CTQA specializes in identifying the position of a phantom within an image and taking homogeneity measurements specific to the vendor. These measurements are tracked over time and any deviations are sent as notifications to the relevant parties.
 
-1. Please download a compatible release distribution from [here](https://github.com/brikwerk/ctqa/releases)
+*Please Note:* This project requires usage of an Orthanc Server instance to act as an intermediary PACS server for CT machines to submit to.
 
-2. Extract the executable to a sensible location. Please keep in mind that the windows distribution of CTQA will create extra files and folders.
+You can view Orthanc [here](https://orthanc-server.com) and download it [here](https://orthanc-server.com/download.php).
 
-3. Follow the PDF included in the zip file for installation instructions. If you unable to locate the PDF, a version is available at the root of the repository ('ctqa-install.pdf').
+### Feature List <a name = "feature_list"></a>
++ Automated Phantom detection
++ Automated Homogeneity Testing
++ Homogeneity Value Drift Prediction
++ Notifications and Reports through email or a custom method
++ Configurable homogeneity value limits
++ Daily and Weekly Reports
++ Subscribe to specific notification levels (Eg: Failures and Warnings only)
 
-## Setting up the Development Environment
+### Screenshots
 
-1. Run either env-setup.bat or env-setup.sh (The scripts setup a virtual environment under .env, install all required modules to it, and activate the environment).
 
-2. For quicker access to the environment on windows, type "activate" at the root.
+## Getting Started <a name = "getting_started"></a>
+These instructions help you get a copy of the project up and running on your local machine for development and testing purposes. 
 
-3. To compile CTQA, run:
+See [the wiki's installation section](https://github.com/Brikwerk/ctqa/wiki/Installation) for notes on how to deploy the project on a live system.
+
+### Prerequisites
++ Python 3.5+
++ An accompanying Pip installation
++ Virtualenv (Recommended)
+
+### Installing
+If you'd like to setup a virtual environment and install all required packages, navigate to the project root and run the following command:
+
+```
+env-setup.bat
+```
+
+Otherwise, install all packages through the standard command:
+
+```
+pip install -r requirements.txt
+```
+
+After the package installations have finished, the application can be launched with the following command:
+
+```
+python run.py
+```
+
+The appropriate configuration files will be generated in the project root during the initial application launch (or if they aren't present). You can choose to follow through with the application's setup or choose to configure manually.
+
+Details for setting up and configuring the utility can be found on [the wiki](https://github.com/Brikwerk/ctqa/wiki).
+
+Development documentation can be found under "docs/build/html" from the project root.
+
+### Compiling the Executable
+To compile CTQA, run:
 
 ```
 pyinstaller run.spec
@@ -41,3 +95,28 @@ or for a binary with a console debug output:
 ```
 pyinstaller run-debug.spec
 ```
+
+## Running the tests <a name = "tests"></a>
+CTQA currently uses PyTest to check the validity and accuracy of tests run. The testing suite can be run with the following command:
+
+```
+pytest
+```
+
+Tests can be found under the "test" directory from the project root.
+
+## Usage <a name="usage"></a>
+Add notes about how to use the system.
+
+## Built Using <a name = "built_using"></a>
+- [PyInstaller](https://expressjs.com/) - Application Wrapper
+- [Tkinter](https://expressjs.com/) - Application Framework
+- [OpenCV](https://vuejs.org/) - Phantom Detection
+
+## Author <a name = "authors"></a>
+- [@brikwerk](https://github.com/brikwerk)
+
+## Acknowledgements <a name = "acknowledgement"></a>
+- Hat tip to anyone whose code was used
+- Inspiration
+- References
