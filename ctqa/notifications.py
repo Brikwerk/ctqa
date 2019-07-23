@@ -6,7 +6,7 @@ Includes logic to notify users about new reports.
 import json, os, sys
 from subprocess import Popen
 import base64
-import yagmail
+from . import emailutil
 
 import logging
 from ctqa import logutil
@@ -50,43 +50,45 @@ def send_notifications(config):
     if event["type"] == "failure":
       # Looping through paths and sending the failure event to each one
       exec_paths(config["FailureHook"], eventstring, "failure")
-      send_mail(config["Email"], config["FailureRecipients"], event, "failure")
+      emailutil.send_mail(config, event, "failure")
     
     # If it's a warning event
     elif event["type"] == "warning":
       # Looping through paths and sending the warning event to each one
       exec_paths(config["WarningHook"], eventstring, "warning")
-      send_mail(config["Email"], config["WarningRecipients"], event, "warning")
+      emailutil.send_mail(config, event, "warning")
   
   # Sending changed daily reports
   if len(DATA["changedReports"]) > 0:
     dailyreports = json.dumps(DATA["changedReports"])
     dailyreports = encode_json_string(dailyreports)
     exec_paths(config["DailyReportHook"], dailyreports, "daily")
-    send_mail(config["Email"], config["DailyRecipients"], event, "daily")
+    emailutil.send_mail(config, DATA["changedReports"], "daily")
 
   if DATA["runType"] == "weekly":
     weeklyreports = json.dumps(get_weekly_reports(config))
     weeklyreports = encode_json_string(weeklyreports)
     exec_paths(config["WeeklyReportHook"], weeklyreports, "weekly")
-    send_mail(config["Email"], config["WeeklyRecipients"], event, "weekly")
+    emailutil.send_mail(config, get_weekly_reports(config), "weekly")
 
 
 def exec_paths(paths, arg, notificationtype):
   paths = paths.split(";")
 
+  # Returning if paths is empty
+  if len(paths) == 0:
+    return
+
   for path in paths:
+    # Skipping if the path is length zero
+    if len(path) == 0:
+      continue
     logger.debug("Notifying " + path + " of " + notificationtype + " with argument " + arg)
     runpath = path + ' "' + arg + '" ' + notificationtype
     logger.debug("Running: " + runpath)
     p = Popen(runpath)
     stderr = p.communicate()
     logger.debug(stderr)
-
-
-def send_mail(username, recipients, event, event_type):
-  mail = yagmail.SMTP(username)
-  mail.send(to = recipients, subject = "CTQA: " + event_type, contents = str(event))
 
 
 def get_weekly_reports(config):
