@@ -109,14 +109,12 @@ Tests can be found under the "test" directory from the project root.
 Add notes about how to use the system.
 
 ## Built Using <a name = "built_using"></a>
-- [PyInstaller](https://expressjs.com/) - Application Wrapper
-- [Tkinter](https://expressjs.com/) - Application Framework
-- [OpenCV](https://vuejs.org/) - Phantom Detection
+- [PyInstaller](http://www.pyinstaller.org) - Application Wrapper
+- [Tkinter](https://wiki.python.org/moin/TkInter) - Application Framework
+- [OpenCV](https://opencv.org) - Phantom Detection
 
 ## Author <a name = "authors"></a>
 - [@brikwerk](https://github.com/brikwerk)
 
 ## Acknowledgements <a name = "acknowledgement"></a>
-- Hat tip to anyone whose code was used
-- Inspiration
-- References
+- Giampaolo Rodola' for usage of LogWatcher
