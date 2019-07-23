@@ -36,17 +36,21 @@ DATA = {
   "Linearity":{}
 }
 SHORT_UUID = None
+OUTPUT_ROIS = None
 
-def run(profiles, imgs):
+def run(profiles, imgs, output_rois=True):
   '''Main function for running the audit.'''
 
   if len(profiles) < 1: # If we've got no profiles, exit
     logger.warning('No profiles were found. Exiting audit...')
     return
 
-  #Setting profiles global
+  # Setting profiles global
   global PROFILES
   PROFILES = profiles
+
+  global OUTPUT_ROIS
+  OUTPUT_ROIS = output_rois
 
   # Getting grouped images
   series = groupSeries(imgs)
@@ -232,9 +236,6 @@ def performHomogeneityAudit(method, img):
   logger.debug("Image Series Instance UID" + str(img.SeriesInstanceUID))
   logger.debug("Image SOP Instance UID" + str(img.SOPInstanceUID))
 
-  if img.SOPInstanceUID == "1.2.392.200036.9116.2.6.1.37.2430416890.1561961354.616050":
-    print(img)
-
   # Getting img date
   date = img.StudyDate
   # Preparing a spot in the dict object for audit results from img
@@ -376,7 +377,8 @@ def computeHomogeneity(audit, dataset):
   if not os.path.isdir(roi_path):
     os.mkdir(roi_path)
 
-  deleteOldROISelections()
+  if OUTPUT_ROIS:
+    deleteOldROISelections()
 
   roi_img_path = os.path.join(roi_path, dataset.StationName + '.' + dataset.StudyDate + '.' + SHORT_UUID + '.jpg')
   logger.debug("Saving ROI selection to: " + roi_img_path)

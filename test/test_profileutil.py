@@ -1,34 +1,11 @@
-# Tests for CTQA
-from ctqa import confutil, imgfetch, logutil
-from ctqa import audit
+from ctqa import confutil
 import json
 import os
 import pytest
 
-# Constants
 EXAMPLE_CONFIG = confutil.DEFAULT_CONFIG
 EXAMPLE_CONFIG['Source'] = 'ORTHANC'
 EXAMPLE_CONFIG['OrthancRESTAddress'] = 'http://localhost'
-PROFILE = {
-  "ctbaytest-GE MEDICAL SYSTEMS-DISCOVERY CT750 HD-TEST HOSPITAL": {
-    "StationName": "ctbaytest",
-    "Manufacturer": "GE MEDICAL SYSTEMS",
-    "ManufacturerModelName": "DISCOVERY CT750 HD",
-    "InstitutionName": "TEST HOSPITAL",
-    "HomogeneityPosition": 0,
-    "LinearityPosition": 0,
-    "Baseline": {
-      "STD": 4.79,
-      "CENTER": -0.8,
-      "NORTH": 1.15,
-      "SOUTH": 1.2,
-      "EAST": 1.27,
-      "WEST": 1.2
-    }
-  }
-}
-
-### Testing for confutil.py ###
 
 @pytest.fixture(scope='session', autouse=True)
 def cleanup():
@@ -118,7 +95,7 @@ def test_update_config():
   assert config["Source"] == "ORTHANC"
   
   os.remove("testconf.json")
-  
+
 
 def test_update_config_bad_key():
   '''Testing for detection of bad update'''
@@ -130,33 +107,3 @@ def test_update_config_bad_key():
   assert res == -1
   
   os.remove("testUpdateConfig.json")
-  
-
-  
-### Testing for roi_select.py ###
-
-def test_roi_imgA():
-  '''Test for ROI selection correctness with imgA.dcm test image'''
-
-  # Setup
-  res = audit.run(PROFILE, ["test/data/imgA.dcm"])
-  mean = res['Homogeneity']['ctbaytest-GE MEDICAL SYSTEMS-DISCOVERY CT750 HD-TEST HOSPITAL']['20180531']['CENTER']['MEAN']
-  assert mean == 1.1279000594883997
-
-
-def test_roi_imgB():
-  '''Test for ROI selection correctness with imgB.dcm test image'''
-
-
-  # Setup
-  res = audit.run(PROFILE, ["test/data/imgB.dcm"])
-  mean = res['Homogeneity']['ctbaytest-GE MEDICAL SYSTEMS-DISCOVERY CT750 HD-TEST HOSPITAL']['20180601']['CENTER']['MEAN']
-  assert mean == 1.5484830458060679
-
-
-def test_roi_imgC():
-  '''Test for ROI selection correctness with imgC.dcm test image'''
-  # Setup
-  res = audit.run(PROFILE, ["test/data/imgC.dcm"])
-  mean = res['Homogeneity']['ctbaytest-GE MEDICAL SYSTEMS-DISCOVERY CT750 HD-TEST HOSPITAL']['20180602']['CENTER']['MEAN']
-  assert mean == 115.53896490184414
