@@ -147,12 +147,16 @@ class notifications_client:
     # Creating email server label and textbox
     self.serverlabel = tk.Label(self.emailframe, text='Email Server')
     self.serverentry = tk.Entry(self.emailframe, width=35, justify=tk.LEFT, highlightbackground='#ededed')
+    if not self.config["EmailServer"] == "":
+      self.serverentry.insert(0, self.config["EmailServer"])
     self.serverlabel.grid(column=0, row=3, sticky='w', padx=(10,0), pady=5)
     self.serverentry.grid(column=1, row=3, sticky='e', padx=(0,10), pady=5)
 
     # Creating email server label and textbox
     self.portlabel = tk.Label(self.emailframe, text='Email Server Port')
     self.portentry = tk.Entry(self.emailframe, width=35, justify=tk.LEFT, highlightbackground='#ededed')
+    if not self.config["EmailServerPort"] == "":
+      self.portentry.insert(0, self.config["EmailServerPort"])
     self.portlabel.grid(column=0, row=4, sticky='w', padx=(10,0), pady=5)
     self.portentry.grid(column=1, row=4, sticky='e', padx=(0,10), pady=5)
 
