@@ -16,6 +16,11 @@ logger = logging.getLogger(logutil.MAIN_LOG_NAME)
 
 
 def test_connect(address, password, type, server, port):
+  """
+  Tests the connection of the specified email.
+
+  SMTP and Exchange email accounts are currently supported.
+  """
   if type == "SMTP":
     return smtp_test_connect(address, password, server, port)
   elif type == "Exchange":
@@ -25,6 +30,7 @@ def test_connect(address, password, type, server, port):
 
 
 def smtp_connect(address, password, server, port):
+  """Generates an SMTP connection with the specified credentials"""
   smtpserver = smtplib.SMTP()
   smtpserver.connect(server, port)
   smtpserver.ehlo()
@@ -34,6 +40,7 @@ def smtp_connect(address, password, server, port):
 
 
 def smtp_test_connect(address, password, server, port):
+  """Tests SMTP connection with supplied credentials"""
   try:
     logger.debug("Attempting SMTP login with user: %s, server: %s, and port: %d" % (address, server, port))
     smtpserver, resp, message = smtp_connect(address, password, server, port)
@@ -49,6 +56,7 @@ def smtp_test_connect(address, password, server, port):
 
 
 def exchange_test_connect(address, password):
+  """Tests Exchange connection with supplied credentials"""
   logger.debug("Attempting Exchange login with user: %s" % (address))
   try:
     credentials = exchangelib.Credentials(address, password)
@@ -61,6 +69,7 @@ def exchange_test_connect(address, password):
 
 
 def send_mail(config, data, event_type):
+  """Creates and sends the appropriate report email with the supplied config"""
   # Checking for valid email config to execute on
   if config["Email"] == "":
     logger.warning("No suitable email found in config. Skipping over sending notification mail.")
@@ -118,6 +127,7 @@ def send_mail(config, data, event_type):
   
 
 def send_mail_smtp(config, recipients, subject, body, attachments):
+  """Sends the supplied message through an SMTP connection to the list of recipients"""
   # Gathering email account details
   user = config["Email"]
   password = encryption.get_password()
@@ -155,6 +165,7 @@ def send_mail_smtp(config, recipients, subject, body, attachments):
 
 
 def send_mail_exchange(config, recipients, subject, body, attachments):
+  """Sends the supplied message through an Exchange connection to the list of recipients"""
   # Gathering email account details
   user = config["Email"]
   password = encryption.get_password()

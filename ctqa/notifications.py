@@ -23,6 +23,7 @@ DATA = {
 
 
 def notify_of_failure(sitename, date, roi_value):
+  """Records a failure event within the DATA variable"""
   DATA["events"][sitename] = {
     "type": "failure",
     "date": date,
@@ -31,6 +32,7 @@ def notify_of_failure(sitename, date, roi_value):
 
 
 def notify_of_warning(sitename, forecast_days, predicted_value):
+  """Records a warning event within the DATA variable"""
   if not sitename in DATA["events"].keys():
     DATA["events"][sitename] = {
       "type": "warning",
@@ -40,6 +42,7 @@ def notify_of_warning(sitename, forecast_days, predicted_value):
 
 
 def send_notifications(config):
+  """Sends all recorded notifications"""
   # Sending failure and warning notifications
   for eventkey in DATA["events"].keys():
     event = DATA["events"][eventkey]
@@ -73,6 +76,7 @@ def send_notifications(config):
 
 
 def exec_paths(paths, arg, notificationtype):
+  """Executes all defined paths and attaches the appropriate notifications as arguments"""
   paths = paths.split(";")
 
   # Returning if paths is empty
@@ -92,6 +96,7 @@ def exec_paths(paths, arg, notificationtype):
 
 
 def get_weekly_reports(config):
+  """Retrieves the paths for all reports"""
   reportslocation = config["ReportLocation"]
   weeklyreports = []
   for file in os.listdir(reportslocation):
@@ -103,4 +108,5 @@ def get_weekly_reports(config):
 
 
 def encode_json_string(string):
+  """Encodes a JSON string to base64 string format"""
   return base64.urlsafe_b64encode(bytes(string, 'utf-8')).decode("utf-8")

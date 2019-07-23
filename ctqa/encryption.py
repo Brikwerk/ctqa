@@ -31,6 +31,7 @@ def get_fernet_key():
 
 
 def save_password(password):
+  """Saves the password to an encrypted file under the data directory"""
   password_encoded = password.encode()
   f = get_fernet_key()
   encrypted = f.encrypt(password_encoded)
@@ -40,6 +41,7 @@ def save_password(password):
 
 
 def get_password():
+  """Retrieves and unencrypts the saved password"""
   f = get_fernet_key()
   datapath = os.path.join(LOCATION, 'data', 'enc')
   password = ""
