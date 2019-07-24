@@ -20,7 +20,10 @@
     <br><br>
 </p>
 
-[![CTQA Demo Image](https://i.imgur.com/hVLmu1X.png)]()
+<p align="center">
+  <a href="" rel="noopener">
+ <img src="https://i.imgur.com/hVLmu1X.png" alt="CTQA Demo Image"></a>
+</p>
 
 ## Table of Contents
 - [About](#about)
