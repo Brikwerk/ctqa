@@ -62,6 +62,7 @@ def loadConfig(path):
     return CONFIG
     
   # Ensuring that config has valid values before returning
+  checkForNewKeys(CONFIG, path)
   validation = validateConfig(CONFIG)
   if validation == -1:
     return -1
@@ -160,7 +161,23 @@ def updateConfig(path, key, value):
   return 1
     
 
-# 
+def checkForNewKeys(conf, path):
+  """Updates the config with default keys if they aren't present"""
+  # Testing that all DEFAULT_CONFIG keys are present in passed config
+  # If a default key isn't present, the config is updated with it and saved
+  updated_config = False
+  for key in DEFAULT_CONFIG.keys():
+    try:
+      conf[key]
+    except KeyError:
+      logger.error("Config does not contain key %s" % key)
+      conf[key] = DEFAULT_CONFIG[key]
+      updated_config = True
+      logger.warning("Updated config with key %s" % key)
+  if updated_config:
+    saveConfig(path, conf)
+
+ 
 def validateConfig(conf):
   '''Attempts to validate passed dictionary object according to config standards.'''
 
@@ -182,14 +199,6 @@ def validateConfig(conf):
   if len(conf) < DEFAULT_CONFIG_LENGTH:
     logger.error("Config does not contain all required fields")
     return -1
-  
-  # Testing that all DEFAULT_CONFIG keys are present in passed config
-  for key in DEFAULT_CONFIG.keys():
-    try:
-      conf[key]
-    except KeyError:
-      logger.error("Config does not contain key %s", key)
-      return -1
   
   # Checking for supported source
   if conf.get("Source") not in SOURCE_LIST:
