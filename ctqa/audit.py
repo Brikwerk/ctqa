@@ -1,9 +1,9 @@
-'''
+"""
 Audit Utility
 
 A module that contains logic for running an audit, grouping images \
 by series, and running homogeneity/linearity calculations.
-'''
+"""
 
 # Imports
 import pydicom
@@ -39,7 +39,7 @@ SHORT_UUID = None
 OUTPUT_ROIS = None
 
 def run(profiles, imgs, output_rois=True):
-  '''Main function for running the audit.'''
+  """Main function for running the audit."""
 
   if len(profiles) < 1: # If we've got no profiles, exit
     logger.warning('No profiles were found. Exiting audit...')
@@ -66,7 +66,7 @@ def run(profiles, imgs, output_rois=True):
   
 
 def groupSeries(imgs):
-  '''Function for grouping passed images by their series UID'''
+  """Function for grouping passed images by their series UID"""
   # Preparing studies dict for returning
   SERIES = {}
 
@@ -106,10 +106,10 @@ def groupSeries(imgs):
 
 
 def getAuditDatasets(series):
-  '''
+  """
   Selects a specified slice from a series based off of a value in 
   a reader's profile
-  '''
+  """
 
   AUDIT_IMAGES = []
   global PROFILES
@@ -163,7 +163,7 @@ def getAuditDatasets(series):
 
 
 def auditImages(datasets):
-  '''
+  """
   Retrieves audit method based off of the reader's manufacturer and
   performs appropriate audits based on this.
 
@@ -176,7 +176,7 @@ def auditImages(datasets):
   [ MACHINE_NAME , MACHINE_PROFILE , MACHINE_QC_IMAGE ]
   
   **Please Note:** MACHINE_QC_IMAGE is referring to a pydicom dicom object.
-  '''
+  """
 
   profile = None
   for dataset in datasets:
@@ -209,11 +209,11 @@ def auditImages(datasets):
 
 
 def performHomogeneityAudit(method, img):
-  '''
+  """
   Prepares a spot in the global data variable (runs setupHomogeneityData) for data
   coming from the audits and runs each audit listed under the method parameter. \
   The output of each method is stored under the StudyDate (DICOM tag).\
-  '''
+  """
 
   global DATA
   # Getting reader from img
@@ -275,7 +275,7 @@ def performHomogeneityAudit(method, img):
 
 
 def setupHomogeneityData(method, img, date, reader):
-  '''Prepares a spot in the global DATA variable for incoming audit data.'''
+  """Prepares a spot in the global DATA variable for incoming audit data."""
 
   global DATA
   if not isinstance(reader, str):
@@ -303,12 +303,12 @@ def setupHomogeneityData(method, img, date, reader):
 
 
 def computeHomogeneity(audit, dataset):
-  '''
+  """
   Attempts to rescale DICOM pixel data by the DICOM RescaleIntercept/Slope tags.
   After attempted rescale, a region is selected from the pixel \
   data. Which region is dependant on the *audit* parameter. A 1D array of DICOM pixel \
   data is returned.
-  '''
+  """
   
   scaledData = []
   if dataset.RescaleIntercept and dataset.RescaleSlope:
@@ -404,7 +404,7 @@ def computeHomogeneity(audit, dataset):
 
   
 def reformROIArray(data, x1, x2):
-  '''Loops through flat ROI array and turns into 2d ROI array'''
+  """Loops through flat ROI array and turns into 2d ROI array"""
 
   counter = 0
   arr = []
@@ -424,7 +424,7 @@ def reformROIArray(data, x1, x2):
 
 
 def scalePixelData(pixelData, rInt, rSlope):
-  '''Scales pixel image values linearly by rescale values'''
+  """Scales pixel image values linearly by rescale values"""
 
   scaledPixelData = []
   for pixelRow in pixelData:
@@ -453,7 +453,7 @@ def deleteOldROISelections():
 
 
 def selectArea(arr, x1, y1, x2, y2):
-  '''Selects a specified area from a 2D array and fills a 1D arr with the values'''
+  """Selects a specified area from a 2D array and fills a 1D arr with the values"""
 
   areaArr = []
   for row in range(y1, y2):

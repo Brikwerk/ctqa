@@ -301,8 +301,8 @@ class profile_client:
     # Asking if the user wishes to download all images from source
     size = autoprofiles.getSize()
     if size > 0:
-      msg = '''Auto finding CT profiles will download %s MB of images and clear any unsaved, manually entered profiles.
-      \n Are you sure you wish to continue?''' % size
+      msg = """Auto finding CT profiles will download %s MB of images and clear any unsaved, manually entered profiles.
+      \n Are you sure you wish to continue?""" % size
       self.parent.update() # Ensuring messagebox works on mac
       userchoice = messagebox.askyesno("Image Download", msg, parent=self.parent)
 
@@ -343,8 +343,8 @@ class profile_client:
         thread = threading.Thread(target=run_auto, args=(cleanup,))
         thread.start()
     else:
-      msg = '''Invalid configuration profile. The utility was unable to check for images to download from the source.
-      \n Please check the configuration for valid values and attempt to auto find again.'''
+      msg = """Invalid configuration profile. The utility was unable to check for images to download from the source.
+      \n Please check the configuration for valid values and attempt to auto find again."""
       self.parent.update()
       messagebox.showerror('Auto Find Error', msg, parent=self.parent)
 

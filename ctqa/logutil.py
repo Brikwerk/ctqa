@@ -16,7 +16,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 def initLog(fileName, logName, debug):
-  '''Initializes the logger and returns the logger object.'''
+  """Initializes the logger and returns the logger object."""
 
   # Configuring logger
   # If debug is flagged, allow for debug commands to print, else only show warnings and up

@@ -1,8 +1,8 @@
-'''
+"""
 Report Utility
 
 Generates and saves a CT machine's report based off of audit data.
-'''
+"""
 import logging
 from ctqa import logutil
 # Explicitly disabling matplotlib to prevent log spam
@@ -27,10 +27,10 @@ logger = logging.getLogger(logutil.MAIN_LOG_NAME)
 
 
 def generateReport(dataPath, config, title, upperlimit, lowerlimit, report_type="daily"):
-  '''
+  """
   Retrieves audit data from the data path, organizes a site's data into a displayable format,
   and creates a PNG graph at the passed save location.
-  '''
+  """
 
   logger.debug("Generating report: " + title)
 
@@ -157,7 +157,7 @@ def generateReport(dataPath, config, title, upperlimit, lowerlimit, report_type=
 
 
 def regenerateReports(dataPath, config, profiles, report_type="daily"):
-  '''Finds all data folders and updates reports based on existing data'''
+  """Finds all data folders and updates reports based on existing data"""
   # Getting report names and paths to the data
   pathitems = os.listdir(dataPath)
   subnames = []

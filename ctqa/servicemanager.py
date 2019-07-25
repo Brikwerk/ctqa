@@ -1,8 +1,8 @@
-'''
+"""
 Service Manager
 
 Detects the OS and installs the CTQA service to run the audit on a regular basis.
-'''
+"""
 
 import platform
 import pywintypes
@@ -26,7 +26,7 @@ logger = logging.getLogger(logutil.MAIN_LOG_NAME)
 
 
 def install():
-  '''Detects the OS and runs the appropriate installation method.'''
+  """Detects the OS and runs the appropriate installation method."""
 
   logger.warning("Beginning system install")
 
@@ -40,7 +40,7 @@ def install():
 
 
 def install_windows():
-  '''Attempts to install the CTQA Audit utility as a task in Windows Task Scheduler.'''
+  """Attempts to install the CTQA Audit utility as a task in Windows Task Scheduler."""
 
   params = '/Create /SC Daily /RU System /TN "CTQA" /TR "' + os.path.join(LOCATION, sys.argv[0]) + ' --audit --debug" /ST 07:00'
   params_weekly = '/Create /SC Weekly /RU System /D MON /TN "CTQA-Weekly" /TR "' + os.path.join(LOCATION, sys.argv[0]) + ' --audit --weekly --debug" /ST 07:00'
@@ -68,7 +68,7 @@ def install_windows():
 
 
 def uninstall():
-  '''Detects the OS and runs the appropriate uninstallation method.'''
+  """Detects the OS and runs the appropriate uninstallation method."""
 
   logger.warning("Beginning system install")
 
@@ -82,7 +82,7 @@ def uninstall():
 
 
 def uninstall_windows():
-  '''Attempts to uninstall the CTQA Audit task with the Schtasks command'''
+  """Attempts to uninstall the CTQA Audit task with the Schtasks command"""
 
   params = '/delete /TN "CTQA" /f'
   params_weekly = '/delete /TN "CTQA-Weekly" /f'

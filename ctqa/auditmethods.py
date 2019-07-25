@@ -1,9 +1,9 @@
-'''
+"""
 Audit Methods Module
 
 A module that contains data regarding the audits available for a CT machine, sorted \
 by manufacturer.
-'''
+"""
 
 # Imports
 import copy
@@ -48,11 +48,11 @@ METHODS = {
 
 
 def getMethod(manufacturer):
-  '''Gets audit methods by passed manufacturer string. Uses manufacturer string
+  """Gets audit methods by passed manufacturer string. Uses manufacturer string
   as a key to search the *METHODS* Dictionary object. 
   
   If no suitable manufacturer is found, the default audit methods are used.
-  '''
+  """
   auditMethod = METHODS.get(manufacturer)
   if auditMethod == None:
     return copy.deepcopy(METHODS.get('DEFAULT'))
@@ -61,13 +61,13 @@ def getMethod(manufacturer):
 
 
 def getAuditDirections(manufacturer):
-  '''
+  """
   The audit directions are gotten based off of the manufacturer string.
 
   EX: ['NORTH', 'SOUTH', 'EAST', 'WEST', 'CENTER']
 
   If no manufacturer is found for the passed string, the default is returned.
-  '''
+  """
   auditMethod = METHODS.get(manufacturer)
   if auditMethod == None:
     auditMethod = METHODS.get('DEFAULT')

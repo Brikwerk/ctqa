@@ -38,7 +38,7 @@ MANF_LIST = ['GE MEDICAL SYSTEMS', 'DEFAULT']
 
 
 def init(path):
-  '''Initializes the profiles file to an empty JSON object and saves it.'''
+  """Initializes the profiles file to an empty JSON object and saves it."""
 
   if not os.path.isfile(path):
     profiles = open(path, 'w+')
@@ -47,7 +47,7 @@ def init(path):
 
 
 def get(path, key):
-  '''Gets the value from the passed key on the passed path'''
+  """Gets the value from the passed key on the passed path"""
 
   prof = openProfiles(path)
   if type(prof) == dict:
@@ -57,11 +57,11 @@ def get(path, key):
 
 
 def keys(path):
-  '''
+  """
   Returns a list of keys present in the top level of the profiles file.
   
   Returns -1 if the loaded profiles object isn't dict type.
-  '''
+  """
 
   prof = openProfiles(path)
   if type(prof) == dict:
@@ -71,11 +71,11 @@ def keys(path):
 
 
 def numKeys(path):
-  '''
+  """
   Returns the number of keys present in the top level of the profiles file.
   
   Returns -1 if the loaded profiles object isn't dict type.
-  '''
+  """
 
   prof = openProfiles(path)
   if type(prof) == dict:
@@ -86,7 +86,7 @@ def numKeys(path):
 
 
 def removeProfile(path, key):
-  '''Removes profile and returns the values/None. Returns -1 in the event of failure.'''
+  """Removes profile and returns the values/None. Returns -1 in the event of failure."""
 
   prof = openProfiles(path)
   if type(prof) == dict:
@@ -101,11 +101,11 @@ def removeProfile(path, key):
 
 
 def getProfileName(profile):
-  '''
+  """
   Assembles the profile ID based off of the profile keys.
   
   Returns -1 if one of the keys isn't present.
-  '''
+  """
 
   if profile.keys() != DEFAULT_PROFILE.keys():
     return -1
@@ -123,14 +123,14 @@ def getProfileName(profile):
   return readerid
 
 def getDefaultProfile():
-  '''Returns a deep copy of the default profile.'''
+  """Returns a deep copy of the default profile."""
 
   profile = copy.deepcopy(DEFAULT_PROFILE)
   return profile
 
 
 def validProfile(profile):
-  '''Checks a profile for valid values in the present keys.'''
+  """Checks a profile for valid values in the present keys."""
 
   if not isinstance(profile, dict):
     logger.error('Could not validate profile. Profile is not a dictionary object')
@@ -152,12 +152,12 @@ def validProfile(profile):
 
 
 def newProfile(path, readerid, statname, manfct, manfctname, instname):
-  '''
+  """
   Creates a dict object from the DEFAULT_PROFILE dict object. This new dict object
   is filled out with the passed values and returned.
 
   If saving or opening the profiles file fails, a -1 is returned.
-  '''
+  """
 
   prof = openProfiles(path)
 
@@ -193,11 +193,11 @@ def newProfile(path, readerid, statname, manfct, manfctname, instname):
 
 
 def openProfiles(path):
-  '''
+  """
   Attempts to open the profiles file at the passed location.
 
   If a FileNotFound or JSONDecodeError is encountered, -1 is returned.
-  '''
+  """
 
   PROFILES = None
   try:
@@ -215,11 +215,11 @@ def openProfiles(path):
 
 
 def saveProfiles(path, profiles):
-  '''
+  """
   Attempts to save the passed profiles dict object to the passed path.
 
   If a FileNotFound error is encountered, -1 is returned.
-  '''
+  """
 
   logger.debug("Saving profiles...")
   try:

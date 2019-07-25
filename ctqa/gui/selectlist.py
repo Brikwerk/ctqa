@@ -1,8 +1,8 @@
-'''
+"""
 Select List
 
 Contains logic for implementing a list with selection, addition, and deletion functions.
-'''
+"""
 
 import os, sys, json, platform
 import tkinter as tk
@@ -11,7 +11,7 @@ from tkinter import ttk
 
 
 class select_list(tk.Frame):
-  '''Main Select List class for instantiating the list in a Tkinter frame.'''
+  """Main Select List class for instantiating the list in a Tkinter frame."""
 
   def __init__(self, parent, *args, **kw):
     self.items = {}

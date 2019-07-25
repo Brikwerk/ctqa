@@ -19,7 +19,7 @@ def resource_path(relative_path):
 
 
 class notifications_client:
-  '''Instantiates a Tkinter frame that sets up email and hooks for CTQA events'''
+  """Instantiates a Tkinter frame that sets up email and hooks for CTQA events"""
 
   def __init__(self, parent, firstrun=False):
     self.parent = parent

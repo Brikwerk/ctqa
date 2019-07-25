@@ -1,3 +1,9 @@
+"""
+CTQA Phantom Centering
+
+Provides the functionality for detecting the center of a phantom within an image
+"""
+
 import cv2
 import pydicom
 import numpy as np

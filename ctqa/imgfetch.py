@@ -14,7 +14,7 @@ logger = logging.getLogger(logutil.MAIN_LOG_NAME)
 
 
 def resource_path(relative_path):
-  '''Fetches application resource paths.'''
+  """Fetches application resource paths."""
 
   if hasattr(sys, '_MEIPASS'):
     #ifndef __INTELLISENSE__
@@ -23,11 +23,11 @@ def resource_path(relative_path):
 
 
 def getImages(conf):
-  '''
+  """
   Based off of the Source attribute in passed config, an image source is used to fetch a list of new image paths.
   
   Returns -1 if the source is bad.
-  '''
+  """
 
   if conf.get("Source") == 'ORTHANC':
     imgs = orthanc.fetchImages(conf["OrthancRESTAddress"], conf["LastImageNumber"])
@@ -40,11 +40,11 @@ def getImages(conf):
 
 
 def getAllImages(conf):
-  '''
+  """
   Gets a list of all image paths from the image source. The source is based off of the value from passed config.
   
   Returns -1 if the source is bad.
-  '''
+  """
 
   if conf.get("Source") == 'ORTHANC':
     imgs = orthanc.fetchImages(conf["OrthancRESTAddress"], conf["LastImageNumber"], profileinit=True)
@@ -57,11 +57,11 @@ def getAllImages(conf):
 
 
 def getSizeOfImages(conf):
-  '''
+  """
   Gets the size of all images from images source based off of the passed configuration.
   
   Returns -1 if the source is bad.
-  '''
+  """
 
   if conf.get("Source") == 'ORTHANC':
     num = orthanc.getSizeOfImages(conf["OrthancRESTAddress"])
@@ -73,7 +73,7 @@ def getSizeOfImages(conf):
     return -1
 
 def getTestImgs():
-  '''Gets application test image paths.'''
+  """Gets application test image paths."""
 
   return [
     resource_path("test/data/imgA.dcm"),

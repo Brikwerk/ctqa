@@ -1,9 +1,9 @@
-'''
+"""
 Auto Profiles Module
 
 A module that contains logic for automatically identifying CT reader profiles from a \
 linked database.
-'''
+"""
 
 from . import confutil
 from . import profileutil
@@ -18,7 +18,7 @@ CONFIG = {}
 
 
 def getSize():
-  '''Gets size of all images from source'''
+  """Gets size of all images from source"""
 
   # Reload config, in case any changes were made
   CONFIG = confutil.openConfig(CONFPATH)
@@ -30,7 +30,7 @@ def getSize():
 
 # 
 def run():
-  '''Loops through all images and attempts to find new profiles.'''
+  """Loops through all images and attempts to find new profiles."""
 
   # Reload config, in case any changes were made
   CONFIG = confutil.openConfig(CONFPATH)

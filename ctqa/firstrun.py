@@ -1,8 +1,8 @@
-'''
+"""
 First Run Module
 
 Contains logic for aiding in a user's first run of the CTQA application.
-'''
+"""
 
 
 import os, sys
@@ -21,13 +21,13 @@ confPath = LOCATION + "/" + confutil.DEFAULT_CONFIG_LOCATION
 
 
 def run():
-  '''
+  """
   The function run on the CTQA applications first run.
 
   The user is asked if they want to run through a guided setup. If they agree,
   they are taken through filling out the configuration and profile values. At
   the end, the regular CTQA application GUI is started and shown.
-  '''
+  """
 
   # Creating initial root tkinter application
   root = tk.Tk()

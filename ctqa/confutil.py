@@ -48,11 +48,11 @@ logger = logging.getLogger(logutil.MAIN_LOG_NAME)
 
 
 def loadConfig(path):
-  '''
+  """
   Attempts to load json config named/specced from path
 
   Returns the JSON config or -1 (Bad validation)
-  '''
+  """
 
   CONFIG = openConfig(path)
   if CONFIG == -1:
@@ -73,12 +73,12 @@ def loadConfig(path):
 
 
 def openConfig(path):
-  '''
+  """
   Attempts to open the file at the passed path. Returns a dict object if found
   and parsed successfully.
 
   Catches errors for FileNotFound (returns 0) and JSONDecodeError (returns -1).
-  '''
+  """
 
   CONFIG = None
   try:
@@ -95,11 +95,11 @@ def openConfig(path):
   
 
 def saveConfig(path, config):
-  '''
+  """
   Attempts to save the passed config at the passed path.
 
   Returns 1 on success and -1 on a FileNotFound error.
-  '''
+  """
 
   logger.debug("Saving config...")
   try:
@@ -116,10 +116,10 @@ def saveConfig(path, config):
 
 # 
 def createConfig(path):
-  '''
+  """
   Creates JSON config file with the specified name and path.
   Defaults to the name config.json and stores at root.
-  '''
+  """
 
   logger.error("Creating config...")
   try:
@@ -134,12 +134,12 @@ def createConfig(path):
   
   
 def updateConfig(path, key, value):
-  '''
+  """
   Updates a config file at the passed path with the specified key : value pair.
 
   Returns 1 on success and -1 on failure (Key doesn't exist or was unable to save file).
   All errors are logged.
-  '''
+  """
 
   logger.warning("Updating %s with key: %s and value: %s", path, key, value)
   CONFIG = openConfig(path)
@@ -179,7 +179,7 @@ def checkForNewKeys(conf, path):
 
  
 def validateConfig(conf):
-  '''Attempts to validate passed dictionary object according to config standards.'''
+  """Attempts to validate passed dictionary object according to config standards."""
 
   # Defining properties of a valid config
   url_regex = re.compile(

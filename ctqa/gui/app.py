@@ -3,7 +3,7 @@ from . import client as client
 
 
 def run():
-  '''Runs main CTQA Tkinter GUI'''
+  """Runs main CTQA Tkinter GUI"""
   root = tk.Tk()
   client.ctqa_client(root)
   root.mainloop()

@@ -1,8 +1,8 @@
-'''
+"""
 CTQA Client Module
 
 Contains logic for implementing the CTQA Client with the ctqa_client class.
-'''
+"""
 
 import tkinter as tk
 from tkinter import ttk
@@ -40,7 +40,7 @@ def resource_path(relative_path):
 
 
 class ctqa_client:
-  '''CTQA client class. Contains logic to instantiate inside a passed Tkinter parent element.'''
+  """CTQA client class. Contains logic to instantiate inside a passed Tkinter parent element."""
 
   def __init__(self, parent):
     self.parent = parent

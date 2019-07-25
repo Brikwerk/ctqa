@@ -1,8 +1,8 @@
-'''
+"""
 Data Utility
 
 Handles the saving and loading of CT QA data (audit results).
-'''
+"""
 
 
 # Imports
@@ -15,11 +15,11 @@ logger = logging.getLogger(logutil.MAIN_LOG_NAME)
 
 
 def save(DATA, savelocation):
-  '''
+  """
   Saves all site's data from a dict object to the passed location
   
   Returns -1 if JSON data is malformed.
-  '''
+  """
 
   for site in DATA['Homogeneity'].keys():
     # Checking if site has a directory under the 'data' directory
@@ -53,11 +53,11 @@ def save(DATA, savelocation):
 
 
 def load(folderpath):
-  '''
+  """
   Loads CT QA data from the file on the passed path.
 
   Returns -1 if JSON data is malformed.
-  '''
+  """
   jsonData = None
   with open(folderpath + '/data.json') as infile:
     try:

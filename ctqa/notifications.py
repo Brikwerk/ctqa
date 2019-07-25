@@ -1,7 +1,8 @@
-'''
+"""
 CTQA Notifications
+
 Includes logic to notify users about new reports.
-'''
+"""
 
 import json, os, sys
 from subprocess import Popen
