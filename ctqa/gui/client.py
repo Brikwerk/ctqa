@@ -58,7 +58,11 @@ class ctqa_client:
     self.confpath = os.path.join(self.location, 'config.json')
     self.profilepath = os.path.join(self.location, 'profiles.json')
     self.reportspath = os.path.join(self.location, 'reports')
-    self.config = confutil.loadConfig(self.confpath)
+    self.config = confutil.openConfig(self.confpath)
+    if self.config == -1:
+      logger.error("Validation or loading of the config has failed. Please ensure it has been created and filled out the appropriate values.")
+      logger.debug("Attempting to load configuration without validation...")
+      self.config = confutil.openConfig(self.confpath)
     self.profiles = profileutil.openProfiles(self.profilepath)
 
     self.mainfrm_style = ttk.Style()
@@ -112,7 +116,6 @@ class ctqa_client:
       self.profiles
     ))
     # Weekly report regen
-    menubar.add_cascade(label="Reports", menu=editmenu)
     editmenu.add_command(label="Regenerate Weekly Reports", command=lambda: reportutil.regenerateReports(
       os.path.join(self.location, "data"),
       self.config,
