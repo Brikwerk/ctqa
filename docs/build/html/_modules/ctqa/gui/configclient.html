@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ctqa.gui.configclient &mdash; CTQA 0.9 documentation</title>
+  <title>ctqa.gui.configclient &mdash; CTQA 1.0 documentation</title>
   
 
   
@@ -17,32 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
-
-  
-  <script src="../../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -237,20 +239,29 @@
       <span class="bp">self</span><span class="o">.</span><span class="n">fcentry</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;DaysToForecast&quot;</span><span class="p">])</span>
       <span class="bp">self</span><span class="o">.</span><span class="n">fcentry</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;KeyRelease&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_days</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fcentry</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="s2">&quot;DaysToForecast&quot;</span><span class="p">))</span>
 
-      <span class="c1"># Setting up number of days for graphs</span>
-      <span class="bp">self</span><span class="o">.</span><span class="n">gdlabel</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Days to Graph:&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
+      <span class="c1"># Setting up number of days for daily graphs</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">gdlabel</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Days to Graph (Daily):&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
       <span class="bp">self</span><span class="o">.</span><span class="n">gdentry</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
       <span class="bp">self</span><span class="o">.</span><span class="n">gdlabel</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
       <span class="bp">self</span><span class="o">.</span><span class="n">gdentry</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
-      <span class="bp">self</span><span class="o">.</span><span class="n">gdentry</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;DaysToGraph&quot;</span><span class="p">])</span>
-      <span class="bp">self</span><span class="o">.</span><span class="n">gdentry</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;KeyRelease&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_days</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gdentry</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="s2">&quot;DaysToGraph&quot;</span><span class="p">))</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">gdentry</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;DailyReportDaysToGraph&quot;</span><span class="p">])</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">gdentry</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;KeyRelease&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_days</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gdentry</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="s2">&quot;DailyReportDaysToGraph&quot;</span><span class="p">))</span>
+
+      <span class="c1"># Setting up number of days for weekly graphs</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">wgdlabel</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Days to Graph (Weekly):&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">wgdentry</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">wgdlabel</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">wgdentry</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">wgdentry</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;WeeklyReportDaysToGraph&quot;</span><span class="p">])</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">wgdentry</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;KeyRelease&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_days</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wgdentry</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="s2">&quot;WeeklyReportDaysToGraph&quot;</span><span class="p">))</span>
 
       <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
       <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
       <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
       <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
       <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-      <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
       <span class="bp">self</span><span class="o">.</span><span class="n">errMsg</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Error: Could not load config file.</span><span class="se">\n\n</span><span class="s1"> Would you like to generate a new one?&#39;</span><span class="p">)</span>
       <span class="bp">self</span><span class="o">.</span><span class="n">genConf</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Generate Config&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">generate_new_config</span><span class="p">)</span>
@@ -287,7 +298,7 @@
     <span class="k">if</span> <span class="s1">&#39;self.scomps&#39;</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">():</span> <span class="c1"># If scomps exists from before, we destroy it</span>
       <span class="bp">self</span><span class="o">.</span><span class="n">scomps</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">scomps</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainframe</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="s1">&#39;#ededed&#39;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">scomps</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">rowspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;nsew&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">scomps</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">rowspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;nsew&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">src</span> <span class="o">==</span> <span class="s1">&#39;TEST&#39;</span><span class="p">:</span>
       <span class="k">return</span>
     <span class="k">elif</span> <span class="n">src</span> <span class="o">==</span> <span class="s1">&#39;ORTHANC&#39;</span><span class="p">:</span>
@@ -354,9 +365,12 @@
         <span class="k">if</span> <span class="n">comp</span> <span class="o">==</span> <span class="s2">&quot;DaysToForecast&quot;</span><span class="p">:</span>
           <span class="bp">self</span><span class="o">.</span><span class="n">fcentry</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tk</span><span class="o">.</span><span class="n">END</span><span class="p">)</span>
           <span class="bp">self</span><span class="o">.</span><span class="n">fcentry</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">comp</span><span class="p">))</span>
-        <span class="k">elif</span> <span class="n">comp</span> <span class="o">==</span> <span class="s2">&quot;DaysToGraph&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">comp</span> <span class="o">==</span> <span class="s2">&quot;DailyReportDaysToGraph&quot;</span><span class="p">:</span>
           <span class="bp">self</span><span class="o">.</span><span class="n">gdentry</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tk</span><span class="o">.</span><span class="n">END</span><span class="p">)</span>
-          <span class="bp">self</span><span class="o">.</span><span class="n">gdentry</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">comp</span><span class="p">))</span></div>
+          <span class="bp">self</span><span class="o">.</span><span class="n">gdentry</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">comp</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">comp</span> <span class="o">==</span> <span class="s2">&quot;WeeklyReportDaysToGraph&quot;</span><span class="p">:</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">wgdentry</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tk</span><span class="o">.</span><span class="n">END</span><span class="p">)</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">wgdentry</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">comp</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="config_client.component_change"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.configclient.config_client.component_change">[docs]</a>  <span class="k">def</span> <span class="nf">component_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -384,7 +398,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Reece Walsh.
+        &copy; Copyright 2019, Reece Walsh
 
     </p>
   </div>
@@ -401,32 +415,16 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../../',
-            VERSION:'0.9',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../../_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

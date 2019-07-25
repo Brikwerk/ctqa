@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ctqa.app &mdash; CTQA 0.9 documentation</title>
+  <title>ctqa.app &mdash; CTQA 1.0 documentation</title>
   
 
   
@@ -17,32 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -164,7 +166,7 @@
 <span class="n">LOCATION</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 
 <span class="c1"># Main function</span>
-<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../ctqa.html#ctqa.app.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">profiles</span><span class="p">,</span> <span class="n">__DEBUG</span><span class="p">):</span>
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../ctqa.html#ctqa.app.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">profiles</span><span class="p">,</span> <span class="n">__DEBUG</span><span class="p">,</span> <span class="n">weekly</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;Main function for preparing and running the CTQA audit.&quot;&quot;&quot;</span>
 
   <span class="c1"># Checking passed config</span>
@@ -207,16 +209,37 @@
     <span class="c1"># Get path to site folder in data folder</span>
     <span class="n">sitePath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">LOCATION</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">site</span><span class="p">)</span>
     <span class="c1"># Get title from site name</span>
-    <span class="n">title</span> <span class="o">=</span> <span class="n">site</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">site</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">site</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="c1"># If the Reports folder location isn&#39;t DEFAULT, store reports there</span>
-    <span class="n">replocation</span> <span class="o">=</span> <span class="s1">&#39;reports&#39;</span>
+    <span class="n">dailyTitle</span> <span class="o">=</span> <span class="s1">&#39;DAILY-&#39;</span> <span class="o">+</span> <span class="n">site</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">site</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">site</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="c1"># Create report</span>
-    <span class="n">reportutil</span><span class="o">.</span><span class="n">generateReport</span><span class="p">(</span><span class="n">sitePath</span><span class="p">,</span> <span class="n">replocation</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;DaysToGraph&quot;</span><span class="p">),</span> <span class="n">CONFIG</span><span class="p">[</span><span class="s1">&#39;DaysToForecast&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">weekly</span><span class="p">:</span>
+      <span class="c1"># Getting site&#39;s upper/lower limits</span>
+      <span class="n">upperlimit</span> <span class="o">=</span> <span class="n">PROFILES</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s2">&quot;UpperHomogeneityLimit&quot;</span><span class="p">]</span>
+      <span class="n">lowerlimit</span> <span class="o">=</span> <span class="n">PROFILES</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s2">&quot;LowerHomogeneityLimit&quot;</span><span class="p">]</span>
+      <span class="n">prediction</span> <span class="o">=</span> <span class="n">reportutil</span><span class="o">.</span><span class="n">generateReport</span><span class="p">(</span><span class="n">sitePath</span><span class="p">,</span> <span class="n">CONFIG</span><span class="p">,</span> <span class="n">dailyTitle</span><span class="p">,</span> <span class="n">upperlimit</span><span class="p">,</span> <span class="n">lowerlimit</span><span class="p">)</span>
+      <span class="c1"># Warning if prediction exceeds upper/lower limit</span>
+      <span class="k">if</span> <span class="n">prediction</span> <span class="o">!=</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">prediction</span> <span class="o">&gt;</span> <span class="n">upperlimit</span> <span class="ow">or</span> <span class="n">prediction</span> <span class="o">&lt;</span> <span class="n">lowerlimit</span><span class="p">):</span>
+        <span class="n">notifications</span><span class="o">.</span><span class="n">notify_of_warning</span><span class="p">(</span><span class="n">site</span><span class="p">,</span> <span class="n">CONFIG</span><span class="p">[</span><span class="s2">&quot;DaysToForecast&quot;</span><span class="p">],</span> <span class="n">prediction</span><span class="p">)</span>
+      
+      <span class="c1"># Recording report generated and location</span>
+      <span class="n">reportlocation</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">CONFIG</span><span class="p">[</span><span class="s2">&quot;ReportLocation&quot;</span><span class="p">],</span> <span class="n">dailyTitle</span> <span class="o">+</span> <span class="s2">&quot;.png&quot;</span><span class="p">))</span>
+      <span class="n">notifications</span><span class="o">.</span><span class="n">DATA</span><span class="p">[</span><span class="s2">&quot;changedReports&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reportlocation</span><span class="p">)</span>
 
-  <span class="c1"># Getting changed report names and emailing</span>
-  <span class="n">siteNames</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;Homogeneity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-  <span class="n">notifications</span><span class="o">.</span><span class="n">mail_reports</span><span class="p">(</span><span class="n">siteNames</span><span class="p">)</span>
+      <span class="c1"># Adding relevant daily report to any events that occured</span>
+      <span class="k">if</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">notifications</span><span class="o">.</span><span class="n">DATA</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">notifications</span><span class="o">.</span><span class="n">DATA</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">][</span><span class="n">site</span><span class="p">][</span><span class="s2">&quot;reportLocation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">reportlocation</span>
+  <span class="c1"># Regnerate reports if weekly no matter what</span>
+  <span class="k">if</span> <span class="n">weekly</span><span class="p">:</span>
+    <span class="n">reportutil</span><span class="o">.</span><span class="n">regenerateReports</span><span class="p">(</span><span class="n">dataFolderLocation</span><span class="p">,</span> <span class="n">CONFIG</span><span class="p">,</span> <span class="n">PROFILES</span><span class="p">,</span> <span class="n">report_type</span><span class="o">=</span><span class="s2">&quot;weekly&quot;</span><span class="p">)</span>
+  
+  <span class="c1"># Set notifications to weekly or daily</span>
+  <span class="k">if</span> <span class="n">weekly</span><span class="p">:</span>
+    <span class="n">notifications</span><span class="o">.</span><span class="n">DATA</span><span class="p">[</span><span class="s2">&quot;runType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;weekly&quot;</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">notifications</span><span class="o">.</span><span class="n">DATA</span><span class="p">[</span><span class="s2">&quot;runType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;daily&quot;</span>
+  <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">notifications</span><span class="o">.</span><span class="n">DATA</span><span class="p">)</span>
 
+  <span class="c1"># Sending notifications</span>
+  <span class="n">notifications</span><span class="o">.</span><span class="n">send_notifications</span><span class="p">(</span><span class="n">CONFIG</span><span class="p">)</span>
   
   <span class="c1"># Ensuring test images are deleted</span>
   <span class="k">if</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Source&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;TEST&quot;</span><span class="p">:</span>
@@ -241,7 +264,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Reece Walsh.
+        &copy; Copyright 2019, Reece Walsh
 
     </p>
   </div>
@@ -258,32 +281,16 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'0.9',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ctqa.confutil &mdash; CTQA 0.9 documentation</title>
+  <title>ctqa.confutil &mdash; CTQA 1.0 documentation</title>
   
 
   
@@ -17,32 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -148,10 +150,13 @@
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">ctqa</span> <span class="k">import</span> <span class="n">logutil</span>
 
 <span class="c1"># Constants</span>
+<span class="n">LOCATION</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+<span class="n">DEFAULT_REPORT_FOLDER_LOCATION</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">LOCATION</span><span class="p">,</span> <span class="s2">&quot;reports&quot;</span><span class="p">)</span>
 <span class="n">DEFAULT_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
   <span class="s2">&quot;Source&quot;</span> <span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
   <span class="s2">&quot;OrthancRESTAddress&quot;</span> <span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
@@ -159,8 +164,23 @@
   <span class="s2">&quot;FirstRun&quot;</span> <span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
   <span class="s2">&quot;LastRun&quot;</span> <span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
   <span class="s2">&quot;DaysToForecast&quot;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
-  <span class="s2">&quot;DaysToGraph&quot;</span><span class="p">:</span> <span class="mi">365</span><span class="p">,</span>
-  <span class="s2">&quot;LastPACSDateChecked&quot;</span><span class="p">:</span> <span class="kc">False</span>
+  <span class="s2">&quot;DailyReportDaysToGraph&quot;</span><span class="p">:</span> <span class="mi">365</span><span class="p">,</span>
+  <span class="s2">&quot;WeeklyReportDaysToGraph&quot;</span><span class="p">:</span> <span class="mi">90</span><span class="p">,</span>
+  <span class="s2">&quot;LastPACSDateChecked&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+  <span class="s2">&quot;ReportLocation&quot;</span><span class="p">:</span> <span class="n">DEFAULT_REPORT_FOLDER_LOCATION</span><span class="p">,</span>
+  <span class="s2">&quot;ServicesInstalled&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+  <span class="s2">&quot;WarningHook&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;FailureHook&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;DailyReportHook&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;WeeklyReportHook&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Email&quot;</span><span class="p">:</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;EmailServer&quot;</span><span class="p">:</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;EmailServerType&quot;</span><span class="p">:</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;EmailServerPort&quot;</span><span class="p">:</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;DailyRecipients&quot;</span><span class="p">:</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;WeeklyRecipients&quot;</span><span class="p">:</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;WarningRecipients&quot;</span><span class="p">:</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;FailureRecipients&quot;</span><span class="p">:</span><span class="s2">&quot;&quot;</span>
 <span class="p">}</span>
 <span class="n">DEFAULT_CONFIG_LENGTH</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="n">DEFAULT_CONFIG_LOCATION</span> <span class="o">=</span> <span class="s1">&#39;config.json&#39;</span>
@@ -171,11 +191,11 @@
 
 
 <div class="viewcode-block" id="loadConfig"><a class="viewcode-back" href="../../ctqa.html#ctqa.confutil.loadConfig">[docs]</a><span class="k">def</span> <span class="nf">loadConfig</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Attempts to load json config named/specced from path</span>
 
 <span class="sd">  Returns the JSON config or -1 (Bad validation)</span>
-<span class="sd">  &#39;&#39;&#39;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
 
   <span class="n">CONFIG</span> <span class="o">=</span> <span class="n">openConfig</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
   <span class="k">if</span> <span class="n">CONFIG</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
@@ -185,6 +205,7 @@
     <span class="k">return</span> <span class="n">CONFIG</span>
     
   <span class="c1"># Ensuring that config has valid values before returning</span>
+  <span class="n">checkForNewKeys</span><span class="p">(</span><span class="n">CONFIG</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
   <span class="n">validation</span> <span class="o">=</span> <span class="n">validateConfig</span><span class="p">(</span><span class="n">CONFIG</span><span class="p">)</span>
   <span class="k">if</span> <span class="n">validation</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
     <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
@@ -195,12 +216,12 @@
 
 
 <div class="viewcode-block" id="openConfig"><a class="viewcode-back" href="../../ctqa.html#ctqa.confutil.openConfig">[docs]</a><span class="k">def</span> <span class="nf">openConfig</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Attempts to open the file at the passed path. Returns a dict object if found</span>
 <span class="sd">  and parsed successfully.</span>
 
 <span class="sd">  Catches errors for FileNotFound (returns 0) and JSONDecodeError (returns -1).</span>
-<span class="sd">  &#39;&#39;&#39;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
 
   <span class="n">CONFIG</span> <span class="o">=</span> <span class="kc">None</span>
   <span class="k">try</span><span class="p">:</span>
@@ -217,11 +238,11 @@
   
 
 <div class="viewcode-block" id="saveConfig"><a class="viewcode-back" href="../../ctqa.html#ctqa.confutil.saveConfig">[docs]</a><span class="k">def</span> <span class="nf">saveConfig</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Attempts to save the passed config at the passed path.</span>
 
 <span class="sd">  Returns 1 on success and -1 on a FileNotFound error.</span>
-<span class="sd">  &#39;&#39;&#39;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
 
   <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Saving config...&quot;</span><span class="p">)</span>
   <span class="k">try</span><span class="p">:</span>
@@ -238,10 +259,10 @@
 
 <span class="c1"># </span>
 <div class="viewcode-block" id="createConfig"><a class="viewcode-back" href="../../ctqa.html#ctqa.confutil.createConfig">[docs]</a><span class="k">def</span> <span class="nf">createConfig</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Creates JSON config file with the specified name and path.</span>
 <span class="sd">  Defaults to the name config.json and stores at root.</span>
-<span class="sd">  &#39;&#39;&#39;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
 
   <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Creating config...&quot;</span><span class="p">)</span>
   <span class="k">try</span><span class="p">:</span>
@@ -256,12 +277,12 @@
   
   
 <div class="viewcode-block" id="updateConfig"><a class="viewcode-back" href="../../ctqa.html#ctqa.confutil.updateConfig">[docs]</a><span class="k">def</span> <span class="nf">updateConfig</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Updates a config file at the passed path with the specified key : value pair.</span>
 
 <span class="sd">  Returns 1 on success and -1 on failure (Key doesn&#39;t exist or was unable to save file).</span>
 <span class="sd">  All errors are logged.</span>
-<span class="sd">  &#39;&#39;&#39;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
 
   <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Updating </span><span class="si">%s</span><span class="s2"> with key: </span><span class="si">%s</span><span class="s2"> and value: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
   <span class="n">CONFIG</span> <span class="o">=</span> <span class="n">openConfig</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
@@ -283,9 +304,25 @@
   <span class="k">return</span> <span class="mi">1</span></div>
     
 
-<span class="c1"># </span>
+<div class="viewcode-block" id="checkForNewKeys"><a class="viewcode-back" href="../../ctqa.html#ctqa.confutil.checkForNewKeys">[docs]</a><span class="k">def</span> <span class="nf">checkForNewKeys</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;Updates the config with default keys if they aren&#39;t present&quot;&quot;&quot;</span>
+  <span class="c1"># Testing that all DEFAULT_CONFIG keys are present in passed config</span>
+  <span class="c1"># If a default key isn&#39;t present, the config is updated with it and saved</span>
+  <span class="n">updated_config</span> <span class="o">=</span> <span class="kc">False</span>
+  <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">DEFAULT_CONFIG</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+      <span class="n">conf</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+      <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Config does not contain key </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
+      <span class="n">conf</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_CONFIG</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+      <span class="n">updated_config</span> <span class="o">=</span> <span class="kc">True</span>
+      <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Updated config with key </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">updated_config</span><span class="p">:</span>
+    <span class="n">saveConfig</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">conf</span><span class="p">)</span></div>
+
+ 
 <div class="viewcode-block" id="validateConfig"><a class="viewcode-back" href="../../ctqa.html#ctqa.confutil.validateConfig">[docs]</a><span class="k">def</span> <span class="nf">validateConfig</span><span class="p">(</span><span class="n">conf</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;Attempts to validate passed dictionary object according to config standards.&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;Attempts to validate passed dictionary object according to config standards.&quot;&quot;&quot;</span>
 
   <span class="c1"># Defining properties of a valid config</span>
   <span class="n">url_regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
@@ -306,14 +343,6 @@
     <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Config does not contain all required fields&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
   
-  <span class="c1"># Testing that all DEFAULT_CONFIG keys are present in passed config</span>
-  <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">DEFAULT_CONFIG</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-    <span class="k">try</span><span class="p">:</span>
-      <span class="n">conf</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-      <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Config does not contain key </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
-      <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
-  
   <span class="c1"># Checking for supported source</span>
   <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Source&quot;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">SOURCE_LIST</span><span class="p">:</span>
     <span class="c1">#Checking that the source isn&#39;t blank</span>
@@ -325,10 +354,10 @@
     <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
 
   <span class="c1"># Checking for valid forecast/graph days</span>
-  <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;DaysToForecast&quot;</span><span class="p">),</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;DaysToGraph&quot;</span><span class="p">),</span> <span class="nb">int</span><span class="p">):</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;DaysToForecast&quot;</span><span class="p">),</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;DailyReportDaysToGraph&quot;</span><span class="p">),</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;WeeklyReportDaysToGraph&quot;</span><span class="p">),</span> <span class="nb">int</span><span class="p">):</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;DaysToForecast/Graph is not an int value&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
-  <span class="k">elif</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;DaysToForecast&#39;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;DaysToGraph&#39;</span><span class="p">):</span>
+  <span class="k">elif</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;DaysToForecast&#39;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;DailyReportDaysToGraph&#39;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;WeeklyReportDaysToGraph&#39;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;DaysToForecast/Graph must be greater than zero&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
 
@@ -367,7 +396,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Reece Walsh.
+        &copy; Copyright 2019, Reece Walsh
 
     </p>
   </div>
@@ -384,32 +413,16 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'0.9',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

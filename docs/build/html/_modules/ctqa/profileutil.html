@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ctqa.profileutil &mdash; CTQA 0.9 documentation</title>
+  <title>ctqa.profileutil &mdash; CTQA 1.0 documentation</title>
   
 
   
@@ -17,32 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -156,12 +158,15 @@
 
 
 <span class="c1"># Constants</span>
+<span class="n">DEFAULT_PROFILE_NAME</span> <span class="o">=</span> <span class="s2">&quot;profiles.json&quot;</span>
 <span class="n">DEFAULT_PROFILE</span> <span class="o">=</span> <span class="p">{</span>
   <span class="s1">&#39;StationName&#39;</span><span class="p">:</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
   <span class="s1">&#39;Manufacturer&#39;</span><span class="p">:</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
   <span class="s1">&#39;ManufacturerModelName&#39;</span><span class="p">:</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
   <span class="s1">&#39;InstitutionName&#39;</span><span class="p">:</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
   <span class="s1">&#39;HomogeneityPosition&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+  <span class="s1">&#39;UpperHomogeneityLimit&#39;</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span>
+  <span class="s1">&#39;LowerHomogeneityLimit&#39;</span><span class="p">:</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span>
   <span class="s1">&#39;LinearityPosition&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
   <span class="s1">&#39;Baseline&#39;</span><span class="p">:</span> <span class="p">{</span>
     <span class="s1">&#39;STD&#39;</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span>
@@ -176,7 +181,7 @@
 
 
 <div class="viewcode-block" id="init"><a class="viewcode-back" href="../../ctqa.html#ctqa.profileutil.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;Initializes the profiles file to an empty JSON object and saves it.&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;Initializes the profiles file to an empty JSON object and saves it.&quot;&quot;&quot;</span>
 
   <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
     <span class="n">profiles</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span>
@@ -185,7 +190,7 @@
 
 
 <div class="viewcode-block" id="get"><a class="viewcode-back" href="../../ctqa.html#ctqa.profileutil.get">[docs]</a><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;Gets the value from the passed key on the passed path&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;Gets the value from the passed key on the passed path&quot;&quot;&quot;</span>
 
   <span class="n">prof</span> <span class="o">=</span> <span class="n">openProfiles</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
   <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">prof</span><span class="p">)</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>
@@ -195,11 +200,11 @@
 
 
 <div class="viewcode-block" id="keys"><a class="viewcode-back" href="../../ctqa.html#ctqa.profileutil.keys">[docs]</a><span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Returns a list of keys present in the top level of the profiles file.</span>
 <span class="sd">  </span>
 <span class="sd">  Returns -1 if the loaded profiles object isn&#39;t dict type.</span>
-<span class="sd">  &#39;&#39;&#39;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
 
   <span class="n">prof</span> <span class="o">=</span> <span class="n">openProfiles</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
   <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">prof</span><span class="p">)</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>
@@ -209,11 +214,11 @@
 
 
 <div class="viewcode-block" id="numKeys"><a class="viewcode-back" href="../../ctqa.html#ctqa.profileutil.numKeys">[docs]</a><span class="k">def</span> <span class="nf">numKeys</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Returns the number of keys present in the top level of the profiles file.</span>
 <span class="sd">  </span>
 <span class="sd">  Returns -1 if the loaded profiles object isn&#39;t dict type.</span>
-<span class="sd">  &#39;&#39;&#39;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
 
   <span class="n">prof</span> <span class="o">=</span> <span class="n">openProfiles</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
   <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">prof</span><span class="p">)</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>
@@ -224,7 +229,7 @@
 
 
 <div class="viewcode-block" id="removeProfile"><a class="viewcode-back" href="../../ctqa.html#ctqa.profileutil.removeProfile">[docs]</a><span class="k">def</span> <span class="nf">removeProfile</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;Removes profile and returns the values/None. Returns -1 in the event of failure.&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;Removes profile and returns the values/None. Returns -1 in the event of failure.&quot;&quot;&quot;</span>
 
   <span class="n">prof</span> <span class="o">=</span> <span class="n">openProfiles</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
   <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">prof</span><span class="p">)</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>
@@ -239,11 +244,11 @@
 
 
 <div class="viewcode-block" id="getProfileName"><a class="viewcode-back" href="../../ctqa.html#ctqa.profileutil.getProfileName">[docs]</a><span class="k">def</span> <span class="nf">getProfileName</span><span class="p">(</span><span class="n">profile</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Assembles the profile ID based off of the profile keys.</span>
 <span class="sd">  </span>
 <span class="sd">  Returns -1 if one of the keys isn&#39;t present.</span>
-<span class="sd">  &#39;&#39;&#39;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
 
   <span class="k">if</span> <span class="n">profile</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="o">!=</span> <span class="n">DEFAULT_PROFILE</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
     <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
@@ -261,14 +266,14 @@
   <span class="k">return</span> <span class="n">readerid</span></div>
 
 <div class="viewcode-block" id="getDefaultProfile"><a class="viewcode-back" href="../../ctqa.html#ctqa.profileutil.getDefaultProfile">[docs]</a><span class="k">def</span> <span class="nf">getDefaultProfile</span><span class="p">():</span>
-  <span class="sd">&#39;&#39;&#39;Returns a deep copy of the default profile.&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;Returns a deep copy of the default profile.&quot;&quot;&quot;</span>
 
   <span class="n">profile</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">DEFAULT_PROFILE</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">profile</span></div>
 
 
 <div class="viewcode-block" id="validProfile"><a class="viewcode-back" href="../../ctqa.html#ctqa.profileutil.validProfile">[docs]</a><span class="k">def</span> <span class="nf">validProfile</span><span class="p">(</span><span class="n">profile</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;Checks a profile for valid values in the present keys.&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;Checks a profile for valid values in the present keys.&quot;&quot;&quot;</span>
 
   <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Could not validate profile. Profile is not a dictionary object&#39;</span><span class="p">)</span>
@@ -290,12 +295,12 @@
 
 
 <div class="viewcode-block" id="newProfile"><a class="viewcode-back" href="../../ctqa.html#ctqa.profileutil.newProfile">[docs]</a><span class="k">def</span> <span class="nf">newProfile</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">readerid</span><span class="p">,</span> <span class="n">statname</span><span class="p">,</span> <span class="n">manfct</span><span class="p">,</span> <span class="n">manfctname</span><span class="p">,</span> <span class="n">instname</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Creates a dict object from the DEFAULT_PROFILE dict object. This new dict object</span>
 <span class="sd">  is filled out with the passed values and returned.</span>
 
 <span class="sd">  If saving or opening the profiles file fails, a -1 is returned.</span>
-<span class="sd">  &#39;&#39;&#39;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
 
   <span class="n">prof</span> <span class="o">=</span> <span class="n">openProfiles</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 
@@ -306,6 +311,8 @@
     <span class="n">prof</span><span class="p">[</span><span class="n">readerid</span><span class="p">][</span><span class="s1">&#39;ManufacturerModelName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">manfctname</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
     <span class="n">prof</span><span class="p">[</span><span class="n">readerid</span><span class="p">][</span><span class="s1">&#39;InstitutionName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">instname</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
     <span class="n">prof</span><span class="p">[</span><span class="n">readerid</span><span class="p">][</span><span class="s1">&#39;HomogeneityPosition&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">prof</span><span class="p">[</span><span class="n">readerid</span><span class="p">][</span><span class="s1">&#39;UpperHomogeneityLimit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">prof</span><span class="p">[</span><span class="n">readerid</span><span class="p">][</span><span class="s1">&#39;LowerHomogeneityLimit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">4</span>
     <span class="n">prof</span><span class="p">[</span><span class="n">readerid</span><span class="p">][</span><span class="s1">&#39;LinearityPosition&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">prof</span><span class="p">[</span><span class="n">readerid</span><span class="p">][</span><span class="s1">&#39;Baseline&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
       <span class="s1">&#39;STD&#39;</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span>
@@ -329,11 +336,11 @@
 
 
 <div class="viewcode-block" id="openProfiles"><a class="viewcode-back" href="../../ctqa.html#ctqa.profileutil.openProfiles">[docs]</a><span class="k">def</span> <span class="nf">openProfiles</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Attempts to open the profiles file at the passed location.</span>
 
 <span class="sd">  If a FileNotFound or JSONDecodeError is encountered, -1 is returned.</span>
-<span class="sd">  &#39;&#39;&#39;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
 
   <span class="n">PROFILES</span> <span class="o">=</span> <span class="kc">None</span>
   <span class="k">try</span><span class="p">:</span>
@@ -351,11 +358,11 @@
 
 
 <div class="viewcode-block" id="saveProfiles"><a class="viewcode-back" href="../../ctqa.html#ctqa.profileutil.saveProfiles">[docs]</a><span class="k">def</span> <span class="nf">saveProfiles</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">profiles</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Attempts to save the passed profiles dict object to the passed path.</span>
 
 <span class="sd">  If a FileNotFound error is encountered, -1 is returned.</span>
-<span class="sd">  &#39;&#39;&#39;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
 
   <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Saving profiles...&quot;</span><span class="p">)</span>
   <span class="k">try</span><span class="p">:</span>
@@ -380,7 +387,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Reece Walsh.
+        &copy; Copyright 2019, Reece Walsh
 
     </p>
   </div>
@@ -397,32 +404,16 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'0.9',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

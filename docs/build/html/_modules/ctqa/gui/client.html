@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ctqa.gui.client &mdash; CTQA 0.9 documentation</title>
+  <title>ctqa.gui.client &mdash; CTQA 1.0 documentation</title>
   
 
   
@@ -17,32 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
-
-  
-  <script src="../../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -139,11 +141,11 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ctqa.gui.client</h1><div class="highlight"><pre>
-<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">CTQA Client Module</span>
 
 <span class="sd">Contains logic for implementing the CTQA Client with the ctqa_client class.</span>
-<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
 <span class="kn">from</span> <span class="nn">tkinter</span> <span class="k">import</span> <span class="n">ttk</span>
@@ -152,9 +154,11 @@
 <span class="kn">from</span> <span class="nn">PIL</span> <span class="k">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageTk</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">deque</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">servicemanager</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">reportutil</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">profileutil</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">profileclient</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">configclient</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">credclient</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">notificationsclient</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">logwatcher</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">confutil</span>
 <span class="kn">import</span> <span class="nn">win32com.client</span>
@@ -179,7 +183,7 @@
 
 
 <div class="viewcode-block" id="ctqa_client"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.client.ctqa_client">[docs]</a><span class="k">class</span> <span class="nc">ctqa_client</span><span class="p">:</span>
-  <span class="sd">&#39;&#39;&#39;CTQA client class. Contains logic to instantiate inside a passed Tkinter parent element.&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;CTQA client class. Contains logic to instantiate inside a passed Tkinter parent element.&quot;&quot;&quot;</span>
 
   <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
@@ -193,15 +197,20 @@
       <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;ERROR: Could not load ctqa-icon.gif from resources folder&quot;</span><span class="p">)</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">logpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">+</span> <span class="s1">&#39;/ctqa.log&#39;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">confpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">+</span> <span class="s1">&#39;/config.json&#39;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">reportspath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">+</span> <span class="s1">&#39;/reports&#39;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">logpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span> <span class="s1">&#39;ctqa.log&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">confpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span> <span class="s1">&#39;config.json&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profilepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span> <span class="s1">&#39;profiles.json&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">reportspath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span> <span class="s1">&#39;reports&#39;</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">confutil</span><span class="o">.</span><span class="n">loadConfig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">confpath</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span> <span class="o">=</span> <span class="n">profileutil</span><span class="o">.</span><span class="n">openProfiles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profilepath</span><span class="p">)</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">mainfrm_style</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Style</span><span class="p">()</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">mainfrm_style</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s1">&#39;Main.TFrame&#39;</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">mainfrm</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;Main.TFrame&#39;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">mainfrm</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="p">(</span><span class="n">tk</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="n">tk</span><span class="o">.</span><span class="n">S</span><span class="p">,</span> <span class="n">tk</span><span class="o">.</span><span class="n">E</span><span class="p">,</span> <span class="n">tk</span><span class="o">.</span><span class="n">W</span><span class="p">))</span>
+
+    <span class="c1"># Menubar</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">createMenubar</span><span class="p">()</span>
 
     <span class="c1"># Report section</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">createReportList</span><span class="p">()</span>
@@ -227,6 +236,36 @@
 
     <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="s2">&quot;-topmost&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="s1">&#39;-topmost&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+  
+<div class="viewcode-block" id="ctqa_client.createMenubar"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.client.ctqa_client.createMenubar">[docs]</a>  <span class="k">def</span> <span class="nf">createMenubar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">menubar</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+
+    <span class="c1"># Create CTQA pulldown menu</span>
+    <span class="n">filemenu</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">menubar</span><span class="p">,</span> <span class="n">tearoff</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">filemenu</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Exit&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">quit</span><span class="p">)</span>
+    <span class="n">menubar</span><span class="o">.</span><span class="n">add_cascade</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;CTQA&quot;</span><span class="p">,</span> <span class="n">menu</span><span class="o">=</span><span class="n">filemenu</span><span class="p">)</span>
+
+    <span class="c1"># Create Reports pulldown menu</span>
+    <span class="c1"># Daily report regen</span>
+    <span class="n">editmenu</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">menubar</span><span class="p">,</span> <span class="n">tearoff</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">editmenu</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Regenerate Daily Reports&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">reportutil</span><span class="o">.</span><span class="n">regenerateReports</span><span class="p">(</span>
+      <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">),</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span>
+    <span class="p">))</span>
+    <span class="c1"># Weekly report regen</span>
+    <span class="n">menubar</span><span class="o">.</span><span class="n">add_cascade</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Reports&quot;</span><span class="p">,</span> <span class="n">menu</span><span class="o">=</span><span class="n">editmenu</span><span class="p">)</span>
+    <span class="n">editmenu</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Regenerate Weekly Reports&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">reportutil</span><span class="o">.</span><span class="n">regenerateReports</span><span class="p">(</span>
+      <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">),</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">,</span>
+      <span class="n">report_type</span><span class="o">=</span><span class="s2">&quot;weekly&quot;</span>
+    <span class="p">))</span>
+    <span class="n">menubar</span><span class="o">.</span><span class="n">add_cascade</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Reports&quot;</span><span class="p">,</span> <span class="n">menu</span><span class="o">=</span><span class="n">editmenu</span><span class="p">)</span>
+
+    <span class="c1"># Display menu</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">menu</span><span class="o">=</span><span class="n">menubar</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ctqa_client.createReportList"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.client.ctqa_client.createReportList">[docs]</a>  <span class="k">def</span> <span class="nf">createReportList</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -312,20 +351,8 @@
     <span class="k">try</span><span class="p">:</span>
       <span class="bp">self</span><span class="o">.</span><span class="n">statImg</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">resource_path</span><span class="p">(</span><span class="s1">&#39;res/service-unreg.gif&#39;</span><span class="p">))</span>
       <span class="bp">self</span><span class="o">.</span><span class="n">statImgTk</span> <span class="o">=</span> <span class="n">ImageTk</span><span class="o">.</span><span class="n">PhotoImage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statImg</span><span class="p">)</span>
-
-      <span class="c1"># Creating status labels</span>
-      <span class="c1"># Status indicator</span>
-      <span class="c1">#self.roundedbutton = tk.Label(self.statusFrame, anchor=&#39;s&#39;, compound=tk.RIGHT, text=&#39;CTQA Status:  &#39;, image=self.statImgTk, bg=&quot;#ccc&quot;)</span>
-      <span class="c1">#self.roundedbutton.image = self.statImgTk</span>
-      <span class="c1">#self.roundedbutton.pack(expand=True, side=&#39;top&#39;, fill=&#39;x&#39;)</span>
     <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
       <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;ERROR: Could not load service-unreg.gif from resources folder&quot;</span><span class="p">)</span>
-
-      <span class="c1"># Creating status labels</span>
-      <span class="c1"># Status indicator</span>
-      <span class="c1">#self.serviceStatus = &quot;Unregistered&quot;</span>
-      <span class="c1">#self.roundedbutton = tk.Label(self.statusFrame, anchor=&#39;s&#39;, compound=tk.RIGHT, text=&#39;CTQA Status:  &#39; + self.serviceStatus, bg=&quot;#ccc&quot;)</span>
-      <span class="c1">#self.roundedbutton.pack(expand=True, side=&#39;top&#39;, fill=&#39;x&#39;)</span>
 
     <span class="c1">#Fetching Source status</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
@@ -336,9 +363,6 @@
     <span class="c1"># Source status</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">sourcestatus</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statusFrame</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">CENTER</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Source: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">srcres</span><span class="p">),</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ccc&#39;</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">sourcestatus</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
-    <span class="c1"># Last run status</span>
-    <span class="c1">#self.lastrunstatus = tk.Label(self.statusFrame, anchor=&#39;n&#39;, text=&quot;Last Run: 18/07/11&quot;, bg=&#39;#ccc&#39;)</span>
-    <span class="c1">#self.lastrunstatus.pack(expand=True, side=&#39;top&#39;, fill=&#39;x&#39;, pady=(0,10))</span>
 
     <span class="c1"># Creating CTQA config buttons frame</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">configFrame</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settingsFrame</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
@@ -348,9 +372,13 @@
     <span class="c1"># Start service</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">configServiceControl</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configFrame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Notifications&quot;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">open_credentials_client</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">configServiceControl</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
-    <span class="c1"># Manual Run</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">configServiceInst</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configFrame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Install Service&quot;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service_install</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">configServiceInst</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+    <span class="c1"># Service (un)install</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ServicesInstalled&quot;</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">configServiceInst</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configFrame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Install Service&quot;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service_install</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">configServiceInst</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">configServiceInst</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configFrame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Uninstall Service&quot;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service_uninstall</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">configServiceInst</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
     <span class="c1"># Manual Run</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">configServiceRun</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configFrame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Manual Audit&quot;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">manual_audit</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">configServiceRun</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
@@ -360,9 +388,6 @@
     <span class="c1"># Manage QA Profiles</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">configServiceProfiles</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configFrame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Manage QA Profiles&quot;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">open_profile_client</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">configServiceProfiles</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">)</span></div>
-
-    <span class="c1"># Refreshing service status pane to check for installation</span>
-    <span class="c1">#self.refresh_service_status()</span>
 
 
 <div class="viewcode-block" id="ctqa_client.createLogElements"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.client.ctqa_client.createLogElements">[docs]</a>  <span class="k">def</span> <span class="nf">createLogElements</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -483,7 +508,7 @@
         <span class="k">if</span> <span class="n">repFolderExists</span><span class="p">:</span>
           <span class="n">reports</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reportspath</span> <span class="o">+</span> <span class="s1">&#39;/*.png&#39;</span><span class="p">)</span>
           <span class="n">newReports</span> <span class="o">=</span> <span class="p">[]</span>
-          <span class="k">for</span> <span class="n">report</span> <span class="ow">in</span> <span class="n">reports</span><span class="p">:</span> <span class="c1"># Detecing time created change</span>
+          <span class="k">for</span> <span class="n">report</span> <span class="ow">in</span> <span class="n">reports</span><span class="p">:</span> <span class="c1"># Detecting time created change</span>
             <span class="k">try</span><span class="p">:</span>
               <span class="n">newReports</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">report</span><span class="p">)</span> 
               <span class="n">newReports</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="n">report</span><span class="p">))</span>
@@ -643,92 +668,21 @@
 
 <div class="viewcode-block" id="ctqa_client.open_credentials_client"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.client.ctqa_client.open_credentials_client">[docs]</a>  <span class="k">def</span> <span class="nf">open_credentials_client</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="n">top</span> <span class="o">=</span> <span class="n">Toplevel</span><span class="p">()</span>
-    <span class="n">credclient</span><span class="o">.</span><span class="n">credentials_client</span><span class="p">(</span><span class="n">top</span><span class="p">)</span></div>
+    <span class="n">notificationsclient</span><span class="o">.</span><span class="n">notifications_client</span><span class="p">(</span><span class="n">top</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ctqa_client.service_install"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.client.ctqa_client.service_install">[docs]</a>  <span class="k">def</span> <span class="nf">service_install</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="c1"># Attempt a service manager install</span>
-    <span class="n">servicemanager</span><span class="o">.</span><span class="n">install</span><span class="p">()</span></div>
-    <span class="c1"># Refresh service panel after attempted install</span>
-    <span class="c1">#self.refresh_service_status()</span>
+    <span class="n">servicemanager</span><span class="o">.</span><span class="n">install</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">configServiceInst</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Uninstall Service&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">configServiceInst</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service_uninstall</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ctqa_client.service_uninstall"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.client.ctqa_client.service_uninstall">[docs]</a>  <span class="k">def</span> <span class="nf">service_uninstall</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="c1"># Attempt to uninstall service</span>
-    <span class="n">servicemanager</span><span class="o">.</span><span class="n">uninstall</span><span class="p">()</span></div>
-    <span class="c1"># Refresh service panel after attempted uninstall</span>
-    <span class="c1">#self.refresh_service_status()</span>
-
-
-<div class="viewcode-block" id="ctqa_client.refresh_service_status"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.client.ctqa_client.refresh_service_status">[docs]</a>  <span class="k">def</span> <span class="nf">refresh_service_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="n">sysos</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span>
-
-    <span class="c1"># Detecting which method to check for service</span>
-    <span class="k">if</span> <span class="n">sysos</span> <span class="o">==</span> <span class="s1">&#39;Windows&#39;</span><span class="p">:</span>
-      <span class="c1"># Connection to Windows Task Scheduler</span>
-      <span class="n">scheduler</span> <span class="o">=</span> <span class="n">win32com</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">Dispatch</span><span class="p">(</span><span class="s2">&quot;Schedule.Service&quot;</span><span class="p">)</span>
-      <span class="n">scheduler</span><span class="o">.</span><span class="n">Connect</span><span class="p">()</span>
-
-      <span class="c1"># Getting root folder and getting task names</span>
-      <span class="n">rootFolder</span> <span class="o">=</span> <span class="n">scheduler</span><span class="o">.</span><span class="n">GetFolder</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">)</span>
-      <span class="n">tasks</span> <span class="o">=</span> <span class="n">rootFolder</span><span class="o">.</span><span class="n">GetTasks</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-      <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">tasks</span><span class="o">.</span><span class="n">Item</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">Name</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">tasks</span><span class="o">.</span><span class="n">Count</span><span class="p">)]</span>
-
-      <span class="c1"># If CTQA is present in task names, update image and button</span>
-      <span class="k">if</span> <span class="s1">&#39;CTQA&#39;</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">service_on</span><span class="p">()</span>
-      <span class="k">else</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">service_off</span><span class="p">()</span>
-
-    <span class="k">elif</span> <span class="n">sysos</span> <span class="o">==</span> <span class="s1">&#39;Linux&#39;</span> <span class="ow">or</span> <span class="n">sysos</span> <span class="o">==</span> <span class="s1">&#39;Darwin&#39;</span><span class="p">:</span>
-      <span class="c1"># TODO: Check chron jobs here</span>
-      <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="ctqa_client.service_on"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.client.ctqa_client.service_on">[docs]</a>  <span class="k">def</span> <span class="nf">service_on</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Update service status pane to reflect that the CTQA audit service is on&#39;&#39;&#39;</span>
-    <span class="c1"># Updating service status image</span>
-    <span class="k">try</span><span class="p">:</span>
-      <span class="bp">self</span><span class="o">.</span><span class="n">statImg</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">resource_path</span><span class="p">(</span><span class="s1">&#39;res/service-on.gif&#39;</span><span class="p">))</span>
-      <span class="bp">self</span><span class="o">.</span><span class="n">statImgTk</span> <span class="o">=</span> <span class="n">ImageTk</span><span class="o">.</span><span class="n">PhotoImage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statImg</span><span class="p">)</span>
-
-      <span class="bp">self</span><span class="o">.</span><span class="n">roundedbutton</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">statImgTk</span><span class="p">)</span>
-
-      <span class="bp">self</span><span class="o">.</span><span class="n">roundedbutton</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">statImgTk</span>
-    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-      <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;ERROR: Could not load service-on.gif from resources folder&quot;</span><span class="p">)</span>
-    
-    <span class="c1"># Updating button text</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">roundedbutton</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;CTQA Status: Running &#39;</span><span class="p">)</span>
-
-    <span class="c1"># Updating install button text/command</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">configServiceInst</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;Uninstall Service&quot;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">configServiceInst</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service_uninstall</span><span class="p">)</span>
-
-    <span class="bp">self</span><span class="o">.</span><span class="n">lastrunstatus</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Last Run: NA&#39;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="ctqa_client.service_off"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.client.ctqa_client.service_off">[docs]</a>  <span class="k">def</span> <span class="nf">service_off</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Updates service status pane to reflect that the CTQA audit service is off&#39;&#39;&#39;</span>
-    <span class="c1"># Updating service status image</span>
-    <span class="k">try</span><span class="p">:</span>
-      <span class="bp">self</span><span class="o">.</span><span class="n">statImg</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">resource_path</span><span class="p">(</span><span class="s1">&#39;res/service-unreg.gif&#39;</span><span class="p">))</span>
-      <span class="bp">self</span><span class="o">.</span><span class="n">statImgTk</span> <span class="o">=</span> <span class="n">ImageTk</span><span class="o">.</span><span class="n">PhotoImage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statImg</span><span class="p">)</span>
-
-      <span class="bp">self</span><span class="o">.</span><span class="n">roundedbutton</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">statImgTk</span><span class="p">)</span>
-
-      <span class="bp">self</span><span class="o">.</span><span class="n">roundedbutton</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">statImgTk</span>
-    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-      <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;ERROR: Could not load service-unreg.gif from resources folder&quot;</span><span class="p">)</span>
-    
-    <span class="c1">#Updating button text</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">roundedbutton</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;CTQA Status: Unregistered &#39;</span><span class="p">)</span>
-
-    <span class="c1"># Updating install button text/command</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">configServiceInst</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;Install Service&quot;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">configServiceInst</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service_install</span><span class="p">)</span>
-
-    <span class="bp">self</span><span class="o">.</span><span class="n">lastrunstatus</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Last Run: NA&#39;</span><span class="p">)</span></div></div>
+    <span class="n">servicemanager</span><span class="o">.</span><span class="n">uninstall</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">configServiceInst</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Install Service&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">configServiceInst</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service_install</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
@@ -741,7 +695,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Reece Walsh.
+        &copy; Copyright 2019, Reece Walsh
 
     </p>
   </div>
@@ -758,32 +712,16 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../../',
-            VERSION:'0.9',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../../_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

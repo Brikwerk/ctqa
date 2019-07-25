@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ctqa.gui.profileclient &mdash; CTQA 0.9 documentation</title>
+  <title>ctqa.gui.profileclient &mdash; CTQA 1.0 documentation</title>
   
 
   
@@ -17,32 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
-
-  
-  <script src="../../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -338,19 +340,8 @@
     <span class="bp">self</span><span class="o">.</span><span class="n">profinfomanfmod</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Manufacturer Model:&#39;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">profinfoinst</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Institution Name:&#39;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">profhomogname</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Homogeneity </span><span class="se">\n</span><span class="s1">Slice Location:&#39;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">proflinname</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Linearity </span><span class="se">\n</span><span class="s1">Slice Location:&#39;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
-    
-    <span class="c1"># Baseline frame creation + placement</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">profbaselinelabelframe</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">profbaselinelabelframe</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;nsew&#39;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">profbaselinelabelframe</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">profbaselinelabelframe</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">profbaselinelabelframe</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="c1">#Baseline labels + placement</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">profbaselabelmean</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profbaselinelabelframe</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Mean:&#39;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">profbaselabelstd</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profbaselinelabelframe</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Std Dev:&#39;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">profbaselabelmean</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;se&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">profbaselabelstd</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;ne&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profupperlimit</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Upper Homogeneity Limit:&#39;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">proflowerlimit</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Lower Homogeneity Limit:&#39;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
 
     <span class="c1"># Label placement</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">profinfoname</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stick</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
@@ -358,7 +349,8 @@
     <span class="bp">self</span><span class="o">.</span><span class="n">profinfomanfmod</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">stick</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">profinfoinst</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stick</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">profhomogname</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">stick</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">proflinname</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">stick</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profupperlimit</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">stick</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">proflowerlimit</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">stick</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
 
     <span class="c1"># Data Entry</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">profentryname</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">35</span><span class="p">)</span>
@@ -366,7 +358,8 @@
     <span class="bp">self</span><span class="o">.</span><span class="n">profentrymanfmod</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">35</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">profentryinst</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">35</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">profentryhomog</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">35</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">profentrylinear</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">35</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentryupper</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">35</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentrylower</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">35</span><span class="p">)</span>
 
     <span class="c1"># Data entry placement</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">profentryname</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
@@ -374,14 +367,16 @@
     <span class="bp">self</span><span class="o">.</span><span class="n">profentrymanfmod</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">profentryinst</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">profentryhomog</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">profentrylinear</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentryupper</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentrylower</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
 
     <span class="c1"># Populating data entry</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">profentryname</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;StationName&#39;</span><span class="p">])</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">profentrymanfmod</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;ManufacturerModelName&#39;</span><span class="p">])</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">profentryinst</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;InstitutionName&#39;</span><span class="p">])</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">profentryhomog</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;HomogeneityPosition&#39;</span><span class="p">])</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">profentrylinear</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;LinearityPosition&#39;</span><span class="p">])</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentryupper</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;UpperHomogeneityLimit&#39;</span><span class="p">])</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentrylower</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;LowerHomogeneityLimit&#39;</span><span class="p">])</span>
 
     <span class="c1"># Manufacturer combo box setup</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">profcombo</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">profileutil</span><span class="o">.</span><span class="n">MANF_LIST</span> <span class="c1"># Load list of a valid manf options</span>
@@ -393,66 +388,13 @@
       <span class="bp">self</span><span class="o">.</span><span class="n">profcombo</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;Select a manfacturer...&#39;</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">profcombo</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;ComboboxSelected&gt;&gt;&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_change</span><span class="p">(</span><span class="s1">&#39;Manufacturer&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profcombo</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="nb">id</span><span class="p">))</span> <span class="c1"># Save and update components on change</span>
 
-    <span class="c1"># Baseline Entries</span>
-    <span class="k">try</span><span class="p">:</span>
-      <span class="n">directions</span> <span class="o">=</span> <span class="n">auditmethods</span><span class="o">.</span><span class="n">getAuditDirections</span><span class="p">(</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;Manufacturer&#39;</span><span class="p">])</span>
-    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-      <span class="n">directions</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;NORTH&#39;</span><span class="p">,</span> <span class="s1">&#39;SOUTH&#39;</span><span class="p">,</span> <span class="s1">&#39;EAST&#39;</span><span class="p">,</span> <span class="s1">&#39;WEST&#39;</span><span class="p">,</span> <span class="s1">&#39;CENTER&#39;</span><span class="p">]</span>
-
-    <span class="c1"># Adding std deviation to directions</span>
-    <span class="n">directions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;STD&#39;</span><span class="p">)</span>
-    
-    <span class="bp">self</span><span class="o">.</span><span class="n">baselineentries</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">baselinecont</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">LabelFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Baseline Water CT#&#39;</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">baselinecont</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">baselinecont</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">baselinecont</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">entryCount</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">direction</span> <span class="ow">in</span> <span class="n">directions</span><span class="p">:</span>
-      <span class="c1"># Setting up baseline direction label</span>
-      <span class="c1"># Not placing label for STD</span>
-      <span class="k">if</span> <span class="n">direction</span> <span class="o">!=</span> <span class="s1">&#39;STD&#39;</span><span class="p">:</span>
-        <span class="n">directionlabel</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baselinecont</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">direction</span><span class="p">,</span> <span class="n">highlightbackground</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#ddd&#39;</span><span class="p">)</span>
-        <span class="n">directionlabel</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">entryCount</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
-
-      <span class="c1"># Setting up baseline direction entry</span>
-      <span class="bp">self</span><span class="o">.</span><span class="n">baselineentries</span><span class="p">[</span><span class="n">direction</span><span class="p">]</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baselinecont</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-
-      <span class="c1"># Placing STD on next Line</span>
-      <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;STD&#39;</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">baselineentries</span><span class="p">[</span><span class="n">direction</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">entryCount</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;n&#39;</span><span class="p">)</span>
-      <span class="k">else</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">baselineentries</span><span class="p">[</span><span class="n">direction</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">entryCount</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;n&#39;</span><span class="p">)</span>
-
-      <span class="bp">self</span><span class="o">.</span><span class="n">baselinecont</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="n">entryCount</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-      <span class="n">entryCount</span> <span class="o">=</span> <span class="n">entryCount</span> <span class="o">+</span> <span class="mi">1</span>
-
-      <span class="k">if</span> <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;Baseline&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span> <span class="o">!=</span> <span class="kc">False</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">baselineentries</span><span class="p">[</span><span class="n">direction</span><span class="p">]</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tk</span><span class="o">.</span><span class="n">END</span><span class="p">)</span>
-        <span class="n">val</span> <span class="o">=</span> <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;Baseline&#39;</span><span class="p">][</span><span class="n">direction</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">baselineentries</span><span class="p">[</span><span class="n">direction</span><span class="p">]</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
-      <span class="k">else</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">baselineentries</span><span class="p">[</span><span class="n">direction</span><span class="p">]</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-
-      <span class="c1"># Method that captures variable and returns lambda function with it</span>
-      <span class="c1"># We perform this so that we avoid the for loop overwriting the direction variable</span>
-      <span class="c1"># When the binding is called later (eg STD would be called for every direction)</span>
-      <span class="k">def</span> <span class="nf">make_lambda</span><span class="p">(</span><span class="n">var</span><span class="p">):</span>
-        <span class="k">return</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_change</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">baselineentries</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="nb">id</span><span class="p">,</span> <span class="n">baseline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-      <span class="bp">self</span><span class="o">.</span><span class="n">baselineentries</span><span class="p">[</span><span class="n">direction</span><span class="p">]</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;KeyRelease&gt;&quot;</span><span class="p">,</span> <span class="n">make_lambda</span><span class="p">(</span><span class="n">direction</span><span class="p">))</span>
-    
-
-    <span class="bp">self</span><span class="o">.</span><span class="n">baselinecont</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;nsew&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">20</span><span class="p">))</span>
-    
-
     <span class="c1"># Binding data entry to component_change</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">profentryname</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;KeyRelease&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_change</span><span class="p">(</span><span class="s2">&quot;StationName&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profentryname</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="nb">id</span><span class="p">))</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">profentrymanfmod</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;KeyRelease&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_change</span><span class="p">(</span><span class="s2">&quot;ManufacturerModelName&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profentrymanfmod</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="nb">id</span><span class="p">))</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">profentryinst</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;KeyRelease&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_change</span><span class="p">(</span><span class="s2">&quot;InstitutionName&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profentryinst</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="nb">id</span><span class="p">))</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">profentryhomog</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;KeyRelease&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_change</span><span class="p">(</span><span class="s2">&quot;HomogeneityPosition&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profentryhomog</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="nb">id</span><span class="p">))</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">profentrylinear</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;KeyRelease&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_change</span><span class="p">(</span><span class="s2">&quot;LinearityPosition&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profentrylinear</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="nb">id</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentryupper</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;KeyRelease&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_change</span><span class="p">(</span><span class="s2">&quot;UpperHomogeneityLimit&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profentryupper</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="nb">id</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">profentrylower</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;KeyRelease&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_change</span><span class="p">(</span><span class="s2">&quot;LowerHomogeneityLimit&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profentrylower</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="nb">id</span><span class="p">))</span>
 
     <span class="c1"># Row and Column weights</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">profinfocont</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -469,7 +411,7 @@
 <div class="viewcode-block" id="profile_client.component_change"><a class="viewcode-back" href="../../../ctqa.gui.html#ctqa.gui.profileclient.profile_client.component_change">[docs]</a>  <span class="k">def</span> <span class="nf">component_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comp</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">profid</span><span class="p">,</span> <span class="n">baseline</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="c1"># Parsing input from homog/linearity</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">changes_made</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">comp</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;HomogeneityPosition&#39;</span><span class="p">,</span> <span class="s1">&#39;LinearityPosition&#39;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">comp</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;HomogeneityPosition&#39;</span><span class="p">,</span> <span class="s1">&#39;LinearityPosition&#39;</span><span class="p">,</span> <span class="s1">&#39;UpperHomogeneityLimit&#39;</span><span class="p">,</span> <span class="s1">&#39;LowerHomogeneityLimit&#39;</span><span class="p">]:</span>
       <span class="k">try</span><span class="p">:</span>
         <span class="n">val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
       <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
@@ -502,8 +444,8 @@
     <span class="c1"># Asking if the user wishes to download all images from source</span>
     <span class="n">size</span> <span class="o">=</span> <span class="n">autoprofiles</span><span class="o">.</span><span class="n">getSize</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-      <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;Auto finding CT profiles will download </span><span class="si">%s</span><span class="s1"> MB of images and clear any unsaved, manually entered profiles.</span>
-<span class="s1">      </span><span class="se">\n</span><span class="s1"> Are you sure you wish to continue?&#39;&#39;&#39;</span> <span class="o">%</span> <span class="n">size</span>
+      <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Auto finding CT profiles will download </span><span class="si">%s</span><span class="s2"> MB of images and clear any unsaved, manually entered profiles.</span>
+<span class="s2">      </span><span class="se">\n</span><span class="s2"> Are you sure you wish to continue?&quot;&quot;&quot;</span> <span class="o">%</span> <span class="n">size</span>
       <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">update</span><span class="p">()</span> <span class="c1"># Ensuring messagebox works on mac</span>
       <span class="n">userchoice</span> <span class="o">=</span> <span class="n">messagebox</span><span class="o">.</span><span class="n">askyesno</span><span class="p">(</span><span class="s2">&quot;Image Download&quot;</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
 
@@ -544,8 +486,8 @@
         <span class="n">thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">run_auto</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">cleanup</span><span class="p">,))</span>
         <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
-      <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;Invalid configuration profile. The utility was unable to check for images to download from the source.</span>
-<span class="s1">      </span><span class="se">\n</span><span class="s1"> Please check the configuration for valid values and attempt to auto find again.&#39;&#39;&#39;</span>
+      <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Invalid configuration profile. The utility was unable to check for images to download from the source.</span>
+<span class="s2">      </span><span class="se">\n</span><span class="s2"> Please check the configuration for valid values and attempt to auto find again.&quot;&quot;&quot;</span>
       <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
       <span class="n">messagebox</span><span class="o">.</span><span class="n">showerror</span><span class="p">(</span><span class="s1">&#39;Auto Find Error&#39;</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span></div>
 
@@ -714,7 +656,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Reece Walsh.
+        &copy; Copyright 2019, Reece Walsh
 
     </p>
   </div>
@@ -731,32 +673,16 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../../',
-            VERSION:'0.9',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../../_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

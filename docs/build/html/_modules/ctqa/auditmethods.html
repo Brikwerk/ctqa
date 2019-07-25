@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ctqa.auditmethods &mdash; CTQA 0.9 documentation</title>
+  <title>ctqa.auditmethods &mdash; CTQA 1.0 documentation</title>
   
 
   
@@ -17,32 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -139,12 +141,12 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ctqa.auditmethods</h1><div class="highlight"><pre>
-<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Audit Methods Module</span>
 
 <span class="sd">A module that contains data regarding the audits available for a CT machine, sorted \</span>
 <span class="sd">by manufacturer.</span>
-<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># Imports</span>
 <span class="kn">import</span> <span class="nn">copy</span>
@@ -189,11 +191,11 @@
 
 
 <div class="viewcode-block" id="getMethod"><a class="viewcode-back" href="../../ctqa.html#ctqa.auditmethods.getMethod">[docs]</a><span class="k">def</span> <span class="nf">getMethod</span><span class="p">(</span><span class="n">manufacturer</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;Gets audit methods by passed manufacturer string. Uses manufacturer string</span>
+  <span class="sd">&quot;&quot;&quot;Gets audit methods by passed manufacturer string. Uses manufacturer string</span>
 <span class="sd">  as a key to search the *METHODS* Dictionary object. </span>
 <span class="sd">  </span>
 <span class="sd">  If no suitable manufacturer is found, the default audit methods are used.</span>
-<span class="sd">  &#39;&#39;&#39;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">auditMethod</span> <span class="o">=</span> <span class="n">METHODS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">manufacturer</span><span class="p">)</span>
   <span class="k">if</span> <span class="n">auditMethod</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">METHODS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;DEFAULT&#39;</span><span class="p">))</span>
@@ -202,13 +204,13 @@
 
 
 <div class="viewcode-block" id="getAuditDirections"><a class="viewcode-back" href="../../ctqa.html#ctqa.auditmethods.getAuditDirections">[docs]</a><span class="k">def</span> <span class="nf">getAuditDirections</span><span class="p">(</span><span class="n">manufacturer</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  The audit directions are gotten based off of the manufacturer string.</span>
 
 <span class="sd">  EX: [&#39;NORTH&#39;, &#39;SOUTH&#39;, &#39;EAST&#39;, &#39;WEST&#39;, &#39;CENTER&#39;]</span>
 
 <span class="sd">  If no manufacturer is found for the passed string, the default is returned.</span>
-<span class="sd">  &#39;&#39;&#39;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">auditMethod</span> <span class="o">=</span> <span class="n">METHODS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">manufacturer</span><span class="p">)</span>
   <span class="k">if</span> <span class="n">auditMethod</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">auditMethod</span> <span class="o">=</span> <span class="n">METHODS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;DEFAULT&#39;</span><span class="p">)</span>
@@ -234,7 +236,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Reece Walsh.
+        &copy; Copyright 2019, Reece Walsh
 
     </p>
   </div>
@@ -251,32 +253,16 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'0.9',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

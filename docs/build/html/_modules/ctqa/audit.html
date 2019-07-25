@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ctqa.audit &mdash; CTQA 0.9 documentation</title>
+  <title>ctqa.audit &mdash; CTQA 1.0 documentation</title>
   
 
   
@@ -17,32 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -139,23 +141,28 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ctqa.audit</h1><div class="highlight"><pre>
-<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Audit Utility</span>
 
 <span class="sd">A module that contains logic for running an audit, grouping images \</span>
 <span class="sd">by series, and running homogeneity/linearity calculations.</span>
-<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># Imports</span>
 <span class="kn">import</span> <span class="nn">pydicom</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">profileutil</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">auditmethods</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">phantomcenter</span> <span class="k">as</span> <span class="n">phantom</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">notifications</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">io</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
 
 <span class="c1"># Logging</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -171,17 +178,22 @@
   <span class="s2">&quot;Homogeneity&quot;</span><span class="p">:{},</span>
   <span class="s2">&quot;Linearity&quot;</span><span class="p">:{}</span>
 <span class="p">}</span>
+<span class="n">SHORT_UUID</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">OUTPUT_ROIS</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../ctqa.html#ctqa.audit.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">profiles</span><span class="p">,</span> <span class="n">imgs</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;Main function for running the audit.&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../ctqa.html#ctqa.audit.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">profiles</span><span class="p">,</span> <span class="n">imgs</span><span class="p">,</span> <span class="n">output_rois</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;Main function for running the audit.&quot;&quot;&quot;</span>
 
   <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">profiles</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># If we&#39;ve got no profiles, exit</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No profiles were found. Exiting audit...&#39;</span><span class="p">)</span>
     <span class="k">return</span>
 
-  <span class="c1">#Setting profiles global</span>
+  <span class="c1"># Setting profiles global</span>
   <span class="k">global</span> <span class="n">PROFILES</span>
   <span class="n">PROFILES</span> <span class="o">=</span> <span class="n">profiles</span>
+
+  <span class="k">global</span> <span class="n">OUTPUT_ROIS</span>
+  <span class="n">OUTPUT_ROIS</span> <span class="o">=</span> <span class="n">output_rois</span>
 
   <span class="c1"># Getting grouped images</span>
   <span class="n">series</span> <span class="o">=</span> <span class="n">groupSeries</span><span class="p">(</span><span class="n">imgs</span><span class="p">)</span>
@@ -197,7 +209,7 @@
   
 
 <div class="viewcode-block" id="groupSeries"><a class="viewcode-back" href="../../ctqa.html#ctqa.audit.groupSeries">[docs]</a><span class="k">def</span> <span class="nf">groupSeries</span><span class="p">(</span><span class="n">imgs</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;Function for grouping passed images by their series UID&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;Function for grouping passed images by their series UID&quot;&quot;&quot;</span>
   <span class="c1"># Preparing studies dict for returning</span>
   <span class="n">SERIES</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -217,14 +229,17 @@
         <span class="nb">hasattr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;InstitutionName&#39;</span><span class="p">)</span> <span class="ow">and</span> \
         <span class="nb">hasattr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;RescaleSlope&#39;</span><span class="p">)</span> <span class="ow">and</span> \
         <span class="nb">hasattr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;RescaleIntercept&#39;</span><span class="p">)</span> <span class="ow">and</span> \
-        <span class="nb">hasattr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;pixel_array&#39;</span><span class="p">):</span>
-          <span class="c1"># Organizing by Series UID in dict object. Data appended into list.</span>
-          <span class="n">seriesUID</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">SeriesInstanceUID</span>
-          <span class="k">if</span> <span class="n">SERIES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">seriesUID</span><span class="p">)</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># If list doesn&#39;t exist</span>
-            <span class="n">SERIES</span><span class="p">[</span><span class="n">seriesUID</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">SERIES</span><span class="p">[</span><span class="n">seriesUID</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-          <span class="k">else</span><span class="p">:</span> <span class="c1"># List does exist</span>
-            <span class="n">SERIES</span><span class="p">[</span><span class="n">seriesUID</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="nb">hasattr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;pixel_array&#39;</span><span class="p">)</span> <span class="ow">and</span> \
+        <span class="nb">hasattr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;PatientBirthDate&#39;</span><span class="p">):</span>
+          <span class="c1"># Checking that the image has NO birthdate</span>
+          <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">PatientBirthDate</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="c1"># Organizing by Series UID in dict object. Data appended into list.</span>
+            <span class="n">seriesUID</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">SeriesInstanceUID</span>
+            <span class="k">if</span> <span class="n">SERIES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">seriesUID</span><span class="p">)</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># If list doesn&#39;t exist</span>
+              <span class="n">SERIES</span><span class="p">[</span><span class="n">seriesUID</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+              <span class="n">SERIES</span><span class="p">[</span><span class="n">seriesUID</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span> <span class="c1"># List does exist</span>
+              <span class="n">SERIES</span><span class="p">[</span><span class="n">seriesUID</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
     <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span> <span class="c1"># Passing over any img w/o UID</span>
       <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Attribute Error on image in dataset: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
@@ -234,10 +249,10 @@
 
 
 <div class="viewcode-block" id="getAuditDatasets"><a class="viewcode-back" href="../../ctqa.html#ctqa.audit.getAuditDatasets">[docs]</a><span class="k">def</span> <span class="nf">getAuditDatasets</span><span class="p">(</span><span class="n">series</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Selects a specified slice from a series based off of a value in </span>
 <span class="sd">  a reader&#39;s profile</span>
-<span class="sd">  &#39;&#39;&#39;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
 
   <span class="n">AUDIT_IMAGES</span> <span class="o">=</span> <span class="p">[]</span>
   <span class="k">global</span> <span class="n">PROFILES</span>
@@ -275,16 +290,14 @@
     <span class="c1"># Reading profile into local var</span>
     <span class="n">profile</span> <span class="o">=</span> <span class="n">PROFILES</span><span class="p">[</span><span class="n">reader</span><span class="p">]</span>
 
-    <span class="c1"># Checking to make sure we have enough images to take the homogeneity and linearity image</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">instances</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">profile</span><span class="p">[</span><span class="s2">&quot;HomogeneityPosition&quot;</span><span class="p">]:</span>
-      <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Homogeneity slice position is greater than the total number of images in the series &quot;</span> <span class="o">+</span> <span class="n">uid</span><span class="p">)</span>
-      <span class="k">continue</span>
-    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">instances</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">profile</span><span class="p">[</span><span class="s2">&quot;LinearityPosition&quot;</span><span class="p">]:</span>
-      <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Linearity slice position is greater than the total number of images in the series &quot;</span> <span class="o">+</span> <span class="n">uid</span><span class="p">)</span>
-      <span class="k">continue</span>
-    <span class="c1"># Getting images</span>
-    <span class="n">homogeneityimage</span> <span class="o">=</span> <span class="n">instances</span><span class="p">[</span><span class="n">profile</span><span class="p">[</span><span class="s2">&quot;HomogeneityPosition&quot;</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">linearityimage</span> <span class="o">=</span> <span class="n">instances</span><span class="p">[</span><span class="n">profile</span><span class="p">[</span><span class="s2">&quot;LinearityPosition&quot;</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1"># Getting images at preferred slice location</span>
+    <span class="n">homogeneityimage</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">linearityimage</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">:</span>
+      <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">instance</span><span class="p">[</span><span class="mh">0x20</span><span class="p">,</span><span class="mh">0x1041</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="n">profile</span><span class="p">[</span><span class="s2">&quot;HomogeneityPosition&quot;</span><span class="p">]:</span>
+        <span class="n">homogeneityimage</span> <span class="o">=</span> <span class="n">instance</span>
+      <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">instance</span><span class="p">[</span><span class="mh">0x20</span><span class="p">,</span><span class="mh">0x1041</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="n">profile</span><span class="p">[</span><span class="s2">&quot;LinearityPosition&quot;</span><span class="p">]:</span>
+        <span class="n">linearityimage</span> <span class="o">=</span> <span class="n">instance</span>      
 
     <span class="c1">#Assigning to AUDIT_IMAGES</span>
     <span class="n">AUDIT_IMAGES</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">reader</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">homogeneityimage</span><span class="p">,</span> <span class="n">linearityimage</span><span class="p">])</span>
@@ -293,7 +306,7 @@
 
 
 <div class="viewcode-block" id="auditImages"><a class="viewcode-back" href="../../ctqa.html#ctqa.audit.auditImages">[docs]</a><span class="k">def</span> <span class="nf">auditImages</span><span class="p">(</span><span class="n">datasets</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Retrieves audit method based off of the reader&#39;s manufacturer and</span>
 <span class="sd">  performs appropriate audits based on this.</span>
 
@@ -306,16 +319,29 @@
 <span class="sd">  [ MACHINE_NAME , MACHINE_PROFILE , MACHINE_QC_IMAGE ]</span>
 <span class="sd">  </span>
 <span class="sd">  **Please Note:** MACHINE_QC_IMAGE is referring to a pydicom dicom object.</span>
-<span class="sd">  &#39;&#39;&#39;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
 
+  <span class="n">profile</span> <span class="o">=</span> <span class="kc">None</span>
   <span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="n">datasets</span><span class="p">:</span>
-    <span class="n">profile</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">manufacturer</span> <span class="o">=</span> <span class="n">profile</span><span class="p">[</span><span class="s2">&quot;Manufacturer&quot;</span><span class="p">]</span>
-    <span class="n">method</span> <span class="o">=</span> <span class="n">auditmethods</span><span class="o">.</span><span class="n">getMethod</span><span class="p">(</span><span class="n">manufacturer</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+      <span class="n">profile</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+      <span class="n">manufacturer</span> <span class="o">=</span> <span class="n">profile</span><span class="p">[</span><span class="s2">&quot;Manufacturer&quot;</span><span class="p">]</span>
+      <span class="n">method</span> <span class="o">=</span> <span class="n">auditmethods</span><span class="o">.</span><span class="n">getMethod</span><span class="p">(</span><span class="n">manufacturer</span><span class="p">)</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Auditing &quot;</span> <span class="o">+</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    
-    <span class="n">performHomogeneityAudit</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span></div>
+      <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Auditing &quot;</span> <span class="o">+</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+      
+      <span class="n">roi</span> <span class="o">=</span> <span class="n">performHomogeneityAudit</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+      <span class="c1"># Checking if the ROI exceeds the site&#39;s bounds</span>
+      <span class="k">if</span> <span class="n">roi</span> <span class="o">&gt;</span> <span class="n">profile</span><span class="p">[</span><span class="s2">&quot;UpperHomogeneityLimit&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="n">roi</span> <span class="o">&lt;</span> <span class="n">profile</span><span class="p">[</span><span class="s2">&quot;LowerHomogeneityLimit&quot;</span><span class="p">]:</span>
+        <span class="n">sitename</span> <span class="o">=</span> <span class="n">profileutil</span><span class="o">.</span><span class="n">getProfileName</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">StudyDate</span>
+        <span class="n">notifications</span><span class="o">.</span><span class="n">notify_of_failure</span><span class="p">(</span><span class="n">sitename</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">roi</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+      <span class="k">if</span> <span class="n">profile</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error during audit of machine </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">profileutil</span><span class="o">.</span><span class="n">getProfileName</span><span class="p">(</span><span class="n">profile</span><span class="p">))</span>
+      <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
     
 
 <span class="c1">#----------------------------------------------------------------------------------</span>
@@ -326,11 +352,11 @@
 
 
 <div class="viewcode-block" id="performHomogeneityAudit"><a class="viewcode-back" href="../../ctqa.html#ctqa.audit.performHomogeneityAudit">[docs]</a><span class="k">def</span> <span class="nf">performHomogeneityAudit</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Prepares a spot in the global data variable (runs setupHomogeneityData) for data</span>
 <span class="sd">  coming from the audits and runs each audit listed under the method parameter. \</span>
 <span class="sd">  The output of each method is stored under the StudyDate (DICOM tag).\</span>
-<span class="sd">  &#39;&#39;&#39;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
 
   <span class="k">global</span> <span class="n">DATA</span>
   <span class="c1"># Getting reader from img</span>
@@ -343,8 +369,15 @@
       <span class="n">img</span><span class="o">.</span><span class="n">InstitutionName</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
     <span class="p">)</span>
   <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; in series &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">SeriesInstanceUID</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="s2">&quot;SOPInstanceUID&quot;</span><span class="p">):</span>
+      <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; in series &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">SOPInstanceUID</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; in image &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>
     <span class="k">return</span>
+
+  <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Image Study Instance UID&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">StudyInstanceUID</span><span class="p">))</span>
+  <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Image Series Instance UID&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">SeriesInstanceUID</span><span class="p">))</span>
+  <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Image SOP Instance UID&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">SOPInstanceUID</span><span class="p">))</span>
 
   <span class="c1"># Getting img date</span>
   <span class="n">date</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">StudyDate</span>
@@ -352,6 +385,10 @@
   <span class="n">setupHomogeneityData</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">reader</span><span class="p">)</span>
   <span class="c1"># Creating alias for data location in DATA global</span>
   <span class="n">dataloc</span> <span class="o">=</span> <span class="n">DATA</span><span class="p">[</span><span class="s2">&quot;Homogeneity&quot;</span><span class="p">][</span><span class="n">reader</span><span class="p">][</span><span class="n">date</span><span class="p">]</span>
+
+  <span class="c1"># Setting unique 8 char UUID for this audit</span>
+  <span class="k">global</span> <span class="n">SHORT_UUID</span>
+  <span class="n">SHORT_UUID</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span>
 
   <span class="c1"># Running homogeneity audit for each audit</span>
   <span class="k">for</span> <span class="n">auditKey</span> <span class="ow">in</span> <span class="n">method</span><span class="p">:</span>
@@ -375,11 +412,13 @@
     <span class="k">if</span> <span class="n">audit</span><span class="p">[</span><span class="s1">&#39;direction&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;CENTER&#39;</span><span class="p">:</span>
       <span class="n">directionroi</span> <span class="o">=</span> <span class="n">dataloc</span><span class="p">[</span><span class="s2">&quot;PERIPHERAL&quot;</span><span class="p">][</span><span class="n">audit</span><span class="p">[</span><span class="s2">&quot;direction&quot;</span><span class="p">]]</span> <span class="c1"># Getting direction roi mean</span>
       <span class="c1"># Performing comparison between center and periph roi means</span>
-      <span class="n">dataloc</span><span class="p">[</span><span class="s2">&quot;PERIPHERAL-COMP&quot;</span><span class="p">][</span><span class="n">audit</span><span class="p">[</span><span class="s2">&quot;direction&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">centerroi</span> <span class="o">-</span> <span class="n">directionroi</span><span class="p">)</span></div>
+      <span class="n">dataloc</span><span class="p">[</span><span class="s2">&quot;PERIPHERAL-COMP&quot;</span><span class="p">][</span><span class="n">audit</span><span class="p">[</span><span class="s2">&quot;direction&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">centerroi</span> <span class="o">-</span> <span class="n">directionroi</span><span class="p">)</span>
+
+  <span class="k">return</span> <span class="n">centerroi</span></div>
 
 
 <div class="viewcode-block" id="setupHomogeneityData"><a class="viewcode-back" href="../../ctqa.html#ctqa.audit.setupHomogeneityData">[docs]</a><span class="k">def</span> <span class="nf">setupHomogeneityData</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">reader</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;Prepares a spot in the global DATA variable for incoming audit data.&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;Prepares a spot in the global DATA variable for incoming audit data.&quot;&quot;&quot;</span>
 
   <span class="k">global</span> <span class="n">DATA</span>
   <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reader</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -407,29 +446,37 @@
 
 
 <div class="viewcode-block" id="computeHomogeneity"><a class="viewcode-back" href="../../ctqa.html#ctqa.audit.computeHomogeneity">[docs]</a><span class="k">def</span> <span class="nf">computeHomogeneity</span><span class="p">(</span><span class="n">audit</span><span class="p">,</span> <span class="n">dataset</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Attempts to rescale DICOM pixel data by the DICOM RescaleIntercept/Slope tags.</span>
 <span class="sd">  After attempted rescale, a region is selected from the pixel \</span>
 <span class="sd">  data. Which region is dependant on the *audit* parameter. A 1D array of DICOM pixel \</span>
 <span class="sd">  data is returned.</span>
-<span class="sd">  &#39;&#39;&#39;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
   
   <span class="n">scaledData</span> <span class="o">=</span> <span class="p">[]</span>
   <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">RescaleIntercept</span> <span class="ow">and</span> <span class="n">dataset</span><span class="o">.</span><span class="n">RescaleSlope</span><span class="p">:</span>
     <span class="n">scaledData</span> <span class="o">=</span> <span class="n">scalePixelData</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">pixel_array</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">RescaleIntercept</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">RescaleSlope</span><span class="p">)</span>
   <span class="k">else</span><span class="p">:</span>
     <span class="n">errMsg</span> <span class="o">=</span> <span class="s2">&quot;ERROR: No RescaleIntercept and RescaleSlope values were found&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">errMsg</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errMsg</span><span class="p">)</span>
     <span class="n">scaledData</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">pixel_array</span>
 
   <span class="k">try</span><span class="p">:</span>
     <span class="n">dataset</span><span class="o">.</span><span class="n">PixelSpacing</span>
   <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;No Pixel spacing attribute for image </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">dataset</span><span class="o">.</span><span class="n">SeriesInstanceUID</span><span class="p">)</span>
+  
+  <span class="c1"># # Getting phantom center</span>
+  <span class="n">scaled_data</span> <span class="o">=</span> <span class="n">phantom</span><span class="o">.</span><span class="n">get_scaled_image</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+  <span class="n">circle_coords</span> <span class="o">=</span> <span class="n">phantom</span><span class="o">.</span><span class="n">get_circles</span><span class="p">(</span><span class="n">scaled_data</span><span class="p">)</span>
+
+  <span class="n">centerY</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">circle_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+  <span class="n">centerX</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">circle_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
 
   <span class="c1"># Getting initial config values from image</span>
-  <span class="n">centerX</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">Rows</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># Center of image X/Y</span>
-  <span class="n">centerY</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">Columns</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+  <span class="c1"># centerX = int(dataset.Rows/2) # Center of image X/Y</span>
+  <span class="c1"># centerY = int(dataset.Columns/2)</span>
+
   <span class="n">spacingXROI</span> <span class="o">=</span> <span class="n">audit</span><span class="p">[</span><span class="s2">&quot;spacing&quot;</span><span class="p">]</span><span class="o">/</span><span class="n">dataset</span><span class="o">.</span><span class="n">PixelSpacing</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># For getting different ROIs</span>
   <span class="n">spacingYROI</span> <span class="o">=</span> <span class="n">audit</span><span class="p">[</span><span class="s2">&quot;spacing&quot;</span><span class="p">]</span><span class="o">/</span><span class="n">dataset</span><span class="o">.</span><span class="n">PixelSpacing</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
   <span class="n">halfLengthROI</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">audit</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span>
@@ -468,6 +515,31 @@
     <span class="n">yr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">centerX</span> <span class="o">+</span> <span class="n">halfLengthXROI</span><span class="p">)</span>
     <span class="n">xr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">centerY</span> <span class="o">+</span> <span class="n">spacingYROI</span><span class="p">)</span> <span class="o">+</span> <span class="n">halfLengthYROI</span><span class="p">)</span>
 
+  <span class="n">roi_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">LOCATION</span><span class="p">,</span> <span class="s2">&quot;roi_selections&quot;</span><span class="p">)</span>
+
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">roi_path</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">roi_path</span><span class="p">)</span>
+
+  <span class="k">if</span> <span class="n">OUTPUT_ROIS</span><span class="p">:</span>
+    <span class="n">deleteOldROISelections</span><span class="p">()</span>
+
+  <span class="n">roi_img_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">roi_path</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">StationName</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">dataset</span><span class="o">.</span><span class="n">StudyDate</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">SHORT_UUID</span> <span class="o">+</span> <span class="s1">&#39;.jpg&#39;</span><span class="p">)</span>
+  <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Saving ROI selection to: &quot;</span> <span class="o">+</span> <span class="n">roi_img_path</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">roi_img_path</span><span class="p">):</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">roi_img_path</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">phantom</span><span class="o">.</span><span class="n">get_scaled_image</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">phantom</span><span class="o">.</span><span class="n">set_window</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span><span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_GRAY2BGR</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Circle Center Coords: &quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">circle_coords</span><span class="p">)</span>
+
+    <span class="n">cv2</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">img</span><span class="p">,(</span><span class="n">circle_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">circle_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span><span class="n">circle_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">],(</span><span class="mi">0</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="mi">5</span><span class="p">)</span>
+
+  <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">(</span><span class="n">xl</span><span class="p">,</span><span class="n">yl</span><span class="p">),</span> <span class="p">(</span><span class="n">xr</span><span class="p">,</span><span class="n">yr</span><span class="p">),(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">255</span><span class="p">),</span><span class="mi">3</span><span class="p">)</span>
+  <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">roi_img_path</span><span class="p">,</span> <span class="n">img</span><span class="p">)</span>
+
   <span class="c1"># Performing ROI audit</span>
   <span class="n">roi</span> <span class="o">=</span> <span class="n">selectArea</span><span class="p">(</span><span class="n">scaledData</span><span class="p">,</span> <span class="n">xl</span><span class="p">,</span> <span class="n">yl</span><span class="p">,</span> <span class="n">xr</span><span class="p">,</span> <span class="n">yr</span><span class="p">)</span>
 
@@ -475,7 +547,7 @@
 
   
 <div class="viewcode-block" id="reformROIArray"><a class="viewcode-back" href="../../ctqa.html#ctqa.audit.reformROIArray">[docs]</a><span class="k">def</span> <span class="nf">reformROIArray</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;Loops through flat ROI array and turns into 2d ROI array&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;Loops through flat ROI array and turns into 2d ROI array&quot;&quot;&quot;</span>
 
   <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
   <span class="n">arr</span> <span class="o">=</span> <span class="p">[]</span>
@@ -495,7 +567,7 @@
 
 
 <div class="viewcode-block" id="scalePixelData"><a class="viewcode-back" href="../../ctqa.html#ctqa.audit.scalePixelData">[docs]</a><span class="k">def</span> <span class="nf">scalePixelData</span><span class="p">(</span><span class="n">pixelData</span><span class="p">,</span> <span class="n">rInt</span><span class="p">,</span> <span class="n">rSlope</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;Scales pixel image values linearly by rescale values&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;Scales pixel image values linearly by rescale values&quot;&quot;&quot;</span>
 
   <span class="n">scaledPixelData</span> <span class="o">=</span> <span class="p">[]</span>
   <span class="k">for</span> <span class="n">pixelRow</span> <span class="ow">in</span> <span class="n">pixelData</span><span class="p">:</span>
@@ -510,8 +582,21 @@
   <span class="k">return</span> <span class="n">scaledPixelData</span></div>
 
 
+<div class="viewcode-block" id="deleteOldROISelections"><a class="viewcode-back" href="../../ctqa.html#ctqa.audit.deleteOldROISelections">[docs]</a><span class="k">def</span> <span class="nf">deleteOldROISelections</span><span class="p">():</span>
+  <span class="sd">&quot;&quot;&quot;Deletes any old ROI selection graphics&quot;&quot;&quot;</span>
+  <span class="n">selectionPath</span> <span class="o">=</span> <span class="s2">&quot;./roi_selections&quot;</span>
+  <span class="n">days</span> <span class="o">=</span> <span class="mi">120</span>
+  <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+  <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">selectionPath</span><span class="p">):</span>
+    <span class="n">filePath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">selectionPath</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">filePath</span><span class="p">)</span><span class="o">.</span><span class="n">st_mtime</span> <span class="o">&lt;</span> <span class="n">now</span> <span class="o">-</span> <span class="n">days</span> <span class="o">*</span> <span class="mi">86400</span><span class="p">:</span>
+      <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filePath</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">filePath</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="selectArea"><a class="viewcode-back" href="../../ctqa.html#ctqa.audit.selectArea">[docs]</a><span class="k">def</span> <span class="nf">selectArea</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;Selects a specified area from a 2D array and fills a 1D arr with the values&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;Selects a specified area from a 2D array and fills a 1D arr with the values&quot;&quot;&quot;</span>
 
   <span class="n">areaArr</span> <span class="o">=</span> <span class="p">[]</span>
   <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">):</span>
@@ -519,9 +604,6 @@
       <span class="n">areaArr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">])</span>
   
   <span class="k">return</span> <span class="n">areaArr</span></div>
-
-
-  
 </pre></div>
 
            </div>
@@ -534,7 +616,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Reece Walsh.
+        &copy; Copyright 2019, Reece Walsh
 
     </p>
   </div>
@@ -551,32 +633,16 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'0.9',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

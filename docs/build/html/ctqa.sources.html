@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ctqa.sources package &mdash; CTQA 0.9 documentation</title>
+  <title>ctqa.sources package &mdash; CTQA 1.0 documentation</title>
   
 
   
@@ -17,32 +17,34 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -159,26 +161,26 @@
 <p>Source module that fetches images from a specified Orthanc PACS server instance.</p>
 <dl class="function">
 <dt id="ctqa.sources.orthanc.decodeJSON">
-<code class="descclassname">ctqa.sources.orthanc.</code><code class="descname">decodeJSON</code><span class="sig-paren">(</span><em>strJSON</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/sources/orthanc.html#decodeJSON"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.sources.orthanc.decodeJSON" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ctqa.sources.orthanc.</code><code class="sig-name descname">decodeJSON</code><span class="sig-paren">(</span><em class="sig-param">strJSON</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/sources/orthanc.html#decodeJSON"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.sources.orthanc.decodeJSON" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decodes JSON in a manner safe for Python 2 and 3</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="ctqa.sources.orthanc.fetchImages">
-<code class="descclassname">ctqa.sources.orthanc.</code><code class="descname">fetchImages</code><span class="sig-paren">(</span><em>URL</em>, <em>lastImageNumber</em>, <em>profileinit=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/sources/orthanc.html#fetchImages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.sources.orthanc.fetchImages" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ctqa.sources.orthanc.</code><code class="sig-name descname">fetchImages</code><span class="sig-paren">(</span><em class="sig-param">URL</em>, <em class="sig-param">lastImageNumber</em>, <em class="sig-param">profileinit=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/sources/orthanc.html#fetchImages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.sources.orthanc.fetchImages" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retreives image URLs from an Orthanc server instance through the REST API</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="ctqa.sources.orthanc.get">
-<code class="descclassname">ctqa.sources.orthanc.</code><code class="descname">get</code><span class="sig-paren">(</span><em>baseURL</em>, <em>data={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/sources/orthanc.html#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.sources.orthanc.get" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ctqa.sources.orthanc.</code><code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">baseURL</em>, <em class="sig-param">data={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/sources/orthanc.html#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.sources.orthanc.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets site contents and attempts to parse them as JSON data.</p>
 <p>Optiona data parameter for get requests.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="ctqa.sources.orthanc.getSizeOfImages">
-<code class="descclassname">ctqa.sources.orthanc.</code><code class="descname">getSizeOfImages</code><span class="sig-paren">(</span><em>address</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/sources/orthanc.html#getSizeOfImages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.sources.orthanc.getSizeOfImages" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ctqa.sources.orthanc.</code><code class="sig-name descname">getSizeOfImages</code><span class="sig-paren">(</span><em class="sig-param">address</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctqa/sources/orthanc.html#getSizeOfImages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ctqa.sources.orthanc.getSizeOfImages" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns size of all images present on the Orthanc server</p>
 <p>Returns -1 if there is an error with the URL parsing or the HTTP request.</p>
 </dd></dl>
@@ -200,7 +202,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Reece Walsh.
+        &copy; Copyright 2019, Reece Walsh
 
     </p>
   </div>
@@ -217,32 +219,16 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.9',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

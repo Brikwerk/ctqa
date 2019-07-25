@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ctqa.reportutil &mdash; CTQA 0.9 documentation</title>
+  <title>ctqa.reportutil &mdash; CTQA 1.0 documentation</title>
   
 
   
@@ -17,32 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -139,12 +141,15 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ctqa.reportutil</h1><div class="highlight"><pre>
-<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Report Utility</span>
 
 <span class="sd">Generates and saves a CT machine&#39;s report based off of audit data.</span>
-<span class="sd">&#39;&#39;&#39;</span>
-
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">ctqa</span> <span class="k">import</span> <span class="n">logutil</span>
+<span class="c1"># Explicitly disabling matplotlib to prevent log spam</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;matplotlib&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span>
 <span class="c1"># Using simplified mpl backend due to exclusive png creation</span>
 <span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;Agg&#39;</span><span class="p">)</span>
@@ -157,13 +162,28 @@
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">ctqa</span> <span class="k">import</span> <span class="n">datautil</span>
+<span class="kn">from</span> <span class="nn">ctqa</span> <span class="k">import</span> <span class="n">profileutil</span>
+<span class="kn">from</span> <span class="nn">ctqa</span> <span class="k">import</span> <span class="n">notifications</span>
+
+<span class="c1">#Logger init</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">logutil</span><span class="o">.</span><span class="n">MAIN_LOG_NAME</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="generateReport"><a class="viewcode-back" href="../../ctqa.html#ctqa.reportutil.generateReport">[docs]</a><span class="k">def</span> <span class="nf">generateReport</span><span class="p">(</span><span class="n">dataPath</span><span class="p">,</span> <span class="n">savelocation</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">graphdays</span><span class="p">,</span> <span class="n">forecastdays</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="generateReport"><a class="viewcode-back" href="../../ctqa.html#ctqa.reportutil.generateReport">[docs]</a><span class="k">def</span> <span class="nf">generateReport</span><span class="p">(</span><span class="n">dataPath</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">upperlimit</span><span class="p">,</span> <span class="n">lowerlimit</span><span class="p">,</span> <span class="n">report_type</span><span class="o">=</span><span class="s2">&quot;daily&quot;</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Retrieves audit data from the data path, organizes a site&#39;s data into a displayable format,</span>
 <span class="sd">  and creates a PNG graph at the passed save location.</span>
-<span class="sd">  &#39;&#39;&#39;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+
+  <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Generating report: &quot;</span> <span class="o">+</span> <span class="n">title</span><span class="p">)</span>
+
+  <span class="c1"># Config variable assignment</span>
+  <span class="n">savelocation</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ReportLocation&quot;</span><span class="p">)</span>
+  <span class="n">forecastdays</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;DaysToForecast&quot;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">report_type</span> <span class="o">==</span> <span class="s2">&quot;daily&quot;</span><span class="p">:</span>
+    <span class="n">graphdays</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;DailyReportDaysToGraph&quot;</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">graphdays</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;WeeklyReportDaysToGraph&quot;</span><span class="p">)</span>
 
   <span class="c1"># Getting data</span>
   <span class="n">jsonData</span> <span class="o">=</span> <span class="n">datautil</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">dataPath</span><span class="p">)</span>
@@ -194,18 +214,21 @@
   <span class="n">days</span> <span class="o">=</span> <span class="n">mdates</span><span class="o">.</span><span class="n">WeekdayLocator</span><span class="p">()</span>
   <span class="n">monthsFmt</span> <span class="o">=</span> <span class="n">mdates</span><span class="o">.</span><span class="n">DateFormatter</span><span class="p">(</span><span class="s1">&#39;%Y-%m&#39;</span><span class="p">)</span>
 
+  <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">()</span>
   <span class="n">plt</span><span class="o">.</span><span class="n">plot_date</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">centerdates</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">centerrois</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Center ROI Means&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-  <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">months</span><span class="p">)</span>
-  <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">monthsFmt</span><span class="p">)</span>
-  <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">days</span><span class="p">)</span>
+  <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">months</span><span class="p">)</span>
+  <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">monthsFmt</span><span class="p">)</span>
+  <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">days</span><span class="p">)</span>
 
-  <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+  <span class="c1"># Setting axis bounds</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="n">datenow</span> <span class="o">-</span> <span class="n">graphdays</span><span class="p">,</span> <span class="n">datenow</span> <span class="o">+</span> <span class="n">forecastdays</span> <span class="o">+</span> <span class="mi">5</span><span class="p">))</span>
+
   <span class="c1"># Calibration levels</span>
-  <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Control Limits&#39;</span><span class="p">)</span>
-  <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">upperlimit</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Control Limits&#39;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">lowerlimit</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
   <span class="c1"># Warning levels</span>
-  <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-  <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">upperlimit</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">lowerlimit</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
   <span class="c1"># Center line</span>
   <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
@@ -230,7 +253,8 @@
       <span class="n">lastrois</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">centerrois</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
   <span class="c1"># Fitting regression for decalibration prediction if we have enough data</span>
-  <span class="c1"># Aiming for at least 3 points of data in the last month. </span>
+  <span class="c1"># Aiming for at least 3 points of data in the last month.</span>
+  <span class="n">forecastend</span> <span class="o">=</span> <span class="kc">None</span>
   <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lastdates</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
     <span class="c1"># Fitting linear polynomial</span>
     <span class="n">fit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">lastdates</span><span class="p">,</span> <span class="n">lastrois</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># Fitting to dates/rois to a single degree polynomial</span>
@@ -242,8 +266,18 @@
     <span class="n">plt</span><span class="o">.</span><span class="n">plot_date</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">lastdates</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">forecasttime</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">forecaststart</span><span class="p">,</span> <span class="n">forecastend</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Forecast Trend&#39;</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;--o&quot;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 
   <span class="c1"># Creating legend</span>
-  <span class="n">handles</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span><span class="o">.</span><span class="n">get_legend_handles_labels</span><span class="p">()</span>
-  <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+  <span class="n">handles</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">get_legend_handles_labels</span><span class="p">()</span>
+  <span class="n">strdates</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">jsonData</span><span class="p">[</span><span class="s2">&quot;Homogeneity&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">strdates</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="c1"># Creating blank rectangle for date holder</span>
+    <span class="n">blankrectangle</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">patches</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">handles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">blankrectangle</span><span class="p">)</span>
+    <span class="c1"># Getting last point date as string</span>
+    <span class="n">strdates</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="n">lastdatepoint</span> <span class="o">=</span> <span class="n">strdates</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">strdates</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">lastdatepoint</span> <span class="o">=</span> <span class="s2">&quot;Last Point: </span><span class="si">%s</span><span class="s2">/</span><span class="si">%s</span><span class="s2">/</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">lastdatepoint</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">],</span> <span class="n">lastdatepoint</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span> <span class="n">lastdatepoint</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">8</span><span class="p">])</span>
+    <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lastdatepoint</span><span class="p">)</span>
+  <span class="n">axes</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
 
   <span class="c1"># Title</span>
   <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
@@ -251,15 +285,53 @@
   <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 
   <span class="c1"># Setting location for export to reports folder, local to executable</span>
-  <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
   <span class="n">file</span> <span class="o">=</span> <span class="n">title</span> <span class="o">+</span> <span class="s1">&#39;.png&#39;</span>
-  <span class="n">loc</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-  <span class="n">file_loc</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="s1">&#39;reports&#39;</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+  <span class="n">loc</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">savelocation</span><span class="p">)</span>
+  <span class="c1"># Ensuring the save location exists</span>
+  <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+  <span class="n">file_loc</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
 
   <span class="c1"># Saving png image to savelocation</span>
   <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">file_loc</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
   <span class="c1"># Clearing plot. MUST DO THIS UNLESS YOU WANT THE OLD PLOT TO REMAIN FOR ANOTHER RUN</span>
-  <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+  <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+  <span class="k">return</span> <span class="n">forecastend</span></div>
+
+
+<div class="viewcode-block" id="regenerateReports"><a class="viewcode-back" href="../../ctqa.html#ctqa.reportutil.regenerateReports">[docs]</a><span class="k">def</span> <span class="nf">regenerateReports</span><span class="p">(</span><span class="n">dataPath</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">profiles</span><span class="p">,</span> <span class="n">report_type</span><span class="o">=</span><span class="s2">&quot;daily&quot;</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;Finds all data folders and updates reports based on existing data&quot;&quot;&quot;</span>
+  <span class="c1"># Getting report names and paths to the data</span>
+  <span class="n">pathitems</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dataPath</span><span class="p">)</span>
+  <span class="n">subnames</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">pathitems</span><span class="p">:</span>
+    <span class="n">itempath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataPath</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">itempath</span><span class="p">):</span>
+      <span class="n">subnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+  <span class="c1"># Generating reports</span>
+  <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">subnames</span><span class="p">:</span>
+    <span class="c1"># Put together data.json location</span>
+    <span class="n">sitepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataPath</span><span class="p">,</span> <span class="n">site</span><span class="p">)</span>
+    
+    <span class="c1"># Getting site profile stats</span>
+    <span class="n">siteprofile</span> <span class="o">=</span> <span class="n">profiles</span><span class="p">[</span><span class="n">site</span><span class="p">]</span>
+    <span class="n">upperlimit</span> <span class="o">=</span> <span class="n">siteprofile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;UpperHomogeneityLimit&quot;</span><span class="p">)</span>
+    <span class="n">lowerlimit</span> <span class="o">=</span> <span class="n">siteprofile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;LowerHomogeneityLimit&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Generating daily or weekly reports</span>
+    <span class="n">sitesplit</span> <span class="o">=</span> <span class="n">site</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
+    <span class="n">shortitle</span> <span class="o">=</span> <span class="n">sitesplit</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">sitesplit</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">sitesplit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">report_type</span> <span class="o">==</span> <span class="s2">&quot;daily&quot;</span><span class="p">:</span>
+      <span class="c1"># Get title from site name</span>
+      <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;DAILY-&#39;</span> <span class="o">+</span> <span class="n">shortitle</span>
+      <span class="c1"># Create report</span>
+      <span class="n">generateReport</span><span class="p">(</span><span class="n">sitepath</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">upperlimit</span><span class="p">,</span> <span class="n">lowerlimit</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">report_type</span> <span class="o">==</span> <span class="s2">&quot;weekly&quot;</span><span class="p">:</span>
+      <span class="c1"># Get title from site name</span>
+      <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;WEEKLY-&#39;</span> <span class="o">+</span> <span class="n">shortitle</span>
+      <span class="c1"># Create report</span>
+      <span class="n">generateReport</span><span class="p">(</span><span class="n">sitepath</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">upperlimit</span><span class="p">,</span> <span class="n">lowerlimit</span><span class="p">,</span> <span class="n">report_type</span><span class="o">=</span><span class="s2">&quot;weekly&quot;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
@@ -272,7 +344,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Reece Walsh.
+        &copy; Copyright 2019, Reece Walsh
 
     </p>
   </div>
@@ -289,32 +361,16 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'0.9',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

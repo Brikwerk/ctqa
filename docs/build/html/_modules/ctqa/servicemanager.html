@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ctqa.servicemanager &mdash; CTQA 0.9 documentation</title>
+  <title>ctqa.servicemanager &mdash; CTQA 1.0 documentation</title>
   
 
   
@@ -17,32 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -139,11 +141,11 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ctqa.servicemanager</h1><div class="highlight"><pre>
-<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Service Manager</span>
 
 <span class="sd">Detects the OS and installs the CTQA service to run the audit on a regular basis.</span>
-<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">pywintypes</span>
@@ -153,11 +155,12 @@
 <span class="c1">#TODO: Import chron job module</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">ctqa</span> <span class="k">import</span> <span class="n">confutil</span>
 
 <span class="c1"># Getting OS</span>
 <span class="n">SYSNAME</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span>
 <span class="c1"># Getting audit exec location</span>
-<span class="n">LOCATION</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">LOCATION</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 
 <span class="c1">#Logging</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -166,7 +169,7 @@
 
 
 <div class="viewcode-block" id="install"><a class="viewcode-back" href="../../ctqa.html#ctqa.servicemanager.install">[docs]</a><span class="k">def</span> <span class="nf">install</span><span class="p">():</span>
-  <span class="sd">&#39;&#39;&#39;Detects the OS and runs the appropriate installation method.&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;Detects the OS and runs the appropriate installation method.&quot;&quot;&quot;</span>
 
   <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Beginning system install&quot;</span><span class="p">)</span>
 
@@ -180,35 +183,35 @@
 
 
 <div class="viewcode-block" id="install_windows"><a class="viewcode-back" href="../../ctqa.html#ctqa.servicemanager.install_windows">[docs]</a><span class="k">def</span> <span class="nf">install_windows</span><span class="p">():</span>
-  <span class="sd">&#39;&#39;&#39;Attempts to install the CTQA Audit utility as a task in Windows Task Scheduler.&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;Attempts to install the CTQA Audit utility as a task in Windows Task Scheduler.&quot;&quot;&quot;</span>
 
-  <span class="n">params</span> <span class="o">=</span> <span class="s1">&#39;/Create /SC Daily /RU System /TN &quot;CTQA&quot; /TR &quot;&#39;</span> <span class="o">+</span> <span class="n">LOCATION</span> <span class="o">+</span> <span class="s1">&#39; --audit&quot;&#39;</span>
-
+  <span class="n">params</span> <span class="o">=</span> <span class="s1">&#39;/Create /SC Daily /RU System /TN &quot;CTQA&quot; /TR &quot;&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">LOCATION</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39; --audit --debug&quot; /ST 07:00&#39;</span>
+  <span class="n">params_weekly</span> <span class="o">=</span> <span class="s1">&#39;/Create /SC Weekly /RU System /D MON /TN &quot;CTQA-Weekly&quot; /TR &quot;&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">LOCATION</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39; --audit --weekly --debug&quot; /ST 07:00&#39;</span>
   <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Installing with script: &#39;</span> <span class="o">+</span> <span class="n">params</span><span class="p">)</span>
-
-  <span class="c1"># Check that the service isn&#39;t already installed</span>
-  <span class="k">if</span> <span class="n">service_installed</span><span class="p">():</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Service already installed&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="mi">0</span>
 
   <span class="c1"># Attempt to exec as admin. Catch denial of UAC prompt.</span>
   <span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Daily audit installation</span>
     <span class="nb">dict</span> <span class="o">=</span> <span class="n">shell</span><span class="o">.</span><span class="n">ShellExecuteEx</span><span class="p">(</span><span class="n">fMask</span> <span class="o">=</span> <span class="mi">256</span> <span class="o">+</span> <span class="mi">64</span><span class="p">,</span> <span class="n">lpVerb</span><span class="o">=</span><span class="s1">&#39;runas&#39;</span><span class="p">,</span> <span class="n">lpFile</span><span class="o">=</span><span class="s1">&#39;Schtasks.exe&#39;</span><span class="p">,</span> <span class="n">lpParameters</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
     <span class="n">hh</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="s1">&#39;hProcess&#39;</span><span class="p">]</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="n">win32event</span><span class="o">.</span><span class="n">WaitForSingleObject</span><span class="p">(</span><span class="n">hh</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Shell installation result: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ret</span><span class="p">))</span>
-  <span class="k">except</span> <span class="n">pywintypes</span><span class="o">.</span><span class="n">error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error in UAC prompt for windows installation: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Shell CTQA Daily Audit installation result: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ret</span><span class="p">))</span>
 
-  <span class="c1"># If CTQA is present in task names, update image and button</span>
-  <span class="c1">#if service_installed():</span>
-  <span class="c1">#  logger.warning(&#39;Service was installed successfully.&#39;)</span>
-  <span class="c1">#else:</span>
-  <span class="c1">#  logger.error(&#39;Unsuccessful service install&#39;)</span>
+    <span class="c1"># Weekly audit installation</span>
+    <span class="nb">dict</span> <span class="o">=</span> <span class="n">shell</span><span class="o">.</span><span class="n">ShellExecuteEx</span><span class="p">(</span><span class="n">fMask</span> <span class="o">=</span> <span class="mi">256</span> <span class="o">+</span> <span class="mi">64</span><span class="p">,</span> <span class="n">lpVerb</span><span class="o">=</span><span class="s1">&#39;runas&#39;</span><span class="p">,</span> <span class="n">lpFile</span><span class="o">=</span><span class="s1">&#39;Schtasks.exe&#39;</span><span class="p">,</span> <span class="n">lpParameters</span><span class="o">=</span><span class="n">params_weekly</span><span class="p">)</span>
+    <span class="n">hh</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="s1">&#39;hProcess&#39;</span><span class="p">]</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">win32event</span><span class="o">.</span><span class="n">WaitForSingleObject</span><span class="p">(</span><span class="n">hh</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Shell CTQA Weekly Audit installation result: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ret</span><span class="p">))</span>
+
+  <span class="k">except</span> <span class="n">pywintypes</span><span class="o">.</span><span class="n">error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error in UAC prompt for windows installation: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+  <span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">LOCATION</span><span class="p">,</span> <span class="n">confutil</span><span class="o">.</span><span class="n">DEFAULT_CONFIG_LOCATION</span><span class="p">))</span>
+  <span class="n">confutil</span><span class="o">.</span><span class="n">updateConfig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">LOCATION</span><span class="p">,</span> <span class="n">confutil</span><span class="o">.</span><span class="n">DEFAULT_CONFIG_LOCATION</span><span class="p">),</span> <span class="s2">&quot;ServicesInstalled&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="uninstall"><a class="viewcode-back" href="../../ctqa.html#ctqa.servicemanager.uninstall">[docs]</a><span class="k">def</span> <span class="nf">uninstall</span><span class="p">():</span>
-  <span class="sd">&#39;&#39;&#39;Detects the OS and runs the appropriate uninstallation method.&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;Detects the OS and runs the appropriate uninstallation method.&quot;&quot;&quot;</span>
 
   <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Beginning system install&quot;</span><span class="p">)</span>
 
@@ -222,49 +225,31 @@
 
 
 <div class="viewcode-block" id="uninstall_windows"><a class="viewcode-back" href="../../ctqa.html#ctqa.servicemanager.uninstall_windows">[docs]</a><span class="k">def</span> <span class="nf">uninstall_windows</span><span class="p">():</span>
-  <span class="sd">&#39;&#39;&#39;Attempts to uninstall the CTQA Audit task with the Schtasks command&#39;&#39;&#39;</span>
+  <span class="sd">&quot;&quot;&quot;Attempts to uninstall the CTQA Audit task with the Schtasks command&quot;&quot;&quot;</span>
 
   <span class="n">params</span> <span class="o">=</span> <span class="s1">&#39;/delete /TN &quot;CTQA&quot; /f&#39;</span>
+  <span class="n">params_weekly</span> <span class="o">=</span> <span class="s1">&#39;/delete /TN &quot;CTQA-Weekly&quot; /f&#39;</span>
 
   <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Uninstalling with script: &#39;</span> <span class="o">+</span> <span class="n">params</span><span class="p">)</span>
 
-  <span class="c1"># Checking that service isn&#39;t already uninstalled</span>
-  <span class="k">if</span> <span class="ow">not</span> <span class="n">service_installed</span><span class="p">():</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Service already uninstalled&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="mi">0</span>
-
   <span class="c1"># Attempt to exec as admin. Catch denial of UAC prompt.</span>
   <span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Uninstall daily audit</span>
     <span class="nb">dict</span> <span class="o">=</span> <span class="n">shell</span><span class="o">.</span><span class="n">ShellExecuteEx</span><span class="p">(</span><span class="n">fMask</span> <span class="o">=</span> <span class="mi">256</span> <span class="o">+</span> <span class="mi">64</span><span class="p">,</span> <span class="n">lpVerb</span><span class="o">=</span><span class="s1">&#39;runas&#39;</span><span class="p">,</span> <span class="n">lpFile</span><span class="o">=</span><span class="s1">&#39;Schtasks.exe&#39;</span><span class="p">,</span> <span class="n">lpParameters</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
     <span class="n">hh</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="s1">&#39;hProcess&#39;</span><span class="p">]</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="n">win32event</span><span class="o">.</span><span class="n">WaitForSingleObject</span><span class="p">(</span><span class="n">hh</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Shell uninstallation result: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ret</span><span class="p">))</span>
+
+    <span class="c1"># Uninstall weekly audit</span>
+    <span class="nb">dict</span> <span class="o">=</span> <span class="n">shell</span><span class="o">.</span><span class="n">ShellExecuteEx</span><span class="p">(</span><span class="n">fMask</span> <span class="o">=</span> <span class="mi">256</span> <span class="o">+</span> <span class="mi">64</span><span class="p">,</span> <span class="n">lpVerb</span><span class="o">=</span><span class="s1">&#39;runas&#39;</span><span class="p">,</span> <span class="n">lpFile</span><span class="o">=</span><span class="s1">&#39;Schtasks.exe&#39;</span><span class="p">,</span> <span class="n">lpParameters</span><span class="o">=</span><span class="n">params_weekly</span><span class="p">)</span>
+    <span class="n">hh</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="s1">&#39;hProcess&#39;</span><span class="p">]</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">win32event</span><span class="o">.</span><span class="n">WaitForSingleObject</span><span class="p">(</span><span class="n">hh</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Shell uninstallation result: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ret</span><span class="p">))</span>
+
   <span class="k">except</span> <span class="n">pywintypes</span><span class="o">.</span><span class="n">error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error in UAC prompt for windows installation: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error in UAC prompt for windows installation: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
 
-  <span class="c1">#if not service_installed():</span>
-  <span class="c1">#  logger.warning(&#39;Service was uninstalled successfully.&#39;)</span>
-  <span class="c1">#else:</span>
-  <span class="c1">#  logger.error(&#39;Unsuccessful service uninstall&#39;)</span>
-
-
-<div class="viewcode-block" id="service_installed"><a class="viewcode-back" href="../../ctqa.html#ctqa.servicemanager.service_installed">[docs]</a><span class="k">def</span> <span class="nf">service_installed</span><span class="p">():</span>
-  <span class="sd">&#39;&#39;&#39;Checks if service is installed. Returns True or False.&#39;&#39;&#39;</span>
-
-   <span class="c1"># Checking that CTQA service was installed correctly</span>
-  <span class="n">scheduler</span> <span class="o">=</span> <span class="n">win32com</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">Dispatch</span><span class="p">(</span><span class="s2">&quot;Schedule.Service&quot;</span><span class="p">)</span>
-  <span class="n">scheduler</span><span class="o">.</span><span class="n">Connect</span><span class="p">()</span>
-
-  <span class="c1"># Getting root folder and getting task names</span>
-  <span class="n">rootFolder</span> <span class="o">=</span> <span class="n">scheduler</span><span class="o">.</span><span class="n">GetFolder</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">)</span>
-  <span class="n">tasks</span> <span class="o">=</span> <span class="n">rootFolder</span><span class="o">.</span><span class="n">GetTasks</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-  <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">tasks</span><span class="o">.</span><span class="n">Item</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">Name</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">tasks</span><span class="o">.</span><span class="n">Count</span><span class="p">)]</span>
-
-  <span class="c1"># If CTQA is present in task names, update image and button</span>
-  <span class="k">if</span> <span class="s1">&#39;CTQA&#39;</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
-    <span class="k">return</span> <span class="kc">True</span>
-  <span class="k">else</span><span class="p">:</span>
-    <span class="k">return</span> <span class="kc">False</span></div>
+  <span class="n">confutil</span><span class="o">.</span><span class="n">updateConfig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">LOCATION</span><span class="p">,</span> <span class="n">confutil</span><span class="o">.</span><span class="n">DEFAULT_CONFIG_LOCATION</span><span class="p">),</span> <span class="s2">&quot;ServicesInstalled&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
@@ -277,7 +262,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Reece Walsh.
+        &copy; Copyright 2019, Reece Walsh
 
     </p>
   </div>
@@ -294,32 +279,16 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'0.9',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
