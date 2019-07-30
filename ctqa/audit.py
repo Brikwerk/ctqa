@@ -441,7 +441,7 @@ def scalePixelData(pixelData, rInt, rSlope):
 
 def deleteOldROISelections():
   """Deletes any old ROI selection graphics"""
-  selectionPath = "./roi_selections"
+  selectionPath = os.path.join(LOCATION, "roi_selections")
   days = 120
   now = time.time()
 
