@@ -48,6 +48,11 @@ def main():
   confPath = LOCATION + "/" + confutil.DEFAULT_CONFIG_LOCATION
   config = confutil.loadConfig(confPath)
 
+  # Checking for blank report location
+  if type(config) == dict and "ReportLocation" in config:
+    if config["ReportLocation"] == "":
+      confutil.updateConfig(confPath, "ReportLocation", confutil.DEFAULT_REPORT_FOLDER_LOCATION)
+
   logger = logging.getLogger(logutil.MAIN_LOG_NAME)
   logger.debug("Config Location: %s", confPath)
   logger.debug("Log Location: %s", logPath)
