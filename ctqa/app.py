@@ -59,31 +59,34 @@ def run(config, profiles, __DEBUG, weekly=False):
   # Reading out data
   dataFolderLocation = os.path.join(LOCATION, 'data')
   datautil.save(results, dataFolderLocation)
-
+  
   # Creating reports
   # Iterating through each changed dataset
   for site in results['Homogeneity'].keys():
-    # Get path to site folder in data folder
-    sitePath = os.path.join(LOCATION, 'data', site)
-    # Get title from site name
-    dailyTitle = 'DAILY-' + site.split('-')[3] + '-' + site.split('-')[2] + '-' + site.split('-')[0]
-    # Create report
-    if not weekly:
-      # Getting site's upper/lower limits
-      upperlimit = PROFILES[site]["UpperHomogeneityLimit"]
-      lowerlimit = PROFILES[site]["LowerHomogeneityLimit"]
-      prediction = reportutil.generateReport(sitePath, CONFIG, dailyTitle, upperlimit, lowerlimit)
-      # Warning if prediction exceeds upper/lower limit
-      if prediction != None and (prediction > upperlimit or prediction < lowerlimit):
-        notifications.notify_of_warning(site, CONFIG["DaysToForecast"], prediction)
-      
-      # Recording report generated and location
-      reportlocation = os.path.abspath(os.path.join(CONFIG["ReportLocation"], dailyTitle + ".png"))
-      notifications.DATA["changedReports"].append(reportlocation)
+    try:
+      # Get path to site folder in data folder
+      sitePath = os.path.join(LOCATION, 'data', site)
+      # Get title from site name
+      dailyTitle = 'DAILY-' + site.split('-')[3] + '-' + site.split('-')[2] + '-' + site.split('-')[0]
+      # Create report
+      if not weekly:
+        # Getting site's upper/lower limits
+        upperlimit = PROFILES[site]["UpperHomogeneityLimit"]
+        lowerlimit = PROFILES[site]["LowerHomogeneityLimit"]
+        prediction = reportutil.generateReport(sitePath, CONFIG, dailyTitle, upperlimit, lowerlimit)
+        # Warning if prediction exceeds upper/lower limit
+        if prediction != None and (prediction > upperlimit or prediction < lowerlimit):
+          notifications.notify_of_warning(site, CONFIG["DaysToForecast"], prediction)
+        
+        # Recording report generated and location
+        reportlocation = os.path.abspath(os.path.join(CONFIG["ReportLocation"], dailyTitle + ".png"))
+        notifications.DATA["changedReports"].append(reportlocation)
 
-      # Adding relevant daily report to any events that occured
-      if site in notifications.DATA["events"].keys():
-        notifications.DATA["events"][site]["reportLocation"] = reportlocation
+        # Adding relevant daily report to any events that occured
+        if site in notifications.DATA["events"].keys():
+          notifications.DATA["events"][site]["reportLocation"] = reportlocation
+    except Exception as e:
+      logger.debug("Error while generating notifications for site %s" % site, exc_info=True)
   # Regnerate reports if weekly no matter what
   if weekly:
     reportutil.regenerateReports(dataFolderLocation, CONFIG, PROFILES, report_type="weekly")

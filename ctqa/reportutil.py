@@ -53,8 +53,11 @@ def generateReport(dataPath, config, title, upperlimit, lowerlimit, report_type=
   centerdates = []
 
   for date in jsonData['Homogeneity'].keys():
-    centerrois.append(jsonData['Homogeneity'][date]['CENTER']['MEAN'])
-    centerdates.append(mdates.datestr2num(date))
+    try:
+      centerrois.append(jsonData['Homogeneity'][date]['CENTER']['MEAN'])
+      centerdates.append(mdates.datestr2num(date))
+    except KeyError as e:
+      logger.error("Unable to find key when parsing Homogeneity data", exc_info=True)
 
   # Loop through collected dates and omit any submitted before now - graphdays ago
   temprois = []
