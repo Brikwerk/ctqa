@@ -8,6 +8,6 @@ sphinx==2.1.2
 sphinx-rtd-theme==0.4.3
 pywin32==301
 numpy==1.16.4
-opencv-python==4.1.1.26
+opencv-python==4.2.0.32
 exchangelib==1.12.5
 cryptography==3.3.2
